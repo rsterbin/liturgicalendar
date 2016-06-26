@@ -1,0 +1,11 @@
+---
+# These tasks install the packages all hosts will need
+
+- name: update the cache for apt-get
+  apt: update_cache=yes
+  become: true
+
+- name: install git
+  apt: name=git=1:1.9.*
+  become: true
+...

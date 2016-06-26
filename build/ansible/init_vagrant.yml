@@ -1,0 +1,13 @@
+---
+- hosts: db
+  roles:
+    - common
+
+- hosts: back
+  roles:
+    - common
+
+- hosts: front
+  roles:
+    - common
+...

@@ -55,6 +55,6 @@ $ vagrant destroy -f && vagrant up
 For dev, you'll need to use a custom ansible configuration, so run all ansible commands you intend for your vagrant environment from this directory, even though the playbook file is in the ansible directory next to this one.
 
 ```
-$ ansible ../ansible/init_vagrant.yml
+$ ansible-playbook ../ansible/init_vagrant.yml
 ```
 

@@ -2,12 +2,27 @@
 - hosts: db
   roles:
     - common
+    - { role: ANXS.postgresql, become: true,
+        postgresql_users: [
+            { name: 'lcowner', pass: 'ongohx6phah2johbue6R', encrypted: 'no' },
+            { name: 'lcadmin', pass: 'laiTo3jeeK4aimeiBeed', encrypted: 'no' },
+            { name: 'lcuser', pass: 'ceiChu1yeeSh5aish2es', encrypted: 'no' }
+        ],
+        postgresql_databases: [
+            { name: 'liturgicalandar', owner: 'lcowner' }
+        ],
+        postgresql_user_privileges: [
+            { name: 'lcowner', db: 'liturgicalandar', priv: 'ALL', role_attr_flags: 'CREATEDB' },
+        ]
+      }
 
 - hosts: back
   roles:
     - common
+    - { role: nodesource.node, become: true }
 
 - hosts: front
   roles:
     - common
+    - { role: nodesource.node, become: true }
 ...

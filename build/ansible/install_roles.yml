@@ -1,0 +1,5 @@
+---
+# Basic node install
+- src: nodesource.node
+- src: ANXS.postgresql
+...

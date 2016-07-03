@@ -56,6 +56,7 @@
 
 - name: grant basic privs on future sequences to admin
   command: "psql -U postgres {{ liturgicalendar_db_name }} -c \"ALTER DEFAULT PRIVILEGES FOR ROLE {{ liturgicalendar_db_owner_name }} IN SCHEMA public GRANT SELECT, USAGE ON SEQUENCES TO {{ liturgicalendar_db_admin_name }}\""
-  sudo: no
+  become: true
+  become_user: postgres
 
 ...

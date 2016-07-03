@@ -1,0 +1,7 @@
+---
+# Database variables available to all roles
+liturgicalendar_db_name: liturgicalandar
+liturgicalendar_db_owner_name: lcowner
+liturgicalendar_db_admin_name: lcadmin
+liturgicalendar_db_user_name: lcuser
+...

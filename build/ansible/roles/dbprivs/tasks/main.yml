@@ -1,0 +1,61 @@
+---
+# Sets up more details privs than the galaxy role provides
+
+- name: grant usage on the public schema
+  postgresql_privs: >
+    db={{ liturgicalendar_db_name }}
+    roles={{ liturgicalendar_db_admin_name }},{{ liturgicalendar_db_user_name }}
+    privs=USAGE
+    type=schema
+    objs=public
+  become: true
+  become_user: postgres
+
+- name: grant basic privs on current tables to admin
+  postgresql_privs: >
+    db={{ liturgicalendar_db_name }}
+    roles={{ liturgicalendar_db_admin_name }}
+    privs=SELECT,INSERT,UPDATE,DELETE
+    type=table
+    schema=public
+    objs=ALL_IN_SCHEMA
+  become: true
+  become_user: postgres
+
+- name: grant basic privs on current tables to user
+  postgresql_privs: >
+    db={{ liturgicalendar_db_name }}
+    roles={{ liturgicalendar_db_user_name }}
+    privs=SELECT
+    type=table
+    schema=public
+    objs=ALL_IN_SCHEMA
+  become: true
+  become_user: postgres
+
+- name: grant basic privs on current sequences to admin
+  postgresql_privs: >
+    db={{ liturgicalendar_db_name }}
+    roles={{ liturgicalendar_db_admin_name }}
+    privs=SELECT,USAGE
+    type=sequence
+    schema=public
+    objs=ALL_IN_SCHEMA
+  become: true
+  become_user: postgres
+
+- name: grant basic privs on future tables to admin
+  command: "psql -U postgres {{ liturgicalendar_db_name }} -c \"ALTER DEFAULT PRIVILEGES FOR ROLE {{ liturgicalendar_db_owner_name }} IN SCHEMA public GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO {{ liturgicalendar_db_admin_name }}\""
+  become: true
+  become_user: postgres
+
+- name: grant basic privs on future tables to user
+  command: "psql -U postgres {{ liturgicalendar_db_name }} -c \"ALTER DEFAULT PRIVILEGES FOR ROLE {{ liturgicalendar_db_owner_name }} IN SCHEMA public GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO {{ liturgicalendar_db_user_name }}\""
+  become: true
+  become_user: postgres
+
+- name: grant basic privs on future sequences to admin
+  command: "psql -U postgres {{ liturgicalendar_db_name }} -c \"ALTER DEFAULT PRIVILEGES FOR ROLE {{ liturgicalendar_db_owner_name }} IN SCHEMA public GRANT SELECT, USAGE ON SEQUENCES TO {{ liturgicalendar_db_admin_name }}\""
+  sudo: no
+
+...

@@ -4,17 +4,21 @@
     - common
     - { role: ANXS.postgresql, become: true,
         postgresql_users: [
-            { name: 'lcowner', pass: 'ongohx6phah2johbue6R', encrypted: 'no' },
-            { name: 'lcadmin', pass: 'laiTo3jeeK4aimeiBeed', encrypted: 'no' },
-            { name: 'lcuser', pass: 'ceiChu1yeeSh5aish2es', encrypted: 'no' }
+            { name: '{{ liturgicalendar_db_owner_name }}', pass: '{{ liturgicalendar_db_owner_password_dev }}', encrypted: 'no' },
+            { name: '{{ liturgicalendar_db_admin_name }}', pass: '{{ liturgicalendar_db_admin_password_dev }}', encrypted: 'no' },
+            { name: '{{ liturgicalendar_db_user_name }}', pass: '{{ liturgicalendar_db_user_password_dev }}', encrypted: 'no' }
         ],
         postgresql_databases: [
-            { name: 'liturgicalandar', owner: 'lcowner' }
+            { name: '{{ liturgicalendar_db_name }}', owner: '{{ liturgicalendar_db_owner_name }}' }
         ],
         postgresql_user_privileges: [
-            { name: 'lcowner', db: 'liturgicalandar', priv: 'ALL', role_attr_flags: 'CREATEDB' },
+            { name: '{{ liturgicalendar_db_owner_name }}', db: '{{ liturgicalendar_db_name }}', priv: 'ALL', role_attr_flags: 'CREATEDB' },
+        ],
+        postgresql_pg_hba_custom: [
+            { comment: 'CLI access for owner', type: 'local', database: '{{ liturgicalendar_db_name }}', user: '{{ liturgicalendar_db_owner_name }}', address: '', method: 'trust' }
         ]
       }
+    - dbprivs
 
 - hosts: back
   roles:

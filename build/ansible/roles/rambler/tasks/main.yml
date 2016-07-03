@@ -1,0 +1,21 @@
+---
+# Sets up rambler
+
+- name: download rambler
+  get_url: url="https://github.com/elwinar/rambler/releases/download/v{{ rambler_version }}/{{ rambler_sourcefile }}"
+           dest="/usr/local/src/{{ rambler_sourcefile }}"
+  become: true
+
+- name: extract and install rambler
+  unarchive: src="/usr/local/src/{{ rambler_sourcefile }}"
+             dest=/usr/local/src/
+             copy=no
+  become: true
+
+- name: symlink into /usr/local/bin
+  file: src="/usr/local/src/{{ rambler_sourcedir }}/rambler"
+        dest="/usr/local/bin/rambler"
+        state=link
+  become: true
+
+...

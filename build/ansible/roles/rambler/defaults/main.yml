@@ -1,0 +1,8 @@
+---
+# Rambler defaults
+rambler_version: "3.2.0"
+rambler_os: "linux"
+rambler_arch: "amd64"
+rambler_sourcedir: "rambler_{{ rambler_version }}_{{ rambler_os }}_{{ rambler_arch }}"
+rambler_sourcefile: "{{ rambler_sourcedir }}.tar.gz"
+...

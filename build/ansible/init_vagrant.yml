@@ -19,6 +19,7 @@
         ]
       }
     - dbprivs
+    - rambler
 
 - hosts: back
   roles:

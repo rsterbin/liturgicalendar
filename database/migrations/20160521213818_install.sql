@@ -31,6 +31,8 @@ INSERT INTO schedules (name, code, valid_start, is_default) VALUES ('Eve of Cand
 INSERT INTO schedules (name, code, valid_start, is_default) VALUES ('"Eve of" Solumn Mass on Friday', 'friday-solumn-eve', false); -- 15
 INSERT INTO schedules (name, code, valid_start, is_default) VALUES ('"Eve of" Mass on Friday', 'friday-eve', false); -- 16
 
+-- todo: fridays in Lent with stations of the cross (also, decide whether to represent the time change from 7 to 6:30?)
+
 CREATE TABLE services (
     service_id serial,
     name text NOT NULL,

@@ -434,29 +434,51 @@ INSERT INTO fixed_feasts (name, otype_id, month, day, color) VALUES ('Cyril, Pat
 INSERT INTO fixed_feasts (name, otype_id, month, day, color) VALUES ('Irenaeus, Bishop of Lyons and Martyr, c. 202', 4, 6, 28, 'red');
 INSERT INTO fixed_feasts (name, otype_id, month, day, schedule_code, has_vigil, vigil_schedule_code, fri_vigil_schedule_code, color) VALUES ('Saint Peter and Saint Paul, Apostles', 4, 6, 29, 'weekday-feast', true, 'ep-only', 'friday-eve', 'red');
 
--- TODO: July
+-- July
+
+INSERT INTO fixed_feasts (name, otype_id, month, day, color) VALUES ('Independence Day', 4, 7, 4, 'white');
+INSERT INTO fixed_feasts (name, otype_id, month, day, color, valid_start) VALUES ('Jan Hus, Prophetic Witness and Martyr, 1415', 4, 7, 6, 'red', '2012-01-01 00:00:00' AT TIME ZONE 'America/New_York');
+INSERT INTO fixed_feasts (name, otype_id, month, day, color) VALUES ('Benedict of Nursia, Abbot of Monte Casino, c. 540', 4, 7, 11, 'white');
+INSERT INTO fixed_feasts (name, otype_id, month, day, color, valid_start) VALUES ('Bonaventure, Bishop and Friar, 1274', 4, 7, 15, 'white', '2005-01-01 00:00:00' AT TIME ZONE 'America/New_York');
+INSERT INTO fixed_feasts (name, otype_id, month, day, color) VALUES ('William White, Bishop of Pennsylvania, 1836', 4, 7, 17, 'white');
+INSERT INTO fixed_feasts (name, otype_id, month, day, color, valid_start) VALUES ('Macrina, Monastic and Teacher, 379', 4, 7, 19, 'white', '2012-01-01 00:00:00' AT TIME ZONE 'America/New_York');
+INSERT INTO fixed_feasts (name, otype_id, month, day, schedule_code, has_vigil, vigil_schedule_code, fri_vigil_schedule_code, color) VALUES ('Saint Mary Magdalene', 3, 7, 22, 'weekday-feast', true, 'ep-only', 'friday-eve', 'white');
+INSERT INTO fixed_feasts (name, otype_id, month, day, color) VALUES ('Thomas a Kempis, Priest, 1471', 4, 7, 24, 'white');
+INSERT INTO fixed_feasts (name, otype_id, month, day, schedule_code, has_vigil, vigil_schedule_code, fri_vigil_schedule_code, color) VALUES ('Saint James the Apostle', 4, 7, 25, 'weekday-feast', true, 'ep-only', 'friday-eve', 'red');
+INSERT INTO fixed_feasts (name, otype_id, month, day, color) VALUES ('Parents of the Blessed Virgin Mary', 4, 7, 26, 'white');
+INSERT INTO fixed_feasts (name, otype_id, month, day, color) VALUES ('William Reed Huntington, Priest, 1909', 4, 7, 27, 'white');
+INSERT INTO fixed_feasts (name, otype_id, month, day, color) VALUES ('Mary and Martha of Bethany', 4, 7, 29, 'white');
+INSERT INTO fixed_feasts (name, otype_id, month, day, color) VALUES ('William Wilberforce, 1833', 4, 7, 30, 'white');
+INSERT INTO fixed_feasts (name, otype_id, month, day, color, valid_end) VALUES ('Ignatius of Loyola, Priest and Monastic, 1556', 4, 7, 31, 'white', '2011-12-31 23:59:59' AT TIME ZONE 'America/New_York');
+
 -- TODO: August
 -- TODO: September
 -- TODO: October
 -- TODO: November
 -- TODO: December
 
+
 -- todo: movable notes
 -- in January: 'Birthday of Martin Luther King, Jr. – Federal Holiday Schedule<br />The church opens today at 10:00 AM and closes at 2:00 PM.'
 -- in February: 'Washington’s Birthday – Federal Holiday Schedule<br />The church opens today at 10:00 AM and closes at 2:00 PM.'
+-- in May: 'Memorial Day – Federal Holiday Schedule<br />The church opens today at 10:00 AM and closes at 2:00 PM.'
+-- in July: 'Federal Holiday Schedule<br />The church opens today at 10:00 AM and closes at 2:00 PM.' (for Independence Day or the closest weekday)
 
 -- todo: remember
--- Commemorations don't show up at all in Lent
 -- There is a Last Sunday After Epiphany
 -- Major Feasts in Holy Week or Easter Week transfer all the way to the following Monday (and Tuesday, if both Saint Joseph and Annunciation fall within)
+-- Federal Holidays have notes and a schedule (church open 10-2)
 
 -- todo: ask for clarification
--- How does the day marked "Of Our Lady" in January work?
+-- How do the days marked "Of Our Lady" work? There seems to be roughly one a month, but I don't know what the pattern is.
 -- Is the change from white to gold for Annunciation an intentional change or a mistake that got carried from the previous year's transfer?
 -- The list of Commemorations needs confirmation, as there are some important variations from the Episcopal calendars I've found (e.g. http://satucket.com/lectionary/Calendar.htm)
 -- If a major feast falls on a Saturday in Lent, what happens to Stations of the Cross?
 -- How is the date of "The First Book of Common Prayer, 1549" determined?
 -- Do we celebrate Sacred Heart (19 days after Pentecost) anymore?  It appears through 2008.
+-- July 18 [Bartolomé de las Casas, Friar and Missionary to the Indies, 1566] - WE SHOULD DO THIS: http://theoatmeal.com/comics/columbus_day
+-- Was Ignatius of Loyola dropped from the calendar intentionally?
+
 
 -- rambler down
 

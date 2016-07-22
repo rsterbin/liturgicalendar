@@ -15,8 +15,8 @@ CREATE TABLE schedules (
     CONSTRAINT schedules_pk PRIMARY KEY schedule_id
 );
 
-CREATE INDEX schedules_code_idx ON schedules (code);
-CREATE INDEX schedules_valid_idx ON schedules (valid_start, valid_end, is_default);
+CREATE INDEX schedules_code_idx ON schedules (code, valid_start, valid_end);
+CREATE INDEX schedules_default_idx ON schedules (is_default, valid_start, valid_end);
 
 INSERT INTO schedules (name, code, valid_start, is_default) VALUES ('Weekday Basic', 'weekday', true); -- 1
 INSERT INTO schedules (name, code, valid_start, is_default) VALUES ('Thursday Basic', 'thursday', true); -- 2
@@ -39,6 +39,7 @@ INSERT INTO schedules (name, code, valid_start, is_default) VALUES ('Thursday Ba
 INSERT INTO schedules (name, code, valid_start, is_default) VALUES ('Lenten Friday', 'lent-friday', true); -- 19
 INSERT INTO schedules (name, code, valid_start, is_default) VALUES ('Saturday Without Confessions', 'saturday-no-confessions', true); -- 20
 INSERT INTO schedules (name, code, valid_start, is_default) VALUES ('Requiem Weekday', 'requiem-weekday', false); -- 21
+INSERT INTO schedules (name, code, valid_start, is_default) VALUES ('Thursday Feast', 'thursday-feast', true); -- 22
 
 CREATE TABLE services (
     service_id serial,
@@ -49,6 +50,7 @@ CREATE TABLE services (
 );
 
 CREATE INDEX services_start_time_idx ON services (start_time);
+CREATE INDEX services_default_idx ON services (is_default);
 
 INSERT INTO services (name, start_time, is_default) VALUES ('Morning Prayer', '08:30:00', true); -- 1
 INSERT INTO services (name, start_time, is_default) VALUES ('Noonday Prayer', '12:00:00', true); -- 2
@@ -162,6 +164,11 @@ INSERT INTO schedule_services (schedule_id, service_id) VALUES (21, 2); -- requi
 INSERT INTO schedule_services (schedule_id, service_id) VALUES (21, 27); -- requiem-weekday
 INSERT INTO schedule_services (schedule_id, service_id) VALUES (21, 5); -- requiem-weekday
 INSERT INTO schedule_services (schedule_id, service_id) VALUES (21, 28); -- requiem-weekday
+INSERT INTO schedule_services (schedule_id, service_id) VALUES (22, 1); -- thursday-feast
+INSERT INTO schedule_services (schedule_id, service_id) VALUES (22, 2); -- thursday-feast
+INSERT INTO schedule_services (schedule_id, service_id) VALUES (22, 1); -- thursday-feast
+INSERT INTO schedule_services (schedule_id, service_id) VALUES (22, 5); -- thursday-feast
+INSERT INTO schedule_services (schedule_id, service_id) VALUES (22, 20); -- thursday-feast
 
 --
 -- Define service patterns for seasons, fixed feasts, and moveable feasts that vary by day of the week
@@ -196,6 +203,7 @@ CREATE TABLE service_patterns (
     CONSTRAINT service_patterns_pk PRIMARY KEY (pattern_id)
 );
 
+CREATE INDEX service_patterns_code_idx ON service_patterns (code, valid_start, valid_end);
 
 INSERT INTO service_patterns (name, code,
         schedule_code_mon, schedule_code_mon_with_vigil, schedule_code_mon_vigil,
@@ -249,6 +257,42 @@ INSERT INTO service_patterns (name, code,
         'lent-friday', 'weekday-vigil', null,
         'saturday', 'saturday', 'vigil',
         'sunday', null, null
+    );
+
+INSERT INTO service_patterns (name, code,
+        schedule_code_mon, schedule_code_mon_with_vigil, schedule_code_mon_vigil,
+        schedule_code_tue, schedule_code_tue_with_vigil, schedule_code_tue_vigil,
+        schedule_code_wed, schedule_code_wed_with_vigil, schedule_code_wed_vigil,
+        schedule_code_thu, schedule_code_thu_with_vigil, schedule_code_thu_vigil,
+        schedule_code_fri, schedule_code_fri_with_vigil, schedule_code_fri_vigil,
+        schedule_code_sat, schedule_code_sat_with_vigil, schedule_code_sat_vigil,
+        schedule_code_sun, schedule_code_sun_with_vigil, schedule_code_sun_vigil
+    ) VALUES ('Major Fixed Feast', 'major-fixed-feast'
+        'weekday-feast', 'weekday-feast', null,
+        'weekday-feast', 'weekday-feast', null,
+        'weekday-feast', 'weekday-feast', null,
+        'thursday-feast', 'thursday-feast', null,
+        'weekday-feast', 'weekday-feast', null,
+        'saturday', 'saturday', null,
+        null, null, null
+    );
+
+INSERT INTO service_patterns (name, code,
+        schedule_code_mon, schedule_code_mon_with_vigil, schedule_code_mon_vigil,
+        schedule_code_tue, schedule_code_tue_with_vigil, schedule_code_tue_vigil,
+        schedule_code_wed, schedule_code_wed_with_vigil, schedule_code_wed_vigil,
+        schedule_code_thu, schedule_code_thu_with_vigil, schedule_code_thu_vigil,
+        schedule_code_fri, schedule_code_fri_with_vigil, schedule_code_fri_vigil,
+        schedule_code_sat, schedule_code_sat_with_vigil, schedule_code_sat_vigil,
+        schedule_code_sun, schedule_code_sun_with_vigil, schedule_code_sun_vigil
+    ) VALUES ('Major Fixed Feast Eve', 'major-fixed-feast-eve'
+        null, null, 'ep-only',
+        null, null, 'ep-only',
+        null, null, 'ep-only',
+        null, null, 'ep-only',
+        null, null, 'friday-eve',
+        null, null, null,
+        null, null, null
     );
 
 --
@@ -429,10 +473,13 @@ CREATE TABLE fixed_feasts (
     otype_id integer NOT NULL,
     month integer NOT NULL,
     day integer NOT NULL,
-    schedule_code text,
-    has_vigil boolean NOT NULL DEFAULT FALSE,
-    vigil_schedule_code text,
-    fri_vigil_schedule_code text,
+    schedule_pattern text,
+    has_eve boolean NOT NULL DEFAULT FALSE,
+    eve_schedule_pattern text,
+    schedule_code text, -- TODO: remove
+    has_vigil boolean NOT NULL DEFAULT FALSE, -- TODO: remove
+    vigil_schedule_code text, -- TODO: remove
+    fri_vigil_schedule_code text, -- TODO: remove
     color text,
     note text,
     valid_start timestamp with time zone NULL,
@@ -446,19 +493,40 @@ CREATE TABLE fixed_feasts (
 CREATE INDEX fixed_feasts_month_idx ON fixed_feasts (month);
 CREATE INDEX fixed_feasts_date_idx ON fixed_feasts (month, day);
 
+-- TODO: set up service patterns for level 1/2s and one-offs (e.g. Blase)
+-- TODO: replace schedule code columns for level 1/2s and one-offs
+-- TODO: remove schedule code columns
+-- TODO: season-schedule-pattern adjustments?
+-- TODO: double-check Transfiguration service schedule
+
+-- 'The Epiphany of Our Lord Jesus Christ', 1, 1, 6, 'solemn-weekday-feast', true, 'es-only', 'solemn-friday-eve', 'gold');
+-- 'The Presentation of Our Lord Jesus Christ in the Temple', 2, 2, 2, 'candlemas', true, 'es-only', 'candlemas-eve', 'white');
+-- 'Blase, Bishop and Martyr, c. 316', 4, 2, 3, 'blase', 'red');
+-- 'The Annunciation of Our Lord Jesus Christ', 2, 3, 25, 'solemn-weekday-feast', true, 'es-only', 'solemn-friday-eve', 'blue', '2013-12-31 23:59:59' AT TIME ZONE 'America/New_York');
+-- 'The Annunciation of Our Lord Jesus Christ', 2, 3, 25, 'solemn-weekday-feast', true, 'es-only', 'solemn-friday-eve', 'gold', '2014-01-01 00:00:00' AT TIME ZONE 'America/New_York');
+-- 'The Transfiguration of Our Lord Jesus Christ', 1, 8, 6, 'weekday-feast', true, 'ep-only', 'friday-eve', 'gold');
+-- 'The Assumption of the Blessed Virgin Mary', 4, 8, 15, 'solemn-weekday-feast', true, 'es-only', 'friday-eve', 'white', '2010-12-31 23:59:59' AT TIME ZONE 'America/New_York');
+-- 'The Assumption of the Blessed Virgin Mary', 4, 8, 15, 'solemn-weekday-feast', true, 'ep-only', 'solemn-friday-eve', 'gold', '2011-01-01 00:00:00' AT TIME ZONE 'America/New_York');
+-- 'Parish Requiem: Victims of September 11, 2011', 4, 9, 11, 'requiem-weekday', 'purple', '2008-12-31 23:59:59' AT TIME ZONE 'America/New_York');
+-- 'Holy Cross Day', 2, 9, 14, 'weekday-feast', true, 'ep-only', 'friday-eve', 'red', '2010-01-01 00:00:00' AT TIME ZONE 'America/New_York');
+-- 'Holy Cross Day', 2, 9, 14, 'solemn-weekday-feast', true, 'es-only', 'solemn-friday-eve', 'red', '2009-12-31 23:59:59' AT TIME ZONE 'America/New_York');
+-- 'Saint Michael and All Angels', 2, 9, 29, 'weekday-feast', true, 'ep-only', 'friday-eve', 'white');
+-- 'All Saints', 1, 11, 1, 'solemn-weekday-feast', true, 'es-only', 'solemn-friday-eve', 'white', '2009-12-31 23:59:59' AT TIME ZONE 'America/New_York');
+-- 'All Saints', 1, 11, 1, 'solemn-weekday-feast', true, 'es-only', 'solemn-friday-eve', 'gold', '2010-01-01 00:00:00' AT TIME ZONE 'America/New_York');
+
 -- January
 INSERT INTO fixed_feasts (name, otype_id, month, day, color) VALUES ('The Holy Name of Our Lord Jesus Christ', 3, 1, 1, 'gold');
 INSERT INTO fixed_feasts (name, otype_id, month, day, schedule_code, has_vigil, vigil_schedule_code, fri_vigil_schedule_code, color) VALUES ('The Epiphany of Our Lord Jesus Christ', 1, 1, 6, 'solemn-weekday-feast', true, 'es-only', 'solemn-friday-eve', 'gold');
-INSERT INTO fixed_feasts (name, otype_id, month, day, schedule_code, color) VALUES ('William Laud, Archbishop of Canterbury, 1645', 4, 1, 10, 'red');
+INSERT INTO fixed_feasts (name, otype_id, month, day, color) VALUES ('William Laud, Archbishop of Canterbury, 1645', 4, 1, 10, 'red');
 INSERT INTO fixed_feasts (name, otype_id, month, day, color) VALUES ('Aelred, Abbot of Rievaulx, 1167', 4, 1, 12, 'white');
 INSERT INTO fixed_feasts (name, otype_id, month, day, color) VALUES ('Hilary, Bishop of Poitiers, 367', 4, 1, 13, 'white');
 INSERT INTO fixed_feasts (name, otype_id, month, day, color) VALUES ('Antony, Abbot in Egypt, 356', 4, 1, 17, 'white');
-INSERT INTO fixed_feasts (name, otype_id, month, day, schedule_code, has_vigil, vigil_schedule_code, fri_vigil_schedule_code, color) VALUES ('The Confession of Saint Peter the Apostle', 3, 1, 18, 'weekday-feast', true, 'ep-only', 'friday-eve', 'white');
+INSERT INTO fixed_feasts (name, otype_id, month, day, schedule_pattern, has_eve, eve_schedule_pattern, color) VALUES ('The Confession of Saint Peter the Apostle', 3, 1, 18, 'major-fixed-feast', true, 'major-fixed-feast-eve', 'white');
 INSERT INTO fixed_feasts (name, otype_id, month, day, color) VALUES ('Wulfstan, Bishop of Worcester, 1095', 4, 1, 19, 'white');
 INSERT INTO fixed_feasts (name, otype_id, month, day, color) VALUES ('Fabian, Bishop and Martyr of Rome, 250', 4, 1, 20, 'red');
 INSERT INTO fixed_feasts (name, otype_id, month, day, color) VALUES ('Agnes, Martyr at Rome, 304', 4, 1, 21, 'red');
 INSERT INTO fixed_feasts (name, otype_id, month, day, color) VALUES ('Vincent, Deacon of Saragossa, and Martyr, 304', 4, 1, 22, 'red');
-INSERT INTO fixed_feasts (name, otype_id, month, day, schedule_code, has_vigil, vigil_schedule_code, fri_vigil_schedule_code, color) VALUES ('The Conversion of Saint Paul the Apostle', 3, 1, 25, 'weekday-feast', true, 'ep-only', 'friday-eve', 'white');
+INSERT INTO fixed_feasts (name, otype_id, month, day, schedule_pattern, has_eve, eve_schedule_pattern, color) VALUES ('The Conversion of Saint Paul the Apostle', 3, 1, 25, 'major-fixed-feast', true, 'major-fixed-feast-eve', 'white');
 INSERT INTO fixed_feasts (name, otype_id, month, day, color) VALUES ('Timothy and Titus, Companions of Saint Paul', 4, 1, 26, 'white');
 INSERT INTO fixed_feasts (name, otype_id, month, day, color) VALUES ('Thomas Aquinas, Priest and Friar, 1274', 4, 1, 28, 'white');
 INSERT INTO fixed_feasts (name, otype_id, month, day, color) VALUES ('Charles, King and Martyr, 1649', 4, 1, 30, 'red');
@@ -476,11 +544,11 @@ INSERT INTO fixed_feasts (name, otype_id, month, day, color) VALUES ('Absalom Jo
 INSERT INTO fixed_feasts (name, otype_id, month, day, color) VALUES ('Cyril, Monk, and Methodius, Bishop, Missionaries to the Slavs, 869, 885', 4, 2, 14, 'white');
 INSERT INTO fixed_feasts (name, otype_id, month, day, color) VALUES ('Thomas Bray, Priest and Missionary, 1730', 4, 2, 15, 'white');
 INSERT INTO fixed_feasts (name, otype_id, month, day, color) VALUES ('Polycarp, Bishop and Martyr of Smyrna, 156', 4, 2, 23, 'red');
-INSERT INTO fixed_feasts (name, otype_id, month, day, schedule_code, has_vigil, vigil_schedule_code, fri_vigil_schedule_code, color) VALUES ('Saint Matthias the Apostle', 3, 2, 24, 'weekday-feast', true, 'ep-only', 'friday-eve', 'red');
+INSERT INTO fixed_feasts (name, otype_id, month, day, schedule_pattern, has_eve, eve_schedule_pattern, color) VALUES ('Saint Matthias the Apostle', 3, 2, 24, 'major-fixed-feast', true, 'major-fixed-feast-eve', 'red');
 
 -- March
 
-INSERT INTO fixed_feasts (name, otype_id, month, day, schedule_code, has_vigil, vigil_schedule_code, fri_vigil_schedule_code, color) VALUES ('Saint Joseph', 3, 3, 19, 'weekday-feast', true, 'ep-only', 'friday-eve', 'white');
+INSERT INTO fixed_feasts (name, otype_id, month, day, schedule_pattern, has_eve, eve_schedule_pattern, color) VALUES ('Saint Joseph', 3, 3, 19, 'major-fixed-feast', true, 'major-fixed-feast-eve', 'white');
 INSERT INTO fixed_feasts (name, otype_id, month, day, schedule_code, has_vigil, vigil_schedule_code, fri_vigil_schedule_code, color, valid_end) VALUES ('The Annunciation of Our Lord Jesus Christ', 2, 3, 25, 'solemn-weekday-feast', true, 'es-only', 'solemn-friday-eve', 'blue', '2013-12-31 23:59:59' AT TIME ZONE 'America/New_York');
 INSERT INTO fixed_feasts (name, otype_id, month, day, schedule_code, has_vigil, vigil_schedule_code, fri_vigil_schedule_code, color, valid_start) VALUES ('The Annunciation of Our Lord Jesus Christ', 2, 3, 25, 'solemn-weekday-feast', true, 'es-only', 'solemn-friday-eve', 'gold', '2014-01-01 00:00:00' AT TIME ZONE 'America/New_York');
 
@@ -496,12 +564,12 @@ INSERT INTO fixed_feasts (name, otype_id, month, day, color) VALUES ('George Aug
 INSERT INTO fixed_feasts (name, otype_id, month, day, color) VALUES ('Alphege, Archbishop of Canterbury, and Martyr, 1012', 4, 4, 19, 'red');
 INSERT INTO fixed_feasts (name, otype_id, month, day, color) VALUES ('Anselm, Archbishop of Canterbury, 1109', 4, 4, 21, 'white');
 INSERT INTO fixed_feasts (name, otype_id, month, day, color, valid_start) VALUES ('Genocide Remembrance', 4, 4, 24, 'red', '2015-01-01 00:00:00' AT TIME ZONE 'America/New_York');
-INSERT INTO fixed_feasts (name, otype_id, month, day, schedule_code, has_vigil, vigil_schedule_code, fri_vigil_schedule_code, color) VALUES ('Saint Mark the Evangelist', 3, 4, 25, 'weekday-feast', true, 'ep-only', 'friday-eve', 'red');
+INSERT INTO fixed_feasts (name, otype_id, month, day, schedule_pattern, has_eve, eve_schedule_pattern, color) VALUES ('Saint Mark the Evangelist', 3, 4, 25, 'major-fixed-feast', true, 'major-fixed-feast-eve', 'red');
 INSERT INTO fixed_feasts (name, otype_id, month, day, color) VALUES ('Catherine of Siena, 1380', 4, 4, 29, 'white');
 
 -- May
 
-INSERT INTO fixed_feasts (name, otype_id, month, day, schedule_code, has_vigil, vigil_schedule_code, fri_vigil_schedule_code, color) VALUES ('Saint Philip and Saint James, Apostles', 4, 5, 1, 'weekday-feast', true, 'ep-only', 'friday-eve', 'red');
+INSERT INTO fixed_feasts (name, otype_id, month, day, schedule_pattern, has_eve, eve_schedule_pattern, color) VALUES ('Saint Philip and Saint James, Apostles', 3, 5, 1, 'major-fixed-feast', true, 'major-fixed-feast-eve', 'red');
 INSERT INTO fixed_feasts (name, otype_id, month, day, color) VALUES ('Athanasius, Bishop of Alexandria, 373', 4, 5, 2, 'white');
 INSERT INTO fixed_feasts (name, otype_id, month, day, color) VALUES ('Monnica, Mother of Augustine of Hippo, 387', 4, 5, 4, 'white');
 INSERT INTO fixed_feasts (name, otype_id, month, day, color) VALUES ('Dame Julian of Norwich, c. 1417', 4, 5, 8, 'white');
@@ -511,7 +579,7 @@ INSERT INTO fixed_feasts (name, otype_id, month, day, color) VALUES ('Alcuin, De
 INSERT INTO fixed_feasts (name, otype_id, month, day, color) VALUES ('Jackson Kemper, First Missionary Bishop in the United States, 1870', 4, 5, 24, 'white');
 INSERT INTO fixed_feasts (name, otype_id, month, day, color) VALUES ('Bede, the Venerable, Priest, and Monk of Jarrow, 735', 4, 5, 25, 'white');
 INSERT INTO fixed_feasts (name, otype_id, month, day, color) VALUES ('Augustine, First Archbishop of Canterbury, 605', 4, 5, 26, 'white');
-INSERT INTO fixed_feasts (name, otype_id, month, day, schedule_code, has_vigil, vigil_schedule_code, fri_vigil_schedule_code, color) VALUES ('The Visitation of the Blessed Virgin Mary', 4, 5, 31, 'weekday-feast', true, 'ep-only', 'friday-eve', 'white');
+INSERT INTO fixed_feasts (name, otype_id, month, day, schedule_pattern, has_eve, eve_schedule_pattern, color) VALUES ('The Visitation of the Blessed Virgin Mary', 3, 5, 31, 'major-fixed-feast', true, 'major-fixed-feast-eve', 'white');
 
 -- June
 
@@ -521,16 +589,16 @@ INSERT INTO fixed_feasts (name, otype_id, month, day, color) VALUES ('The Martyr
 INSERT INTO fixed_feasts (name, otype_id, month, day, color) VALUES ('Boniface, Archbishop of Mainz, Missionary to Germany, and Martyr, 754', 4, 6, 5, 'red');
 INSERT INTO fixed_feasts (name, otype_id, month, day, color) VALUES ('Columba, Abbot of Iona, 597', 4, 6, 9, 'white');
 INSERT INTO fixed_feasts (name, otype_id, month, day, color) VALUES ('Ephrem of Edessa, Syria, Deacon, 373', 4, 6, 10, 'white');
-INSERT INTO fixed_feasts (name, otype_id, month, day, schedule_code, has_vigil, vigil_schedule_code, fri_vigil_schedule_code, color) VALUES ('Saint Barnabas the Apostle', 4, 6, 11, 'weekday-feast', true, 'ep-only', 'friday-eve', 'red');
+INSERT INTO fixed_feasts (name, otype_id, month, day, schedule_pattern, has_eve, eve_schedule_pattern, color) VALUES ('Saint Barnabas the Apostle', 3, 6, 11, 'major-fixed-feast', true, 'major-fixed-feast-eve', 'red');
 INSERT INTO fixed_feasts (name, otype_id, month, day, color) VALUES ('Basil the Great, Bishop of Caesarea, 379', 4, 6, 14, 'white');
 INSERT INTO fixed_feasts (name, otype_id, month, day, color) VALUES ('Joseph Butler, Bishop of Durham, 1752', 4, 6, 16, 'white');
 INSERT INTO fixed_feasts (name, otype_id, month, day, color, valid_end) VALUES ('Bernard Mizeki, Catechist and Martyr in Rhodesia, 1896', 4, 6, 18, 'red', '2011-12-31 23:59:59' AT TIME ZONE 'America/New_York');
 INSERT INTO fixed_feasts (name, otype_id, month, day, color, valid_start) VALUES ('Bernard Mizeki, Catechist and Martyr in Mashonaland, 1896', 4, 6, 18, 'red', '2012-01-01 00:00:00' AT TIME ZONE 'America/New_York');
 INSERT INTO fixed_feasts (name, otype_id, month, day, color) VALUES ('Alban, First Martyr of Britain, c. 304', 4, 6, 22, 'red');
-INSERT INTO fixed_feasts (name, otype_id, month, day, schedule_code, has_vigil, vigil_schedule_code, fri_vigil_schedule_code, color) VALUES ('The Nativity of Saint John the Baptist', 4, 6, 24, 'weekday-feast', true, 'ep-only', 'friday-eve', 'white');
+INSERT INTO fixed_feasts (name, otype_id, month, day, schedule_pattern, has_eve, eve_schedule_pattern, color) VALUES ('The Nativity of Saint John the Baptist', 3, 6, 24, 'major-fixed-feast', true, 'major-fixed-feast-eve', 'white');
 INSERT INTO fixed_feasts (name, otype_id, month, day, color) VALUES ('Cyril, Patriarch of Alexandria, 444', 4, 6, 27, 'white');
 INSERT INTO fixed_feasts (name, otype_id, month, day, color) VALUES ('Irenaeus, Bishop of Lyons and Martyr, c. 202', 4, 6, 28, 'red');
-INSERT INTO fixed_feasts (name, otype_id, month, day, schedule_code, has_vigil, vigil_schedule_code, fri_vigil_schedule_code, color) VALUES ('Saint Peter and Saint Paul, Apostles', 4, 6, 29, 'weekday-feast', true, 'ep-only', 'friday-eve', 'red');
+INSERT INTO fixed_feasts (name, otype_id, month, day, schedule_pattern, has_eve, eve_schedule_pattern, color) VALUES ('Saint Peter and Saint Paul, Apostles', 3, 6, 29, 'major-fixed-feast', true, 'major-fixed-feast-eve', 'red');
 
 -- July
 
@@ -540,9 +608,9 @@ INSERT INTO fixed_feasts (name, otype_id, month, day, color) VALUES ('Benedict o
 INSERT INTO fixed_feasts (name, otype_id, month, day, color, valid_start) VALUES ('Bonaventure, Bishop and Friar, 1274', 4, 7, 15, 'white', '2005-01-01 00:00:00' AT TIME ZONE 'America/New_York');
 INSERT INTO fixed_feasts (name, otype_id, month, day, color) VALUES ('William White, Bishop of Pennsylvania, 1836', 4, 7, 17, 'white');
 INSERT INTO fixed_feasts (name, otype_id, month, day, color, valid_start) VALUES ('Macrina, Monastic and Teacher, 379', 4, 7, 19, 'white', '2012-01-01 00:00:00' AT TIME ZONE 'America/New_York');
-INSERT INTO fixed_feasts (name, otype_id, month, day, schedule_code, has_vigil, vigil_schedule_code, fri_vigil_schedule_code, color) VALUES ('Saint Mary Magdalene', 3, 7, 22, 'weekday-feast', true, 'ep-only', 'friday-eve', 'white');
+INSERT INTO fixed_feasts (name, otype_id, month, day, schedule_pattern, has_eve, eve_schedule_pattern, color) VALUES ('Saint Mary Magdalene', 3, 7, 22, 'major-fixed-feast', true, 'major-fixed-feast-eve', 'white');
 INSERT INTO fixed_feasts (name, otype_id, month, day, color) VALUES ('Thomas a Kempis, Priest, 1471', 4, 7, 24, 'white');
-INSERT INTO fixed_feasts (name, otype_id, month, day, schedule_code, has_vigil, vigil_schedule_code, fri_vigil_schedule_code, color) VALUES ('Saint James the Apostle', 4, 7, 25, 'weekday-feast', true, 'ep-only', 'friday-eve', 'red');
+INSERT INTO fixed_feasts (name, otype_id, month, day, schedule_pattern, has_eve, eve_schedule_pattern, color) VALUES ('Saint James the Apostle', 3, 7, 25, 'major-fixed-feast', true, 'major-fixed-feast-eve', 'red');
 INSERT INTO fixed_feasts (name, otype_id, month, day, color) VALUES ('Parents of the Blessed Virgin Mary', 4, 7, 26, 'white');
 INSERT INTO fixed_feasts (name, otype_id, month, day, color) VALUES ('William Reed Huntington, Priest, 1909', 4, 7, 27, 'white');
 INSERT INTO fixed_feasts (name, otype_id, month, day, color) VALUES ('Mary and Martha of Bethany', 4, 7, 29, 'white');
@@ -552,7 +620,7 @@ INSERT INTO fixed_feasts (name, otype_id, month, day, color, valid_end) VALUES (
 -- August
 
 INSERT INTO fixed_feasts (name, otype_id, month, day, color) VALUES ('Joseph of Arimathaea', 4, 8, 1, 'white');
-INSERT INTO fixed_feasts (name, otype_id, month, day, schedule_code, has_vigil, vigil_schedule_code, fri_vigil_schedule_code, color) VALUES ('The Transfiguration of Our Lord Jesus Christ', 3, 8, 6, 'weekday-feast', true, 'ep-only', 'friday-eve', 'gold');
+INSERT INTO fixed_feasts (name, otype_id, month, day, schedule_code, has_vigil, vigil_schedule_code, fri_vigil_schedule_code, color) VALUES ('The Transfiguration of Our Lord Jesus Christ', 1, 8, 6, 'weekday-feast', true, 'ep-only', 'friday-eve', 'gold');
 INSERT INTO fixed_feasts (name, otype_id, month, day, color) VALUES ('John Mason Neale, Priest, 1866', 4, 8, 7, 'white');
 INSERT INTO fixed_feasts (name, otype_id, month, day, color) VALUES ('Dominic, Priest and Friar, 1221', 4, 8, 8, 'white');
 INSERT INTO fixed_feasts (name, otype_id, month, day, color) VALUES ('Lawrence, Deacon, and Martyr at Rome, 258', 4, 8, 10, 'red');
@@ -560,10 +628,10 @@ INSERT INTO fixed_feasts (name, otype_id, month, day, color) VALUES ('Clare, Abb
 INSERT INTO fixed_feasts (name, otype_id, month, day, color, valid_start) VALUES ('Florence Nightingale, Nurse, Social Reformer, 1910', 4, 8, 12, 'white', '2012-01-01 00:00:00' AT TIME ZONE 'America/New_York');
 INSERT INTO fixed_feasts (name, otype_id, month, day, color) VALUES ('Jeremy Taylor, Bishop of Down, Connor, and Dromore, 1667', 4, 8, 13, 'white');
 INSERT INTO fixed_feasts (name, otype_id, month, day, color) VALUES ('Jonathan Myrick Daniels, Seminarian and Witness for Civil Rights, 1965', 4, 8, 14, 'red');
-INSERT INTO fixed_feasts (name, otype_id, month, day, schedule_code, has_vigil, vigil_schedule_code, fri_vigil_schedule_code, color, valid_end) VALUES ('The Assumption of the Blessed Virgin Mary', 4, 8, 15, 'solemn-weekday-feast', true, 'es-only', 'friday-eve', 'white', '2010-12-31 23:59:59' AT TIME ZONE 'America/New_York');
-INSERT INTO fixed_feasts (name, otype_id, month, day, schedule_code, has_vigil, vigil_schedule_code, fri_vigil_schedule_code, color, valid_start) VALUES ('The Assumption of the Blessed Virgin Mary', 4, 8, 15, 'solemn-weekday-feast', true, 'ep-only', 'solemn-friday-eve', 'gold', '2011-01-01 00:00:00' AT TIME ZONE 'America/New_York');
+INSERT INTO fixed_feasts (name, otype_id, month, day, schedule_code, has_vigil, vigil_schedule_code, fri_vigil_schedule_code, color, valid_end) VALUES ('The Assumption of the Blessed Virgin Mary', 3, 8, 15, 'solemn-weekday-feast', true, 'es-only', 'friday-eve', 'white', '2010-12-31 23:59:59' AT TIME ZONE 'America/New_York');
+INSERT INTO fixed_feasts (name, otype_id, month, day, schedule_code, has_vigil, vigil_schedule_code, fri_vigil_schedule_code, color, valid_start) VALUES ('The Assumption of the Blessed Virgin Mary', 3, 8, 15, 'solemn-weekday-feast', true, 'ep-only', 'solemn-friday-eve', 'gold', '2011-01-01 00:00:00' AT TIME ZONE 'America/New_York');
 INSERT INTO fixed_feasts (name, otype_id, month, day, color) VALUES ('Bernard, Abbot of Clairvaux, 1153', 4, 8, 20, 'white');
-INSERT INTO fixed_feasts (name, otype_id, month, day, schedule_code, has_vigil, vigil_schedule_code, fri_vigil_schedule_code, color) VALUES ('Saint Bartholomew the Apostle', 4, 8, 24, 'weekday-feast', true, 'ep-only', 'friday-eve', 'red');
+INSERT INTO fixed_feasts (name, otype_id, month, day, schedule_pattern, has_eve, eve_schedule_pattern, color) VALUES ('Saint Bartholomew the Apostle', 3, 8, 24, 'major-fixed-feast', true, 'major-fixed-feast-eve', 'red');
 INSERT INTO fixed_feasts (name, otype_id, month, day, color) VALUES ('Louis, King of France, 1270', 4, 8, 25, 'white');
 INSERT INTO fixed_feasts (name, otype_id, month, day, color, valid_start) VALUES ('Thomas Gallaudet, Priest, 1902, with Henry Winter Syle, Priest, 1890, Missioners to the Deaf', 4, 8, 27, 'white', '2012-01-01 00:00:00' AT TIME ZONE 'America/New_York');
 INSERT INTO fixed_feasts (name, otype_id, month, day, color) VALUES ('Augustine, Bishop of Hippo, 430', 4, 8, 28, 'white');
@@ -573,7 +641,7 @@ INSERT INTO fixed_feasts (name, otype_id, month, day, color) VALUES ('Aidan, Bis
 -- September
 
 INSERT INTO fixed_feasts (name, otype_id, month, day, color) VALUES ('The Martyrs of New Guinea, 1942', 4, 9, 2, 'red');
-INSERT INTO fixed_feasts (name, otype_id, month, day, schedule_code, has_vigil, vigil_schedule_code, fri_vigil_schedule_code, color) VALUES ('The Nativity of the Blessed Virgin Mary', 4, 9, 8, 'weekday-feast', true, 'ep-only', 'friday-eve', 'white');
+INSERT INTO fixed_feasts (name, otype_id, month, day, schedule_pattern, has_eve, eve_schedule_pattern, color) VALUES ('The Nativity of the Blessed Virgin Mary', 3, 9, 8, 'major-fixed-feast', true, 'major-fixed-feast-eve', 'white');
 INSERT INTO fixed_feasts (name, otype_id, month, day, color) VALUES ('Constance, Nun, and her Companions, 1878', 4, 9, 9, 'red');
 INSERT INTO fixed_feasts (name, otype_id, month, day, color, valid_start) VALUES ('Alexander Crummel, 1898', 4, 9, 10, 'white', '2010-01-01 00:00:00' AT TIME ZONE 'America/New_York');
 INSERT INTO fixed_feasts (name, otype_id, month, day, color, valid_start) VALUES ('Requiem for the Victims of September 11, 2011', 4, 9, 11, 'black', '2009-01-01 00:00:00' AT TIME ZONE 'America/New_York');
@@ -589,7 +657,7 @@ INSERT INTO fixed_feasts (name, otype_id, month, day, color, valid_start, valid_
 INSERT INTO fixed_feasts (name, otype_id, month, day, color) VALUES ('Edward Bouverie Pusey, Priest, 1882', 4, 9, 18, 'white');
 INSERT INTO fixed_feasts (name, otype_id, month, day, color) VALUES ('Theodore of Tarsus, Archbishop of Canterbury, 690', 4, 9, 19, 'white');
 INSERT INTO fixed_feasts (name, otype_id, month, day, color) VALUES ('John Coleridge Patteson, Bishop of Melanesia, and his Companions, Martyrs, 1871', 4, 9, 20, 'red');
-INSERT INTO fixed_feasts (name, otype_id, month, day, schedule_code, has_vigil, vigil_schedule_code, fri_vigil_schedule_code, color) VALUES ('Saint Matthew, Apostle and Evangelist', 3, 9, 21, 'weekday-feast', true, 'ep-only', 'friday-eve', 'red');
+INSERT INTO fixed_feasts (name, otype_id, month, day, schedule_pattern, has_eve, eve_schedule_pattern, color) VALUES ('Saint Matthew, Apostle and Evangelist', 3, 9, 21, 'major-fixed-feast', true, 'major-fixed-feast-eve', 'red');
 INSERT INTO fixed_feasts (name, otype_id, month, day, color) VALUES ('Sergius, Abbot of Holy Trinity, Moscow, 1392', 4, 9, 25, 'white');
 INSERT INTO fixed_feasts (name, otype_id, month, day, color) VALUES ('Lancelot Andrewes, Bishop of Winchester, 1626', 4, 9, 26, 'white');
 INSERT INTO fixed_feasts (name, otype_id, month, day, schedule_code, has_vigil, vigil_schedule_code, fri_vigil_schedule_code, color) VALUES ('Saint Michael and All Angels', 2, 9, 29, 'weekday-feast', true, 'ep-only', 'friday-eve', 'white');
@@ -608,11 +676,11 @@ INSERT INTO fixed_feasts (name, otype_id, month, day, color) VALUES ('Samuel Isa
 INSERT INTO fixed_feasts (name, otype_id, month, day, color) VALUES ('Teresa of Avila, Nun, 1582', 4, 10, 5, 'white');
 INSERT INTO fixed_feasts (name, otype_id, month, day, color, valid_start) VALUES ('Hugh Latimer and Nicholas Ridley, Bishops, 1555', 4, 10, 16, 'red', '2012-01-01 00:00:00' AT TIME ZONE 'America/New_York');
 INSERT INTO fixed_feasts (name, otype_id, month, day, color) VALUES ('Ignatius, Bishop of Antioch, and Martyr, c. 115', 4, 10, 17, 'red');
-INSERT INTO fixed_feasts (name, otype_id, month, day, schedule_code, has_vigil, vigil_schedule_code, fri_vigil_schedule_code, color) VALUES ('Saint Luke the Evangelist', 4, 10, 18, 'weekday-feast', true, 'ep-only', 'friday-eve', 'red');
+INSERT INTO fixed_feasts (name, otype_id, month, day, schedule_pattern, has_eve, eve_schedule_pattern, color) VALUES ('Saint Luke the Evangelist', 3, 10, 18, 'major-fixed-feast', true, 'major-fixed-feast-eve', 'red');
 INSERT INTO fixed_feasts (name, otype_id, month, day, color) VALUES ('Henry Martyn, Priest and Missionary to India and Persia, 1812', 4, 10, 19, 'white');
-INSERT INTO fixed_feasts (name, otype_id, month, day, schedule_code, has_vigil, vigil_schedule_code, fri_vigil_schedule_code, color) VALUES ('Saint James of Jerusalem, Brother of Our Lord Jesus Christ, and Martyr, c. 62', 4, 10, 23, 'weekday-feast', true, 'ep-only', 'friday-eve', 'red');
+INSERT INTO fixed_feasts (name, otype_id, month, day, schedule_pattern, has_eve, eve_schedule_pattern, color) VALUES ('Saint James of Jerusalem, Brother of Our Lord Jesus Christ, and Martyr, c. 62', 4, 10, 23, 'major-fixed-feast', true, 'major-fixed-feast-eve', 'red');
 INSERT INTO fixed_feasts (name, otype_id, month, day, color) VALUES ('Alfred the Great, King of the West Saxons, 899', 4, 10, 26, 'white');
-INSERT INTO fixed_feasts (name, otype_id, month, day, schedule_code, has_vigil, vigil_schedule_code, fri_vigil_schedule_code, color) VALUES ('Saint Simon and Saint Jude, Apostles', 4, 10, 28, 'weekday-feast', true, 'ep-only', 'friday-eve', 'red');
+INSERT INTO fixed_feasts (name, otype_id, month, day, schedule_pattern, has_eve, eve_schedule_pattern, color) VALUES ('Saint Simon and Saint Jude, Apostles', 3, 10, 28, 'major-fixed-feast', true, 'major-fixed-feast-eve', 'red');
 INSERT INTO fixed_feasts (name, otype_id, month, day, color) VALUES ('James Hannington, Bishop of Eastern Equatorial Africa, and his Companions, Martyrs, 1885', 4, 10, 29, 'red');
 
 -- TODO: November

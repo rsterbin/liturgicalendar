@@ -164,7 +164,95 @@ INSERT INTO schedule_services (schedule_id, service_id) VALUES (21, 5); -- requi
 INSERT INTO schedule_services (schedule_id, service_id) VALUES (21, 28); -- requiem-weekday
 
 --
--- Define precedence and seasons
+-- Define service patterns for seasons, fixed feasts, and moveable feasts that vary by day of the week
+--
+CREATE TABLE service_patterns (
+    pattern_id serial,
+    name text NOT NULL,
+    code text NOT NULL,
+    schedule_code_mon text,
+    schedule_code_mon_with_vigil text,
+    schedule_code_mon_vigil text,
+    schedule_code_tue text,
+    schedule_code_tue_with_vigil text,
+    schedule_code_tue_vigil text,
+    schedule_code_wed text,
+    schedule_code_wed_with_vigil text,
+    schedule_code_wed_vigil text,
+    schedule_code_thu text,
+    schedule_code_thu_with_vigil text,
+    schedule_code_thu_vigil text,
+    schedule_code_fri text,
+    schedule_code_fri_with_vigil text,
+    schedule_code_fri_vigil text,
+    schedule_code_sat text,
+    schedule_code_sat_with_vigil text,
+    schedule_code_sat_vigil text,
+    schedule_code_sun text,
+    schedule_code_sun_with_vigil text,
+    schedule_code_sun_vigil text,
+    valid_start timestamp with time zone,
+    valid_end timestamp with time zone,
+    CONSTRAINT service_patterns_pk PRIMARY KEY (pattern_id)
+);
+
+
+INSERT INTO service_patterns (name, code,
+        schedule_code_mon, schedule_code_mon_with_vigil, schedule_code_mon_vigil,
+        schedule_code_tue, schedule_code_tue_with_vigil, schedule_code_tue_vigil,
+        schedule_code_wed, schedule_code_wed_with_vigil, schedule_code_wed_vigil,
+        schedule_code_thu, schedule_code_thu_with_vigil, schedule_code_thu_vigil,
+        schedule_code_fri, schedule_code_fri_with_vigil, schedule_code_fri_vigil,
+        schedule_code_sat, schedule_code_sat_with_vigil, schedule_code_sat_vigil,
+        schedule_code_sun, schedule_code_sun_with_vigil, schedule_code_sun_vigil
+    ) VALUES ('Standard', 'standard'
+        'weekday', 'weekday-vigil', null,
+        'weekday', 'weekday-vigil', null,
+        'weekday', 'weekday-vigil', null,
+        'thursday', 'thursday-vigil', null,
+        'weekday', 'weekday-vigil', null,
+        'saturday', 'saturday', 'vigil',
+        'sunday', null, null
+    );
+
+INSERT INTO service_patterns (name, code,
+        schedule_code_mon, schedule_code_mon_with_vigil, schedule_code_mon_vigil,
+        schedule_code_tue, schedule_code_tue_with_vigil, schedule_code_tue_vigil,
+        schedule_code_wed, schedule_code_wed_with_vigil, schedule_code_wed_vigil,
+        schedule_code_thu, schedule_code_thu_with_vigil, schedule_code_thu_vigil,
+        schedule_code_fri, schedule_code_fri_with_vigil, schedule_code_fri_vigil,
+        schedule_code_sat, schedule_code_sat_with_vigil, schedule_code_sat_vigil,
+        schedule_code_sun, schedule_code_sun_with_vigil, schedule_code_sun_vigil
+    ) VALUES ('Standard Without Confessions', 'standard-no-confessions'
+        'weekday', 'weekday-vigil', null,
+        'weekday', 'weekday-vigil', null,
+        'weekday', 'weekday-vigil', null,
+        'thursday', 'thursday-vigil', null,
+        'weekday', 'weekday-vigil', null,
+        'saturday-no-confessions', 'saturday-no-confessions', 'vigil',
+        'sunday', null, null
+    );
+
+INSERT INTO service_patterns (name, code,
+        schedule_code_mon, schedule_code_mon_with_vigil, schedule_code_mon_vigil,
+        schedule_code_tue, schedule_code_tue_with_vigil, schedule_code_tue_vigil,
+        schedule_code_wed, schedule_code_wed_with_vigil, schedule_code_wed_vigil,
+        schedule_code_thu, schedule_code_thu_with_vigil, schedule_code_thu_vigil,
+        schedule_code_fri, schedule_code_fri_with_vigil, schedule_code_fri_vigil,
+        schedule_code_sat, schedule_code_sat_with_vigil, schedule_code_sat_vigil,
+        schedule_code_sun, schedule_code_sun_with_vigil, schedule_code_sun_vigil
+    ) VALUES ('Standard With Stations', 'standard-stations'
+        'weekday', 'weekday-vigil', null,
+        'weekday', 'weekday-vigil', null,
+        'weekday', 'weekday-vigil', null,
+        'thursday', 'thursday-vigil', null,
+        'lent-friday', 'weekday-vigil', null,
+        'saturday', 'saturday', 'vigil',
+        'sunday', null, null
+    );
+
+--
+-- Define precedence
 --
 
 CREATE TABLE observance_types (
@@ -177,6 +265,11 @@ INSERT INTO observance_types (name, precedence) VALUES ('Principal Feast or Holy
 INSERT INTO observance_types (name, precedence) VALUES ('Major Feast (can be celebrated on Sunday)', 20); -- 2
 INSERT INTO observance_types (name, precedence) VALUES ('Feast (transfers from Sunday)', 40); -- 3
 INSERT INTO observance_types (name, precedence) VALUES ('Commemoration', 50); -- 4
+INSERT INTO observance_types (name, precedence) VALUES ('Major Feast (celebrated on the nearest Sunday)', 30); -- 5
+
+--
+-- Define liturigal_seasons
+--
 
 CREATE TABLE liturigal_seasons (
     season_id serial,
@@ -187,19 +280,15 @@ CREATE TABLE liturigal_seasons (
     weekday_precedence integer NOT NULL,
     has_rose_sunday boolean NOT NULL,
     continue_counting boolean NOT NULL,
-    schedule_code_mon text NOT NULL,
-    schedule_code_mon_with_vigil text NOT NULL,
-    schedule_code_tue text NOT NULL,
-    schedule_code_tue_with_vigil text NOT NULL,
-    schedule_code_wed text NOT NULL,
-    schedule_code_wed_with_vigil text NOT NULL,
-    schedule_code_thu text NOT NULL,
-    schedule_code_thu_with_vigil text NOT NULL,
-    schedule_code_fri text NOT NULL,
-    schedule_code_fri_with_vigil text NOT NULL,
-    schedule_code_sat text NOT NULL,
-    schedule_code_sat_vigil text NOT NULL,
-    schedule_code_sun text NOT NULL,
+    schedule_pattern text NOT NULL,
+    name_pattern_mon text NOT NULL,
+    name_pattern_tue text NOT NULL,
+    name_pattern_wed text NOT NULL,
+    name_pattern_thu text NOT NULL,
+    name_pattern_fri text NOT NULL,
+    name_pattern_sat text NOT NULL,
+    name_pattern_sat_vigil text NOT NULL,
+    name_pattern_sun text NOT NULL,
     default_note_mon text,
     default_note_tue text,
     default_note_wed text,
@@ -210,124 +299,124 @@ CREATE TABLE liturigal_seasons (
     CONSTRAINT liturigal_seasons_pk PRIMARY KEY (season_id)
 );
 
-INSERT INTO liturigal_seasons (name, code, color, sort_order, weekday_precedence, has_rose_sunday, continue_counting,
-        schedule_code_mon, schedule_code_mon_with_vigil, schedule_code_tue, schedule_code_tue_with_vigil,
-        schedule_code_wed, schedule_code_wed_with_vigil, schedule_code_thu, schedule_code_thu_with_vigil,
-        schedule_code_fri, schedule_code_fri_with_vigil, schedule_code_sat, schedule_code_sat_vigil, schedule_code_sun,
-        default_note_mon, default_note_tue, default_note_wed, default_note_thu, default_note_fri, default_note_sat, default_note_sun
-    ) VALUES ('Advent', 'advent', 'purple', 0, 60, true, false,
-        'weekday', 'weekday-vigil', 'weekday', 'weekday-vigil',
-        'weekday', 'weekday-vigil', 'thursday', 'thursday-vigil',
-        'weekday', 'weekday-vigil', 'saturday', 'saturday', 'sunday',
-        NULL, NULL, NULL, NULL, 'Friday Abstinence', NULL, NULL
+INSERT INTO liturigal_seasons (name, code, color, sort_order, weekday_precedence, has_rose_sunday, continue_counting, schedule_pattern,
+        name_pattern_mon, name_pattern_tue, name_pattern_wed, name_pattern_thu,
+        name_pattern_fri, name_pattern_sat, name_pattern_sat_vigil, name_pattern_sun,
+        default_note_mon, default_note_tue, default_note_wed, default_note_thu,
+        default_note_fri, default_note_sat, default_note_sun
+    ) VALUES ('Advent', 'advent', 'purple', 0, 60, true, false, 'standard',
+        'Weekday of Advent', 'Weekday of Advent', 'Weekday of Advent', 'Weekday of Advent',
+        'Weekday of Advent', 'Weekday of Advent', 'Eve of the %s Sunday of Advent', 'The %s Sunday of Advent',
+        NULL, NULL, NULL, NULL,
+        'Friday Abstinence', NULL, NULL
     );
 
-INSERT INTO liturigal_seasons (name, code, color, sort_order, weekday_precedence, has_rose_sunday, continue_counting,
-        schedule_code_mon, schedule_code_mon_with_vigil, schedule_code_tue, schedule_code_tue_with_vigil,
-        schedule_code_wed, schedule_code_wed_with_vigil, schedule_code_thu, schedule_code_thu_with_vigil,
-        schedule_code_fri, schedule_code_fri_with_vigil, schedule_code_sat, schedule_code_sat_vigil, schedule_code_sun,
-        default_note_mon, default_note_tue, default_note_wed, default_note_thu, default_note_fri, default_note_sat, default_note_sun
-    ) VALUES ('Christmas', 'christmas', 'white', 1, 45, false, false,
-        'weekday', 'weekday-vigil', 'weekday', 'weekday-vigil',
-        'weekday', 'weekday-vigil', 'thursday', 'thursday-vigil',
-        'weekday', 'weekday-vigil', 'saturday-no-confessions', 'saturday-no-confessions', 'sunday',
-        NULL, NULL, NULL, NULL, 'Friday Abstinence is not observed during the Christmas Season.', 'Confessions are not heard, except by appointment, on the Saturdays of the Christmas Season.', NULL
+INSERT INTO liturigal_seasons (name, code, color, sort_order, weekday_precedence, has_rose_sunday, continue_counting, schedule_pattern,
+        name_pattern_mon, name_pattern_tue, name_pattern_wed, name_pattern_thu,
+        name_pattern_fri, name_pattern_sat, name_pattern_sat_vigil, name_pattern_sun,
+        default_note_mon, default_note_tue, default_note_wed, default_note_thu,
+        default_note_fri, default_note_sat, default_note_sun
+    ) VALUES ('Christmas', 'christmas', 'white', 1, 45, false, false, 'standard-no-confessions',
+        'Weekday of Christmas', 'Weekday of Christmas', 'Weekday of Christmas', 'Weekday of Christmas',
+        'Weekday of Christmas', 'Weekday of Christmas', 'Eve of the %s Sunday after Christmas Day', 'The %s Sunday after Christmas Day',
+        NULL, NULL, NULL, NULL,
+        'Friday Abstinence is not observed during the Christmas Season.', 'Confessions are not heard, except by appointment, on the Saturdays of the Christmas Season.', NULL
     );
 
-INSERT INTO liturigal_seasons (name, code, color, sort_order, weekday_precedence, has_rose_sunday, continue_counting,
-        schedule_code_mon, schedule_code_mon_with_vigil, schedule_code_tue, schedule_code_tue_with_vigil,
-        schedule_code_wed, schedule_code_wed_with_vigil, schedule_code_thu, schedule_code_thu_with_vigil,
-        schedule_code_fri, schedule_code_fri_with_vigil, schedule_code_sat, schedule_code_sat_vigil, schedule_code_sun,
-        default_note_mon, default_note_tue, default_note_wed, default_note_thu, default_note_fri, default_note_sat, default_note_sun
-    ) VALUES ('Ordinary Time After Epiphany', 'after-epiphany', 'green', 2, 60, false, false,
-        'weekday', 'weekday-vigil', 'weekday', 'weekday-vigil',
-        'weekday', 'weekday-vigil', 'thursday', 'thursday-vigil',
-        'weekday', 'weekday-vigil', 'saturday', 'saturday', 'sunday',
-        NULL, NULL, NULL, NULL, 'Friday Abstinence', NULL, NULL
+INSERT INTO liturigal_seasons (name, code, color, sort_order, weekday_precedence, has_rose_sunday, continue_counting, schedule_pattern,
+        name_pattern_mon, name_pattern_tue, name_pattern_wed, name_pattern_thu,
+        name_pattern_fri, name_pattern_sat, name_pattern_sat_vigil, name_pattern_sun,
+        default_note_mon, default_note_tue, default_note_wed, default_note_thu,
+        default_note_fri, default_note_sat, default_note_sun
+    ) VALUES ('Ordinary Time After Epiphany', 'after-epiphany', 'green', 2, 60, false, false, 'standard',
+        'Weekday', 'Weekday', 'Weekday', 'Weekday',
+        'Weekday', 'Weekday', 'Eve of the %s Sunday after the Epiphany', 'The %s Sunday after the Epiphany',
+        NULL, NULL, NULL, NULL,
+        'Friday Abstinence', NULL, NULL
     );
 
-INSERT INTO liturigal_seasons (name, code, color, sort_order, weekday_precedence, has_rose_sunday, continue_counting,
-        schedule_code_mon, schedule_code_mon_with_vigil, schedule_code_tue, schedule_code_tue_with_vigil,
-        schedule_code_wed, schedule_code_wed_with_vigil, schedule_code_thu, schedule_code_thu_with_vigil,
-        schedule_code_fri, schedule_code_fri_with_vigil, schedule_code_sat, schedule_code_sat_vigil, schedule_code_sun,
-        default_note_mon, default_note_tue, default_note_wed, default_note_thu, default_note_fri, default_note_sat, default_note_sun
-    ) VALUES ('Lent', 'lent', 'purple', 3, 45, true, false,
-        'weekday', 'weekday-vigil', 'weekday', 'weekday-vigil',
-        'weekday', 'weekday-vigil', 'thursday', 'thursday-vigil',
-        'lent-friday', 'weekday-vigil', 'saturday', 'saturday', 'sunday',
-        'Abstinence', 'Abstinence', 'Abstinence', 'Abstinence', 'Lenten Friday Abstinence', 'Abstinence', 'Abstinence is not observed on Sundays in Lent.'
+INSERT INTO liturigal_seasons (name, code, color, sort_order, weekday_precedence, has_rose_sunday, continue_counting, schedule_pattern,
+        name_pattern_mon, name_pattern_tue, name_pattern_wed, name_pattern_thu,
+        name_pattern_fri, name_pattern_sat, name_pattern_sat_vigil, name_pattern_sun,
+        default_note_mon, default_note_tue, default_note_wed, default_note_thu,
+        default_note_fri, default_note_sat, default_note_sun
+    ) VALUES ('Lent', 'lent', 'purple', 3, 45, true, false, 'standard-stations',
+        'Weekday of Lent', 'Weekday of Lent', 'Weekday of Lent', 'Weekday of Lent',
+        'Weekday of Lent', 'Weekday of Lent', 'Eve of the %s Sunday in Lent', 'The %s Sunday in Lent',
+        'Abstinence', 'Abstinence', 'Abstinence', 'Abstinence',
+        'Lenten Friday Abstinence', 'Abstinence', 'Abstinence is not observed on Sundays in Lent.'
     );
 
-INSERT INTO liturigal_seasons (name, code, color, sort_order, weekday_precedence, has_rose_sunday, continue_counting,
-        schedule_code_mon, schedule_code_mon_with_vigil, schedule_code_tue, schedule_code_tue_with_vigil,
-        schedule_code_wed, schedule_code_wed_with_vigil, schedule_code_thu, schedule_code_thu_with_vigil,
-        schedule_code_fri, schedule_code_fri_with_vigil, schedule_code_sat, schedule_code_sat_vigil, schedule_code_sun,
-        default_note_mon, default_note_tue, default_note_wed, default_note_thu, default_note_fri, default_note_sat, default_note_sun
-    ) VALUES ('Holy Week', 'holy-week', 'red', 4, 15, false, false,
-        'weekday', 'weekday-vigil', 'weekday', 'weekday-vigil',
-        'weekday', 'weekday-vigil', 'thursday', 'thursday-vigil',
-        'weekday', 'weekday-vigil', 'saturday', 'saturday', 'sunday',
-        'Abstinence', 'Abstinence', 'Abstinence', 'Abstinence', 'Fast & Abstinence', 'Abstinence', 'Abstinence is not observed on Palm Sunday.'
+INSERT INTO liturigal_seasons (name, code, color, sort_order, weekday_precedence, has_rose_sunday, continue_counting, schedule_pattern,
+        name_pattern_mon, name_pattern_tue, name_pattern_wed, name_pattern_thu,
+        name_pattern_fri, name_pattern_sat, name_pattern_sat_vigil, name_pattern_sun,
+        default_note_mon, default_note_tue, default_note_wed, default_note_thu,
+        default_note_fri, default_note_sat, default_note_sun
+    ) VALUES ('Holy Week', 'holy-week', 'red', 4, 15, false, false, 'standard',
+        'Monday of Holy Week', 'Tuesday of Holy Week', 'Wednesday of Holy Week', 'Thursday of Holy Week',
+        'Good Friday', 'Holy Saturday', 'Eve of the Sunday of the Passion: Palm Sunday', 'The Sunday of the Passion: Palm Sunday',
+        'Abstinence', 'Abstinence', 'Abstinence', 'Abstinence',
+        'Fast & Abstinence', 'Abstinence', 'Abstinence is not observed on Palm Sunday.'
     );
 
-INSERT INTO liturigal_seasons (name, code, color, sort_order, weekday_precedence, has_rose_sunday, continue_counting,
-        schedule_code_mon, schedule_code_mon_with_vigil, schedule_code_tue, schedule_code_tue_with_vigil,
-        schedule_code_wed, schedule_code_wed_with_vigil, schedule_code_thu, schedule_code_thu_with_vigil,
-        schedule_code_fri, schedule_code_fri_with_vigil, schedule_code_sat, schedule_code_sat_vigil, schedule_code_sun,
-        default_note_mon, default_note_tue, default_note_wed, default_note_thu, default_note_fri, default_note_sat, default_note_sun
-    ) VALUES ('Easter Week', 'easter-week', 'gold', 5, 15, false, false,
-        'weekday', 'weekday-vigil', 'weekday', 'weekday-vigil',
-        'weekday', 'weekday-vigil', 'thursday', 'thursday-vigil',
-        'weekday', 'weekday-vigil', 'saturday', 'saturday', 'sunday',
-        NULL, NULL, NULL, NULL, 'Friday abstinence is not observed in Eastertide.', 'Confessions are heard only by appointment during Easter Week.', NULL
+INSERT INTO liturigal_seasons (name, code, color, sort_order, weekday_precedence, has_rose_sunday, continue_counting, schedule_pattern,
+        name_pattern_mon, name_pattern_tue, name_pattern_wed, name_pattern_thu,
+        name_pattern_fri, name_pattern_sat, name_pattern_sat_vigil, name_pattern_sun,
+        default_note_mon, default_note_tue, default_note_wed, default_note_thu,
+        default_note_fri, default_note_sat, default_note_sun
+    ) VALUES ('Easter Week', 'easter-week', 'gold', 5, 15, false, false, 'standard-no-confessions',
+        'Monday in Easter Week', 'Tuesday in Easter Week', 'Wednesday in Easter Week', 'Thursday in Easter Week',
+        'Friday in Easter Week', 'Saturday in Easter Week', 'Eve of the %s Sunday of Easter', 'The %s Sunday of Easter',
+        NULL, NULL, NULL, NULL,
+        'Friday abstinence is not observed in Eastertide.', 'Confessions are heard only by appointment during Easter Week.', NULL
     );
 
-INSERT INTO liturigal_seasons (name, code, color, sort_order, weekday_precedence, has_rose_sunday, continue_counting,
-        schedule_code_mon, schedule_code_mon_with_vigil, schedule_code_tue, schedule_code_tue_with_vigil,
-        schedule_code_wed, schedule_code_wed_with_vigil, schedule_code_thu, schedule_code_thu_with_vigil,
-        schedule_code_fri, schedule_code_fri_with_vigil, schedule_code_sat, schedule_code_sat_vigil, schedule_code_sun,
-        default_note_mon, default_note_tue, default_note_wed, default_note_thu, default_note_fri, default_note_sat, default_note_sun
-    ) VALUES ('Easter', 'easter', 'white', 6, 60, false, false,
-        'weekday', 'weekday-vigil', 'weekday', 'weekday-vigil',
-        'weekday', 'weekday-vigil', 'thursday', 'thursday-vigil',
-        'weekday', 'weekday-vigil', 'saturday', 'saturday', 'sunday',
-        NULL, NULL, NULL, NULL, 'Friday abstinence is not observed in Eastertide.', 'Confessions are heard only by appointment during Easter Week.', NULL
+INSERT INTO liturigal_seasons (name, code, color, sort_order, weekday_precedence, has_rose_sunday, continue_counting, schedule_pattern,
+        name_pattern_mon, name_pattern_tue, name_pattern_wed, name_pattern_thu,
+        name_pattern_fri, name_pattern_sat, name_pattern_sat_vigil, name_pattern_sun,
+        default_note_mon, default_note_tue, default_note_wed, default_note_thu,
+        default_note_fri, default_note_sat, default_note_sun
+    ) VALUES ('Easter', 'easter', 'white', 6, 60, false, true, 'standard',
+        'Weekday of Easter', 'Weekday of Easter', 'Weekday of Easter', 'Weekday of Easter',
+        'Weekday of Easter', 'Weekday of Easter', 'Eve of the %s Sunday of Easter', 'The %s Sunday of Easter',
+        NULL, NULL, NULL, NULL,
+        'Friday abstinence is not observed in Eastertide.', NULL, NULL
     );
 
-INSERT INTO liturigal_seasons (name, code, color, sort_order, weekday_precedence, has_rose_sunday, continue_counting,
-        schedule_code_mon, schedule_code_mon_with_vigil, schedule_code_tue, schedule_code_tue_with_vigil,
-        schedule_code_wed, schedule_code_wed_with_vigil, schedule_code_thu, schedule_code_thu_with_vigil,
-        schedule_code_fri, schedule_code_fri_with_vigil, schedule_code_sat, schedule_code_sat_vigil, schedule_code_sun,
-        default_note_mon, default_note_tue, default_note_wed, default_note_thu, default_note_fri, default_note_sat, default_note_sun
-    ) VALUES ('Ordinary Time After Pentecost (Spring)', 'pentecost-spring', 'green', 7, 60, false, false,
-        'weekday', 'weekday-vigil', 'weekday', 'weekday-vigil',
-        'weekday', 'weekday-vigil', 'thursday', 'thursday-vigil',
-        'weekday', 'weekday-vigil', 'saturday', 'saturday', 'sunday',
-        NULL, NULL, NULL, NULL, 'Friday Abstinence', NULL, NULL
+INSERT INTO liturigal_seasons (name, code, color, sort_order, weekday_precedence, has_rose_sunday, continue_counting, schedule_pattern,
+        name_pattern_mon, name_pattern_tue, name_pattern_wed, name_pattern_thu,
+        name_pattern_fri, name_pattern_sat, name_pattern_sat_vigil, name_pattern_sun,
+        default_note_mon, default_note_tue, default_note_wed, default_note_thu,
+        default_note_fri, default_note_sat, default_note_sun
+    ) VALUES ('Ordinary Time After Pentecost (Spring)', 'pentecost-spring', 'green', 7, 60, false, false, 'standard',
+        'Weekday', 'Weekday', 'Weekday', 'Weekday',
+        'Weekday', 'Weekday', 'Eve of the %s Sunday after Pentecost', 'The %s Sunday after Pentecost',
+        NULL, NULL, NULL, NULL,
+        'Friday Abstinence', NULL, NULL
     );
 
-INSERT INTO liturigal_seasons (name, code, color, sort_order, weekday_precedence, has_rose_sunday, continue_counting,
-        schedule_code_mon, schedule_code_mon_with_vigil, schedule_code_tue, schedule_code_tue_with_vigil,
-        schedule_code_wed, schedule_code_wed_with_vigil, schedule_code_thu, schedule_code_thu_with_vigil,
-        schedule_code_fri, schedule_code_fri_with_vigil, schedule_code_sat, schedule_code_sat_vigil, schedule_code_sun,
-        default_note_mon, default_note_tue, default_note_wed, default_note_thu, default_note_fri, default_note_sat, default_note_sun
-    ) VALUES ('Ordinary Time After Pentecost (Summer)', 'pentecost-summer', 'green', 8, 60, false, true,
-        'weekday', 'weekday-vigil', 'weekday', 'weekday-vigil',
-        'weekday', 'weekday-vigil', 'thursday', 'thursday-vigil',
-        'weekday', 'weekday-vigil', 'saturday', 'saturday', 'summer-sunday',
-        NULL, NULL, NULL, NULL, 'Friday Abstinence', NULL, NULL
+INSERT INTO liturigal_seasons (name, code, color, sort_order, weekday_precedence, has_rose_sunday, continue_counting, schedule_pattern,
+        name_pattern_mon, name_pattern_tue, name_pattern_wed, name_pattern_thu,
+        name_pattern_fri, name_pattern_sat, name_pattern_sat_vigil, name_pattern_sun,
+        default_note_mon, default_note_tue, default_note_wed, default_note_thu,
+        default_note_fri, default_note_sat, default_note_sun
+    ) VALUES ('Ordinary Time After Pentecost (Summer)', 'pentecost-summer', 'green', 8, 60, false, true, 'standard-summer',
+        'Weekday', 'Weekday', 'Weekday', 'Weekday',
+        'Weekday', 'Weekday', 'Eve of the %s Sunday after Pentecost', 'The %s Sunday after Pentecost',
+        NULL, NULL, NULL, NULL,
+        'Friday Abstinence', NULL, NULL
     );
 
-INSERT INTO liturigal_seasons (name, code, color, sort_order, weekday_precedence, has_rose_sunday, continue_counting,
-        schedule_code_mon, schedule_code_mon_with_vigil, schedule_code_tue, schedule_code_tue_with_vigil,
-        schedule_code_wed, schedule_code_wed_with_vigil, schedule_code_thu, schedule_code_thu_with_vigil,
-        schedule_code_fri, schedule_code_fri_with_vigil, schedule_code_sat, schedule_code_sat_vigil, schedule_code_sun,
-        default_note_mon, default_note_tue, default_note_wed, default_note_thu, default_note_fri, default_note_sat, default_note_sun
-    ) VALUES ('Ordinary Time After Pentecost (Fall)', 'pentecost-fall', 'green', 9, 60, false, true,
-        'weekday', 'weekday-vigil', 'weekday', 'weekday-vigil',
-        'weekday', 'weekday-vigil', 'thursday', 'thursday-vigil',
-        'weekday', 'weekday-vigil', 'saturday', 'saturday', 'sunday',
-        NULL, NULL, NULL, NULL, 'Friday Abstinence', NULL, NULL
+INSERT INTO liturigal_seasons (name, code, color, sort_order, weekday_precedence, has_rose_sunday, continue_counting, schedule_pattern,
+        name_pattern_mon, name_pattern_tue, name_pattern_wed, name_pattern_thu,
+        name_pattern_fri, name_pattern_sat, name_pattern_sat_vigil, name_pattern_sun,
+        default_note_mon, default_note_tue, default_note_wed, default_note_thu,
+        default_note_fri, default_note_sat, default_note_sun
+    ) VALUES ('Ordinary Time After Pentecost (Fall)', 'pentecost-fall', 'green', 9, 60, false, true, 'standard',
+        'Weekday', 'Weekday', 'Weekday', 'Weekday',
+        'Weekday', 'Weekday', 'Eve of the %s Sunday after Pentecost', 'The %s Sunday after Pentecost',
+        NULL, NULL, NULL, NULL,
+        'Friday Abstinence', NULL, NULL
     );
 
 --
@@ -506,8 +595,62 @@ INSERT INTO fixed_feasts (name, otype_id, month, day, color) VALUES ('Lancelot A
 INSERT INTO fixed_feasts (name, otype_id, month, day, schedule_code, has_vigil, vigil_schedule_code, fri_vigil_schedule_code, color) VALUES ('Saint Michael and All Angels', 2, 9, 29, 'weekday-feast', true, 'ep-only', 'friday-eve', 'white');
 INSERT INTO fixed_feasts (name, otype_id, month, day, color) VALUES ('Jerome, Priest, and Monk of Bethlehem, 420', 4, 9, 30, 'white');
 
--- TODO: October
+-- October
+
+INSERT INTO fixed_feasts (name, otype_id, month, day, color) VALUES ('Remigius, Bishop of Rheims, c. 530', 4, 10, 1, 'white');
+INSERT INTO fixed_feasts (name, otype_id, month, day, color, valid_end) VALUES ('Dedication of the Church', 5, 10, 3, 'white', '2005-12-31 23:59:59' AT TIME ZONE 'America/New_York');
+INSERT INTO fixed_feasts (name, otype_id, month, day, color) VALUES ('Francis of Assisi, Friar, 1226', 4, 10, 4, 'white');
+INSERT INTO fixed_feasts (name, otype_id, month, day, color, valid_start) VALUES ('William Tyndale, Priest, 1536', 4, 10, 6, 'red', '2010-01-01 00:00:00' AT TIME ZONE 'America/New_York');
+INSERT INTO fixed_feasts (name, otype_id, month, day, color, valid_end) VALUES ('William Tyndale, Priest, 1536', 4, 10, 6, 'white', '2009-12-31 23:59:59' AT TIME ZONE 'America/New_York');
+INSERT INTO fixed_feasts (name, otype_id, month, day, color) VALUES ('Robert Grosseteste, Bishop of Lincoln, 1253', 4, 10, 9, 'white');
+INSERT INTO fixed_feasts (name, otype_id, month, day, color, valid_start) VALUES ('Philip, Deacon and Evangelist', 4, 10, 11, 'white', '2005-01-01 00:00:00' AT TIME ZONE 'America/New_York');
+INSERT INTO fixed_feasts (name, otype_id, month, day, color) VALUES ('Samuel Isaac Joseph Schereschewsky, Bishop of Shanghai, 1906', 4, 10, 14, 'white');
+INSERT INTO fixed_feasts (name, otype_id, month, day, color) VALUES ('Teresa of Avila, Nun, 1582', 4, 10, 5, 'white');
+INSERT INTO fixed_feasts (name, otype_id, month, day, color, valid_start) VALUES ('Hugh Latimer and Nicholas Ridley, Bishops, 1555', 4, 10, 16, 'red', '2012-01-01 00:00:00' AT TIME ZONE 'America/New_York');
+INSERT INTO fixed_feasts (name, otype_id, month, day, color) VALUES ('Ignatius, Bishop of Antioch, and Martyr, c. 115', 4, 10, 17, 'red');
+INSERT INTO fixed_feasts (name, otype_id, month, day, schedule_code, has_vigil, vigil_schedule_code, fri_vigil_schedule_code, color) VALUES ('Saint Luke the Evangelist', 4, 10, 18, 'weekday-feast', true, 'ep-only', 'friday-eve', 'red');
+INSERT INTO fixed_feasts (name, otype_id, month, day, color) VALUES ('Henry Martyn, Priest and Missionary to India and Persia, 1812', 4, 10, 19, 'white');
+INSERT INTO fixed_feasts (name, otype_id, month, day, schedule_code, has_vigil, vigil_schedule_code, fri_vigil_schedule_code, color) VALUES ('Saint James of Jerusalem, Brother of Our Lord Jesus Christ, and Martyr, c. 62', 4, 10, 23, 'weekday-feast', true, 'ep-only', 'friday-eve', 'red');
+INSERT INTO fixed_feasts (name, otype_id, month, day, color) VALUES ('Alfred the Great, King of the West Saxons, 899', 4, 10, 26, 'white');
+INSERT INTO fixed_feasts (name, otype_id, month, day, schedule_code, has_vigil, vigil_schedule_code, fri_vigil_schedule_code, color) VALUES ('Saint Simon and Saint Jude, Apostles', 4, 10, 28, 'weekday-feast', true, 'ep-only', 'friday-eve', 'red');
+INSERT INTO fixed_feasts (name, otype_id, month, day, color) VALUES ('James Hannington, Bishop of Eastern Equatorial Africa, and his Companions, Martyrs, 1885', 4, 10, 29, 'red');
+
 -- TODO: November
+
+INSERT INTO fixed_feasts (name, otype_id, month, day, schedule_code, has_vigil, vigil_schedule_code, fri_vigil_schedule_code, color, valid_end) VALUES ('All Saints', 1, 11, 1, 'solemn-weekday-feast', true, 'es-only', 'solemn-friday-eve', 'white', '2009-12-31 23:59:59' AT TIME ZONE 'America/New_York');
+INSERT INTO fixed_feasts (name, otype_id, month, day, schedule_code, has_vigil, vigil_schedule_code, fri_vigil_schedule_code, color, valid_start) VALUES ('All Saints', 1, 11, 1, 'solemn-weekday-feast', true, 'es-only', 'solemn-friday-eve', 'gold', '2010-01-01 00:00:00' AT TIME ZONE 'America/New_York');
+INSERT INTO fixed_feasts (name, otype_id, month, day, schedule_code, color) VALUES ('All Souls Day', 3, 11, 2, 'black');
+
+3 Richard Hooker, Priest, 1600
+4 
+5 
+6 William Temple, Archbishop of Canterbury, 1944
+7 Willibrord, Archbishop of Utrecht, Missionary to Frisia, 739
+8 (alternative date for James Theodore Holly: see March 13)
+9 
+10 Leo the Great, Bishop of Rome, 461
+11 Martin, Bishop of Tours, 397
+12 Charles Simeon, Priest, 1836
+13 
+14 Samuel Seabury, First American Bishop, 1796
+15 [Francis Asbury, 1816, and George Whitefield, 1770, Evangelists]
+16 Margaret, Queen of Scotland, 1093
+17 Hugh, 1200, and Robert Grosseteste, 1253, Bishops of Lincoln (new date for Robert Grosseteste)
+18 Hilda, Abbess of Whitby, 680
+19 Elizabeth, Princess of Hungary, 1231
+20 Edmund, King of East Anglia, 870
+21 [William Byrd, 1623, John Merbecke, 1585, and Thomas Tallis, 1585, Musicians]
+22 C. S. Lewis, Apologist and spiritual Writer, 1963; also [Cecilia, Martyr at Rome, c. 280]
+23 Clement, Bishop of Rome, c. 100
+24 
+25 James Otis Sargent Huntington, Priest and Monk, 1935
+26 [Isaac Watts, Hymnwriter, 1748]
+27 
+28 Kamehameha and Emma, King and Queen of Hawaii, 1864, 1885
+29 
+30 Saint Andrew the Apostle
+
+
 -- TODO: December
 
 
@@ -516,6 +659,8 @@ INSERT INTO fixed_feasts (name, otype_id, month, day, color) VALUES ('Jerome, Pr
 -- in February: 'Washington’s Birthday – Federal Holiday Schedule<br />The church opens today at 10:00 AM and closes at 2:00 PM.'
 -- in May: 'Memorial Day – Federal Holiday Schedule<br />The church opens today at 10:00 AM and closes at 2:00 PM.'
 -- in July: 'Federal Holiday Schedule<br />The church opens today at 10:00 AM and closes at 2:00 PM.' (for Independence Day or the closest weekday)
+-- in September: 'Labor Day – Federal Holiday Schedule<br />The church opens today at 10:00 AM and closes at 2:00 PM.'
+-- in October: 'Columbus Day – Federal Holiday Schedule<br />The church opens today at 10:00 AM and closes at 2:00 PM.'
 
 -- todo: remember
 -- There is a Last Sunday After Epiphany

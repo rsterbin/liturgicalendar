@@ -42,12 +42,16 @@ INSERT INTO schedules (name, code, valid_start, is_default) VALUES ('Requiem Wee
 INSERT INTO schedules (name, code, valid_start, is_default) VALUES ('Thursday Feast', 'thursday-feast', true); -- 22
 INSERT INTO schedules (name, code, valid_start, is_default) VALUES ('Saturday Vigil Mass', 'saturday-vigil-mass', true); -- 23
 INSERT INTO schedules (name, code, valid_start, is_default) VALUES ('Evening Prayer and Vigil Mass', 'ep-vigil-mass', false); -- 24
-INSERT INTO schedules (name, code, valid_start, is_default) VALUES ('Summer Sunday with Procession', 'summer-sunday-procession', true); -- 25
+INSERT INTO schedules (name, code, valid_start, is_default) VALUES ('Summer Sunday With Procession', 'summer-sunday-procession', true); -- 25
 INSERT INTO schedules (name, code, valid_start, is_default) VALUES ('Candlemas Saturday', 'candlemas-saturday', true); -- 26
 INSERT INTO schedules (name, code, valid_start, is_default) VALUES ('Candlemas Sunday', 'candlemas-sunday', true); -- 27
 INSERT INTO schedules (name, code, valid_start, is_default) VALUES ('E&B with Recital', 'eb-recital', true); -- 28
+INSERT INTO schedules (name, code, valid_start, is_default) VALUES ('Saint Blase With Vigil', 'blase-vigil', false); -- 29
+INSERT INTO schedules (name, code, valid_start, is_default) VALUES ('Saint Blase Saturday', 'blase-saturday', false); -- 30
 
 -- TODO: old summer sunday schedule
+-- TODO: old weekday schedule (with 6:20 Mass after evening prayer)
+-- TODO: Blase with old weekday schedule
 
 CREATE TABLE services (
     service_id serial,
@@ -200,6 +204,13 @@ INSERT INTO schedule_services (schedule_id, service_id) VALUES (27, 32); -- cand
 INSERT INTO schedule_services (schedule_id, service_id) VALUES (27, 15); -- candlemas-sunday
 INSERT INTO schedule_services (schedule_id, service_id) VALUES (28, 14); -- eb-recital
 INSERT INTO schedule_services (schedule_id, service_id) VALUES (28, 15); -- eb-recital
+INSERT INTO schedule_services (schedule_id, service_id) VALUES (29, 1); -- blase-vigil
+INSERT INTO schedule_services (schedule_id, service_id) VALUES (29, 2); -- blase-vigil
+INSERT INTO schedule_services (schedule_id, service_id) VALUES (29, 24); -- blase-vigil
+INSERT INTO schedule_services (schedule_id, service_id) VALUES (30, 6); -- blase-saturday
+INSERT INTO schedule_services (schedule_id, service_id) VALUES (30, 2); -- blase-saturday
+INSERT INTO schedule_services (schedule_id, service_id) VALUES (30, 22); -- blase-saturday
+INSERT INTO schedule_services (schedule_id, service_id) VALUES (30, 7); -- blase-saturday
 
 --
 -- Define service patterns for seasons, fixed feasts, and moveable feasts that vary by day of the week
@@ -478,6 +489,24 @@ INSERT INTO service_patterns (name, code,
         '2008-12-31 23:59:59' AT TIME ZONE 'America/New_York'
     );
 
+INSERT INTO service_patterns (name, code,
+        schedule_code_mon, schedule_code_mon_with_vigil, schedule_code_mon_vigil,
+        schedule_code_tue, schedule_code_tue_with_vigil, schedule_code_tue_vigil,
+        schedule_code_wed, schedule_code_wed_with_vigil, schedule_code_wed_vigil,
+        schedule_code_thu, schedule_code_thu_with_vigil, schedule_code_thu_vigil,
+        schedule_code_fri, schedule_code_fri_with_vigil, schedule_code_fri_vigil,
+        schedule_code_sat, schedule_code_sat_with_vigil, schedule_code_sat_vigil,
+        schedule_code_sun, schedule_code_sun_with_vigil, schedule_code_sun_vigil
+    ) VALUES ('St. Blase', 'blase'
+        'blase', 'blase-vigil', null,
+        'blase', 'blase-vigil', null,
+        'blase', 'blase-vigil', null,
+        'blase', 'blase-vigil', null,
+        'blase', 'blase-vigil', null,
+        'blase-saturday', 'blase-saturday', null,
+         null, null, null
+    );
+
 --
 -- Define precedence
 --
@@ -681,7 +710,6 @@ CREATE INDEX fixed_feasts_date_idx ON fixed_feasts (month, day);
 -- TODO: remove schedule code columns
 -- TODO: season-schedule-pattern adjustments?
 
--- 'Blase, Bishop and Martyr, c. 316', 4, 2, 3, 'blase', 'red');
 -- 'Parish Requiem: Victims of September 11, 2011', 4, 9, 11, 'requiem-weekday', 'purple', '2008-12-31 23:59:59' AT TIME ZONE 'America/New_York');
 
 -- January
@@ -704,7 +732,7 @@ INSERT INTO fixed_feasts (name, otype_id, month, day, color) VALUES ('Charles, K
 -- February
 INSERT INTO fixed_feasts (name, otype_id, month, day, color) VALUES ('Brigid (Bride), 523', 4, 2, 1, 'white');
 INSERT INTO fixed_feasts (name, otype_id, month, day, schedule_pattern, has_eve, eve_schedule_pattern, color) VALUES ('The Presentation of Our Lord Jesus Christ in the Temple', 2, 2, 2, 'candlemas', true, 'candlemas-eve', 'white');
-INSERT INTO fixed_feasts (name, otype_id, month, day, schedule_code, color) VALUES ('Blase, Bishop and Martyr, c. 316', 4, 2, 3, 'blase', 'red');
+INSERT INTO fixed_feasts (name, otype_id, month, day, schedule_pattern, color) VALUES ('Blase, Bishop and Martyr, c. 316', 4, 2, 3, 'blase', 'red');
 INSERT INTO fixed_feasts (name, otype_id, month, day, color, valid_end) VALUES ('Cornelius the Centurion', 4, 2, 4, 'white', '2010-12-31 23:59:59' AT TIME ZONE 'America/New_York');
 INSERT INTO fixed_feasts (name, otype_id, month, day, color, valid_start) VALUES ('Anskar, Archbishop of Hamburg, Missionary to Denmark and Sweden, 865', 4, 2, 4, 'white', '2011-01-01 00:00:00' AT TIME ZONE 'America/New_York');
 INSERT INTO fixed_feasts (name, otype_id, month, day, color) VALUES ('The Martyrs of Japan, 1597', 4, 2, 5, 'red');

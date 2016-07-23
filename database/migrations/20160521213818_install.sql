@@ -48,6 +48,8 @@ INSERT INTO schedules (name, code, valid_start, is_default) VALUES ('Candlemas S
 INSERT INTO schedules (name, code, valid_start, is_default) VALUES ('E&B with Recital', 'eb-recital', true); -- 28
 INSERT INTO schedules (name, code, valid_start, is_default) VALUES ('Saint Blase With Vigil', 'blase-vigil', false); -- 29
 INSERT INTO schedules (name, code, valid_start, is_default) VALUES ('Saint Blase Saturday', 'blase-saturday', false); -- 30
+INSERT INTO schedules (name, code, valid_start, is_default) VALUES ('Requiem Weekday With Vigil', 'requiem-vigil', false); -- 31
+INSERT INTO schedules (name, code, valid_start, is_default) VALUES ('Requiem Saturday', 'requiem-saturday', false); -- 32
 
 -- TODO: old summer sunday schedule
 -- TODO: old weekday schedule (with 6:20 Mass after evening prayer)
@@ -211,6 +213,13 @@ INSERT INTO schedule_services (schedule_id, service_id) VALUES (30, 6); -- blase
 INSERT INTO schedule_services (schedule_id, service_id) VALUES (30, 2); -- blase-saturday
 INSERT INTO schedule_services (schedule_id, service_id) VALUES (30, 22); -- blase-saturday
 INSERT INTO schedule_services (schedule_id, service_id) VALUES (30, 7); -- blase-saturday
+INSERT INTO schedule_services (schedule_id, service_id) VALUES (31, 1); -- requiem-vigil
+INSERT INTO schedule_services (schedule_id, service_id) VALUES (31, 2); -- requiem-vigil
+INSERT INTO schedule_services (schedule_id, service_id) VALUES (31, 27); -- requiem-vigil
+INSERT INTO schedule_services (schedule_id, service_id) VALUES (3, 6); -- requiem-saturday
+INSERT INTO schedule_services (schedule_id, service_id) VALUES (3, 2); -- requiem-saturday
+INSERT INTO schedule_services (schedule_id, service_id) VALUES (3, 27); -- requiem-saturday
+INSERT INTO schedule_services (schedule_id, service_id) VALUES (3, 7); -- requiem-saturday
 
 --
 -- Define service patterns for seasons, fixed feasts, and moveable feasts that vary by day of the week
@@ -507,6 +516,24 @@ INSERT INTO service_patterns (name, code,
          null, null, null
     );
 
+INSERT INTO service_patterns (name, code,
+        schedule_code_mon, schedule_code_mon_with_vigil, schedule_code_mon_vigil,
+        schedule_code_tue, schedule_code_tue_with_vigil, schedule_code_tue_vigil,
+        schedule_code_wed, schedule_code_wed_with_vigil, schedule_code_wed_vigil,
+        schedule_code_thu, schedule_code_thu_with_vigil, schedule_code_thu_vigil,
+        schedule_code_fri, schedule_code_fri_with_vigil, schedule_code_fri_vigil,
+        schedule_code_sat, schedule_code_sat_with_vigil, schedule_code_sat_vigil,
+        schedule_code_sun, schedule_code_sun_with_vigil, schedule_code_sun_vigil
+    ) VALUES ('Parish Requiem', 'parish-requiem'
+        'requiem-weekday', 'requiem-vigil', null,
+        'requiem-weekday', 'requiem-vigil', null,
+        'requiem-weekday', 'requiem-vigil', null,
+        'requiem-weekday', 'requiem-vigil', null,
+        'requiem-weekday', 'requiem-vigil', null,
+        'requiem-saturday', 'requiem-saturday', null,
+         null, null, null
+    );
+
 --
 -- Define precedence
 --
@@ -533,6 +560,11 @@ CREATE TABLE liturigal_seasons (
     code text NOT NULL,
     color text NOT NULL,
     sort_order integer NOT NULL,
+    algorithm text NOT NULL,
+    arg1 text,
+    arg2 text,
+    arg3 text,
+    arg4 text,
     weekday_precedence integer NOT NULL,
     has_rose_sunday boolean NOT NULL,
     continue_counting boolean NOT NULL,
@@ -555,120 +587,140 @@ CREATE TABLE liturigal_seasons (
     CONSTRAINT liturigal_seasons_pk PRIMARY KEY (season_id)
 );
 
-INSERT INTO liturigal_seasons (name, code, color, sort_order, weekday_precedence, has_rose_sunday, continue_counting, schedule_pattern,
+INSERT INTO liturigal_seasons (name, code, color, sort_order, algorithm, arg1, arg2,
+        weekday_precedence, has_rose_sunday, continue_counting, schedule_pattern,
         name_pattern_mon, name_pattern_tue, name_pattern_wed, name_pattern_thu,
         name_pattern_fri, name_pattern_sat, name_pattern_sat_vigil, name_pattern_sun,
         default_note_mon, default_note_tue, default_note_wed, default_note_thu,
         default_note_fri, default_note_sat, default_note_sun
-    ) VALUES ('Advent', 'advent', 'purple', 0, 60, true, false, 'standard',
+    ) VALUES ('Advent', 'advent', 'purple', 0, 'sundays_before', 4, 'christmas',
+        60, true, false, 'standard',
         'Weekday of Advent', 'Weekday of Advent', 'Weekday of Advent', 'Weekday of Advent',
         'Weekday of Advent', 'Weekday of Advent', 'Eve of the %s Sunday of Advent', 'The %s Sunday of Advent',
         NULL, NULL, NULL, NULL,
         'Friday Abstinence', NULL, NULL
     );
 
-INSERT INTO liturigal_seasons (name, code, color, sort_order, weekday_precedence, has_rose_sunday, continue_counting, schedule_pattern,
+INSERT INTO liturigal_seasons (name, code, color, sort_order, algorithm, arg1, arg2,
+        weekday_precedence, has_rose_sunday, continue_counting, schedule_pattern,
         name_pattern_mon, name_pattern_tue, name_pattern_wed, name_pattern_thu,
         name_pattern_fri, name_pattern_sat, name_pattern_sat_vigil, name_pattern_sun,
         default_note_mon, default_note_tue, default_note_wed, default_note_thu,
         default_note_fri, default_note_sat, default_note_sun
-    ) VALUES ('Christmas', 'christmas', 'white', 1, 45, false, false, 'standard-no-confessions',
+    ) VALUES ('Christmas', 'christmas', 'white', 1, 'continue_for', 1, 'week',
+        45, false, false, 'standard-no-confessions',
         'Weekday of Christmas', 'Weekday of Christmas', 'Weekday of Christmas', 'Weekday of Christmas',
         'Weekday of Christmas', 'Weekday of Christmas', 'Eve of the %s Sunday after Christmas Day', 'The %s Sunday after Christmas Day',
         NULL, NULL, NULL, NULL,
         'Friday Abstinence is not observed during the Christmas Season.', 'Confessions are not heard, except by appointment, on the Saturdays of the Christmas Season.', NULL
     );
 
-INSERT INTO liturigal_seasons (name, code, color, sort_order, weekday_precedence, has_rose_sunday, continue_counting, schedule_pattern,
+INSERT INTO liturigal_seasons (name, code, color, sort_order, algorithm,
+        weekday_precedence, has_rose_sunday, continue_counting, schedule_pattern,
         name_pattern_mon, name_pattern_tue, name_pattern_wed, name_pattern_thu,
         name_pattern_fri, name_pattern_sat, name_pattern_sat_vigil, name_pattern_sun,
         default_note_mon, default_note_tue, default_note_wed, default_note_thu,
         default_note_fri, default_note_sat, default_note_sun
-    ) VALUES ('Ordinary Time After Epiphany', 'after-epiphany', 'green', 2, 60, false, false, 'standard',
+    ) VALUES ('Ordinary Time After Epiphany', 'after-epiphany', 'green', 2, 'continue',
+        60, false, false, 'standard',
         'Weekday', 'Weekday', 'Weekday', 'Weekday',
         'Weekday', 'Weekday', 'Eve of the %s Sunday after the Epiphany', 'The %s Sunday after the Epiphany',
         NULL, NULL, NULL, NULL,
         'Friday Abstinence', NULL, NULL
     );
 
-INSERT INTO liturigal_seasons (name, code, color, sort_order, weekday_precedence, has_rose_sunday, continue_counting, schedule_pattern,
+INSERT INTO liturigal_seasons (name, code, color, sort_order, algorithm, arg1, arg2,
+        weekday_precedence, has_rose_sunday, continue_counting, schedule_pattern,
         name_pattern_mon, name_pattern_tue, name_pattern_wed, name_pattern_thu,
         name_pattern_fri, name_pattern_sat, name_pattern_sat_vigil, name_pattern_sun,
         default_note_mon, default_note_tue, default_note_wed, default_note_thu,
         default_note_fri, default_note_sat, default_note_sun
-    ) VALUES ('Lent', 'lent', 'purple', 3, 45, true, false, 'standard-stations',
+    ) VALUES ('Lent', 'lent', 'purple', 3, 'days_before', 33, 'easter',
+        45, true, false, 'standard-stations',
         'Weekday of Lent', 'Weekday of Lent', 'Weekday of Lent', 'Weekday of Lent',
         'Weekday of Lent', 'Weekday of Lent', 'Eve of the %s Sunday in Lent', 'The %s Sunday in Lent',
         'Abstinence', 'Abstinence', 'Abstinence', 'Abstinence',
         'Lenten Friday Abstinence', 'Abstinence', 'Abstinence is not observed on Sundays in Lent.'
     );
 
-INSERT INTO liturigal_seasons (name, code, color, sort_order, weekday_precedence, has_rose_sunday, continue_counting, schedule_pattern,
+INSERT INTO liturigal_seasons (name, code, color, sort_order, algorithm, arg1, arg2,
+        weekday_precedence, has_rose_sunday, continue_counting, schedule_pattern,
         name_pattern_mon, name_pattern_tue, name_pattern_wed, name_pattern_thu,
         name_pattern_fri, name_pattern_sat, name_pattern_sat_vigil, name_pattern_sun,
         default_note_mon, default_note_tue, default_note_wed, default_note_thu,
         default_note_fri, default_note_sat, default_note_sun
-    ) VALUES ('Holy Week', 'holy-week', 'red', 4, 15, false, false, 'standard',
+    ) VALUES ('Holy Week', 'holy-week', 'red', 4, 'days_before', 7, 'easter',
+        15, false, false, 'standard',
         'Monday of Holy Week', 'Tuesday of Holy Week', 'Wednesday of Holy Week', 'Thursday of Holy Week',
         'Good Friday', 'Holy Saturday', 'Eve of the Sunday of the Passion: Palm Sunday', 'The Sunday of the Passion: Palm Sunday',
         'Abstinence', 'Abstinence', 'Abstinence', 'Abstinence',
         'Fast & Abstinence', 'Abstinence', 'Abstinence is not observed on Palm Sunday.'
     );
 
-INSERT INTO liturigal_seasons (name, code, color, sort_order, weekday_precedence, has_rose_sunday, continue_counting, schedule_pattern,
+INSERT INTO liturigal_seasons (name, code, color, sort_order, algorithm, arg1, arg2,
+        weekday_precedence, has_rose_sunday, continue_counting, schedule_pattern,
         name_pattern_mon, name_pattern_tue, name_pattern_wed, name_pattern_thu,
         name_pattern_fri, name_pattern_sat, name_pattern_sat_vigil, name_pattern_sun,
         default_note_mon, default_note_tue, default_note_wed, default_note_thu,
         default_note_fri, default_note_sat, default_note_sun
-    ) VALUES ('Easter Week', 'easter-week', 'gold', 5, 15, false, false, 'standard-no-confessions',
+    ) VALUES ('Easter Week', 'easter-week', 'gold', 5, 'days_after', 7, 'easter',
+        15, false, false, 'standard-no-confessions',
         'Monday in Easter Week', 'Tuesday in Easter Week', 'Wednesday in Easter Week', 'Thursday in Easter Week',
         'Friday in Easter Week', 'Saturday in Easter Week', 'Eve of the %s Sunday of Easter', 'The %s Sunday of Easter',
         NULL, NULL, NULL, NULL,
         'Friday abstinence is not observed in Eastertide.', 'Confessions are heard only by appointment during Easter Week.', NULL
     );
 
-INSERT INTO liturigal_seasons (name, code, color, sort_order, weekday_precedence, has_rose_sunday, continue_counting, schedule_pattern,
+INSERT INTO liturigal_seasons (name, code, color, sort_order, algorithm, arg1, arg2,
+        weekday_precedence, has_rose_sunday, continue_counting, schedule_pattern,
         name_pattern_mon, name_pattern_tue, name_pattern_wed, name_pattern_thu,
         name_pattern_fri, name_pattern_sat, name_pattern_sat_vigil, name_pattern_sun,
         default_note_mon, default_note_tue, default_note_wed, default_note_thu,
         default_note_fri, default_note_sat, default_note_sun
-    ) VALUES ('Easter', 'easter', 'white', 6, 60, false, true, 'standard',
+    ) VALUES ('Easter', 'easter', 'white', 6, 'days_after', 50, 'easter',
+        60, false, true, 'standard',
         'Weekday of Easter', 'Weekday of Easter', 'Weekday of Easter', 'Weekday of Easter',
         'Weekday of Easter', 'Weekday of Easter', 'Eve of the %s Sunday of Easter', 'The %s Sunday of Easter',
         NULL, NULL, NULL, NULL,
         'Friday abstinence is not observed in Eastertide.', NULL, NULL
     );
 
-INSERT INTO liturigal_seasons (name, code, color, sort_order, weekday_precedence, has_rose_sunday, continue_counting, schedule_pattern,
+INSERT INTO liturigal_seasons (name, code, color, sort_order, algorithm, arg1, arg2,
+        weekday_precedence, has_rose_sunday, continue_counting, schedule_pattern,
         name_pattern_mon, name_pattern_tue, name_pattern_wed, name_pattern_thu,
         name_pattern_fri, name_pattern_sat, name_pattern_sat_vigil, name_pattern_sun,
         default_note_mon, default_note_tue, default_note_wed, default_note_thu,
         default_note_fri, default_note_sat, default_note_sun
-    ) VALUES ('Ordinary Time After Pentecost (Spring)', 'pentecost-spring', 'green', 7, 60, false, false, 'standard',
+    ) VALUES ('Ordinary Time After Pentecost (Spring)', 'pentecost-spring', 'green', 7, 'continue_for', 3, 'weeks',
+        60, false, false, 'standard',
         'Weekday', 'Weekday', 'Weekday', 'Weekday',
         'Weekday', 'Weekday', 'Eve of the %s Sunday after Pentecost', 'The %s Sunday after Pentecost',
         NULL, NULL, NULL, NULL,
         'Friday Abstinence', NULL, NULL
     );
 
-INSERT INTO liturigal_seasons (name, code, color, sort_order, weekday_precedence, has_rose_sunday, continue_counting, schedule_pattern,
+INSERT INTO liturigal_seasons (name, code, color, sort_order, algorithm,
+        weekday_precedence, has_rose_sunday, continue_counting, schedule_pattern,
         name_pattern_mon, name_pattern_tue, name_pattern_wed, name_pattern_thu,
         name_pattern_fri, name_pattern_sat, name_pattern_sat_vigil, name_pattern_sun,
         default_note_mon, default_note_tue, default_note_wed, default_note_thu,
         default_note_fri, default_note_sat, default_note_sun
-    ) VALUES ('Ordinary Time After Pentecost (Summer)', 'pentecost-summer', 'green', 8, 60, false, true, 'standard-summer',
+    ) VALUES ('Ordinary Time After Pentecost (Summer)', 'pentecost-summer', 'green', 8, 'continue',
+        60, false, true, 'standard-summer',
         'Weekday', 'Weekday', 'Weekday', 'Weekday',
         'Weekday', 'Weekday', 'Eve of the %s Sunday after Pentecost', 'The %s Sunday after Pentecost',
         NULL, NULL, NULL, NULL,
         'Friday Abstinence', NULL, NULL
     );
 
-INSERT INTO liturigal_seasons (name, code, color, sort_order, weekday_precedence, has_rose_sunday, continue_counting, schedule_pattern,
+INSERT INTO liturigal_seasons (name, code, color, sort_order, algorithm,
+        weekday_precedence, has_rose_sunday, continue_counting, schedule_pattern,
         name_pattern_mon, name_pattern_tue, name_pattern_wed, name_pattern_thu,
         name_pattern_fri, name_pattern_sat, name_pattern_sat_vigil, name_pattern_sun,
         default_note_mon, default_note_tue, default_note_wed, default_note_thu,
         default_note_fri, default_note_sat, default_note_sun
-    ) VALUES ('Ordinary Time After Pentecost (Fall)', 'pentecost-fall', 'green', 9, 60, false, true, 'standard',
+    ) VALUES ('Ordinary Time After Pentecost (Fall)', 'pentecost-fall', 'green', 9, 'continue',
+        60, false, true, 'standard',
         'Weekday', 'Weekday', 'Weekday', 'Weekday',
         'Weekday', 'Weekday', 'Eve of the %s Sunday after Pentecost', 'The %s Sunday after Pentecost',
         NULL, NULL, NULL, NULL,
@@ -676,22 +728,19 @@ INSERT INTO liturigal_seasons (name, code, color, sort_order, weekday_precedence
     );
 
 --
--- Define observances
+-- Define observances: fixed feasts
 --
 
 CREATE TABLE fixed_feasts (
     fixed_id serial,
     name text NOT NULL,
+    code text,
     otype_id integer NOT NULL,
     month integer NOT NULL,
     day integer NOT NULL,
     schedule_pattern text,
     has_eve boolean NOT NULL DEFAULT FALSE,
     eve_schedule_pattern text,
-    schedule_code text, -- TODO: remove
-    has_vigil boolean NOT NULL DEFAULT FALSE, -- TODO: remove
-    vigil_schedule_code text, -- TODO: remove
-    fri_vigil_schedule_code text, -- TODO: remove
     color text,
     note text,
     valid_start timestamp with time zone NULL,
@@ -704,13 +753,6 @@ CREATE TABLE fixed_feasts (
 
 CREATE INDEX fixed_feasts_month_idx ON fixed_feasts (month);
 CREATE INDEX fixed_feasts_date_idx ON fixed_feasts (month, day);
-
--- TODO: set up service patterns for level 1/2s and one-offs (e.g. Blase)
--- TODO: replace schedule code columns for level 1/2s and one-offs
--- TODO: remove schedule code columns
--- TODO: season-schedule-pattern adjustments?
-
--- 'Parish Requiem: Victims of September 11, 2011', 4, 9, 11, 'requiem-weekday', 'purple', '2008-12-31 23:59:59' AT TIME ZONE 'America/New_York');
 
 -- January
 INSERT INTO fixed_feasts (name, otype_id, month, day, color) VALUES ('The Holy Name of Our Lord Jesus Christ', 3, 1, 1, 'gold');
@@ -843,7 +885,7 @@ INSERT INTO fixed_feasts (name, otype_id, month, day, schedule_pattern, has_eve,
 INSERT INTO fixed_feasts (name, otype_id, month, day, color) VALUES ('Constance, Nun, and her Companions, 1878', 4, 9, 9, 'red');
 INSERT INTO fixed_feasts (name, otype_id, month, day, color, valid_start) VALUES ('Alexander Crummel, 1898', 4, 9, 10, 'white', '2010-01-01 00:00:00' AT TIME ZONE 'America/New_York');
 INSERT INTO fixed_feasts (name, otype_id, month, day, color, valid_start) VALUES ('Requiem for the Victims of September 11, 2011', 4, 9, 11, 'black', '2009-01-01 00:00:00' AT TIME ZONE 'America/New_York');
-INSERT INTO fixed_feasts (name, otype_id, month, day, schedule_code, fri_vigil_schedule_code, color, valid_end) VALUES ('Parish Requiem: Victims of September 11, 2011', 4, 9, 11, 'requiem-weekday', 'purple', '2008-12-31 23:59:59' AT TIME ZONE 'America/New_York');
+INSERT INTO fixed_feasts (name, otype_id, month, day, schedule_pattern, color, valid_end) VALUES ('Parish Requiem: Victims of September 11, 2011', 4, 9, 11, 'parish-requiem', 'purple', '2008-12-31 23:59:59' AT TIME ZONE 'America/New_York');
 INSERT INTO fixed_feasts (name, otype_id, month, day, color) VALUES ('John Henry Hobart, Bishop of New York, 1830', 4, 9, 12, 'white');
 INSERT INTO fixed_feasts (name, otype_id, month, day, color, valid_start) VALUES ('John Chrysostom, Bishop of Constantinople, 407', 4, 9, 13, 'white', '2011-01-01 00:00:00' AT TIME ZONE 'America/New_York');
 INSERT INTO fixed_feasts (name, otype_id, month, day, color, valid_end) VALUES ('Cyprian, Bishop and Martyr of Carthage, 258', 4, 9, 13, 'red', '2010-12-31 23:59:59' AT TIME ZONE 'America/New_York');
@@ -886,7 +928,7 @@ INSERT INTO fixed_feasts (name, otype_id, month, day, color) VALUES ('James Hann
 INSERT INTO fixed_feasts (name, otype_id, month, day, schedule_pattern, has_eve, eve_schedule_pattern, color, valid_end) VALUES ('All Saints', 1, 11, 1, 'solemn-fixed-feast', true, 'solemn-fixed-feast-eve', 'white', '2009-12-31 23:59:59' AT TIME ZONE 'America/New_York');
 INSERT INTO fixed_feasts (name, otype_id, month, day, schedule_pattern, has_eve, eve_schedule_pattern, color, valid_start) VALUES ('All Saints', 1, 11, 1, 'solemn-fixed-feast', true, 'solemn-fixed-feast-eve', 'gold', '2010-01-01 00:00:00' AT TIME ZONE 'America/New_York');
 
-INSERT INTO fixed_feasts (name, otype_id, month, day, schedule_code, color) VALUES ('All Souls Day', 3, 11, 2, 'black');
+INSERT INTO fixed_feasts (name, otype_id, month, day, schedule_pattern, color) VALUES ('All Souls Day', 3, 11, 2, 'black');
 
 3 Richard Hooker, Priest, 1600
 4 
@@ -921,6 +963,35 @@ INSERT INTO fixed_feasts (name, otype_id, month, day, schedule_code, color) VALU
 -- TODO: December
 
 
+--
+-- Define observances: moveable feasts
+--
+
+CREATE TABLE moveable_feasts (
+    moveable_id serial,
+    name text NOT NULL,
+    code text NOT NULL,
+    otype_id integer NOT NULL,
+    algorithm text NOT NULL,
+    arg1 text,
+    arg2 text,
+    arg3 text,
+    arg4 text,
+    schedule_pattern text,
+    has_eve boolean NOT NULL DEFAULT FALSE,
+    eve_schedule_pattern text,
+    color text,
+    note text,
+    valid_start timestamp with time zone NULL,
+    valid_end timestamp with time zone NULL,
+    CONSTRAINT moveable_feasts_pk PRIMARY KEY (fixed_id),
+    CONSTRAINT moveable_feasts_otype_fk PRIMARY KEY (otype_id)
+        REFERENCES observance_types (otype_id)
+        ON DELETE RESTRICT ON UPDATE NO ACTION
+);
+
+CREATE INDEX moveable_feasts_idx ON moveable_feasts (code);
+
 -- todo: movable notes
 -- in January: 'Birthday of Martin Luther King, Jr. – Federal Holiday Schedule<br />The church opens today at 10:00 AM and closes at 2:00 PM.'
 -- in February: 'Washington’s Birthday – Federal Holiday Schedule<br />The church opens today at 10:00 AM and closes at 2:00 PM.'
@@ -949,6 +1020,12 @@ INSERT INTO fixed_feasts (name, otype_id, month, day, schedule_code, color) VALU
 -- Is there a Healing Mass on a feast day (level 3) at 12:10? At 6:20?
 -- Confirm that Saint Michael and All Angels *and* Holy Cross are level 2s but have a level 3 service schedule
 -- Ditto for Transfiguration, only that it's a level 1
+-- season-schedule-pattern adjustments?
+
+-- todo: by-year overrides
+-- Candlemas
+-- Assumption
+-- 9/11 Requiem
 
 -- rambler down
 

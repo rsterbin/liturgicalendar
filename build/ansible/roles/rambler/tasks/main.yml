@@ -18,4 +18,9 @@
         state=link
   become: true
 
+- name: drop the rambler config file
+  template:
+    dest: "{{ codebase_dest }}/database/config.json"
+    src: ../templates/config.json.j2
+
 ...

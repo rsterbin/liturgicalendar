@@ -1,32 +1,32 @@
 ---
-- hosts: db
+- hosts: tag_type_db
   roles:
     - common
     - { role: ANXS.postgresql, become: true,
         postgresql_users: [
-            { name: '{{ liturgicalendar_db_owner_name }}', pass: '{{ liturgicalendar_db_owner_password_dev }}', encrypted: 'no' },
-            { name: '{{ liturgicalendar_db_admin_name }}', pass: '{{ liturgicalendar_db_admin_password_dev }}', encrypted: 'no' },
-            { name: '{{ liturgicalendar_db_user_name }}', pass: '{{ liturgicalendar_db_user_password_dev }}', encrypted: 'no' }
+            { name: '{{ db_owner_name }}', pass: '{{ db_owner_password_dev }}', encrypted: 'no' },
+            { name: '{{ db_admin_name }}', pass: '{{ db_admin_password_dev }}', encrypted: 'no' },
+            { name: '{{ db_user_name }}', pass: '{{ db_user_password_dev }}', encrypted: 'no' }
         ],
         postgresql_databases: [
-            { name: '{{ liturgicalendar_db_name }}', owner: '{{ liturgicalendar_db_owner_name }}' }
+            { name: '{{ db_name }}', owner: '{{ db_owner_name }}' }
         ],
         postgresql_user_privileges: [
-            { name: '{{ liturgicalendar_db_owner_name }}', db: '{{ liturgicalendar_db_name }}', priv: 'ALL', role_attr_flags: 'CREATEDB' },
+            { name: '{{ db_owner_name }}', db: '{{ db_name }}', priv: 'ALL', role_attr_flags: 'CREATEDB' },
         ],
         postgresql_pg_hba_custom: [
-            { comment: 'CLI access for owner', type: 'local', database: '{{ liturgicalendar_db_name }}', user: '{{ liturgicalendar_db_owner_name }}', address: '', method: 'trust' }
+            { comment: 'CLI access for owner', type: 'local', database: '{{ db_name }}', user: '{{ db_owner_name }}', address: '', method: 'trust' }
         ]
       }
     - dbprivs
     - rambler
 
-- hosts: back
+- hosts: tag_type_back
   roles:
     - common
     - { role: nodesource.node, become: true }
 
-- hosts: front
+- hosts: tag_type_front
   roles:
     - common
     - { role: nodesource.node, become: true }

@@ -43,22 +43,22 @@ Vagrant.configure("2") do |config|
         info "Writing the ansible hosts file"
         `rm -f ./hosts`
         `echo "" >> ./hosts`
-        `echo "[front]" >> ./hosts`
+        `echo "[tag_type_front]" >> ./hosts`
         `echo "#{front_ipaddr} ansible_private_key_file=./.vagrant/machines/front/virtualbox/private_key" >> ./hosts`
         `echo "" >> ./hosts`
-        `echo "[back]" >> ./hosts`
+        `echo "[tag_type_back]" >> ./hosts`
         `echo "#{back_ipaddr} ansible_private_key_file=./.vagrant/machines/back/virtualbox/private_key" >> ./hosts`
         `echo "" >> ./hosts`
-        `echo "[db]" >> ./hosts`
+        `echo "[tag_type_db]" >> ./hosts`
         `echo "#{db_ipaddr} ansible_private_key_file=./.vagrant/machines/db/virtualbox/private_key" >> ./hosts`
         `echo "" >> ./hosts`
-        `echo "[dev:children]" >> ./hosts`
-        `echo "front" >> ./hosts`
-        `echo "back" >> ./hosts`
-        `echo "db" >> ./hosts`
+        `echo "[tag_environment_dev:children]" >> ./hosts`
+        `echo "tag_type_front" >> ./hosts`
+        `echo "tag_type_back" >> ./hosts`
+        `echo "tag_type_db" >> ./hosts`
         `echo "" >> ./hosts`
         `echo "[vagrant:children]" >> ./hosts`
-        `echo "dev" >> ./hosts`
+        `echo "tag_environment_dev" >> ./hosts`
     end
 
 end

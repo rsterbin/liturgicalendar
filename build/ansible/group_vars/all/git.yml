@@ -14,6 +14,7 @@ codebase_repo: git@github.com:rsterbin/liturgicalendar.git
 codebase_basedir: /opt/stmvirgin
 codebase_dest: "{{ codebase_basedir }}/liturgicalendar"
 codebase_branch: master
+codebase_migrations: "{{ codebase_dest }}/database/migrations"
 
 environment_mode: prod
 ...

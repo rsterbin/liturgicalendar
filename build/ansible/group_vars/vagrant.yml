@@ -1,0 +1,10 @@
+---
+# Overrides for vagrant only
+deploy_user: vagrant
+environment_mode: dev
+
+github_deploy_private_key: "{{ github_vagrant_deploy_private_key }}"
+github_deploy_public_key: "{{ github_vagrant_deploy_public_key }}"
+# github_vagrant_deploy_private_key: # see secrets.yml
+# github_vagrant_deploy_public_key: # see secrets.yml
+...

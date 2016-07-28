@@ -8,4 +8,47 @@
 - name: install git
   apt: name=git=1:1.9.*
   become: true
+
+- name: create deploy_user .ssh dir
+  file:
+    path: "{{ deploy_user_ssh_dir }}"
+    owner: "{{ deploy_user }}"
+    mode: 0700
+    state: directory
+
+- name: install the deploy private key
+  copy:
+    content: "{{ github_deploy_private_key }}"
+    dest: "{{ github_deploy_private_keyfile }}"
+    mode: 0600
+
+- name: install the deploy public key
+  copy:
+    content: "{{ github_deploy_public_key }}"
+    dest: "{{ github_deploy_public_keyfile }}"
+
+- name: create a base directory for the codebase
+  file:
+    path: "{{ codebase_basedir }}"
+    owner: "{{ deploy_user }}"
+    mode: 0755
+    state: directory
+  become: true
+
+- name: clone codebase with deploy key
+  git:
+    repo: "{{ codebase_repo }}"
+    dest: "{{ codebase_dest }}"
+    version: "{{ codebase_branch }}"
+    key_file: "{{ github_deploy_private_keyfile }}"
+    accept_hostkey: yes
+
+- name: set up the ssh config to use the right key when in dev mode
+  template:
+    dest: "{{ deploy_user_ssh_dir }}/config"
+    src: ../templates/ssh_config.j2
+  when: environment_mode=="dev"
+
+# -m git -a 'repo=git@github.com:rsterbin/liturgicalendar.git dest=/opt/stmvirgin/liturgicalendar key_file=/home/vagrant/.ssh/id_rsa-deploy accept_hostkey=yes'
+
 ...

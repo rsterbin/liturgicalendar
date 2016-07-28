@@ -38,7 +38,7 @@ Vagrant.configure("2") do |config|
         db.vm.network "private_network", ip: db_ipaddr
     end
 
-    # Write out the hosts file on vagrant up
+    # write out the hosts file on vagrant up
     config.trigger.after :up do
         info "Writing the ansible hosts file"
         `rm -f ./hosts`
@@ -57,6 +57,8 @@ Vagrant.configure("2") do |config|
         `echo "back" >> ./hosts`
         `echo "db" >> ./hosts`
         `echo "" >> ./hosts`
+        `echo "[vagrant:children]" >> ./hosts`
+        `echo "dev" >> ./hosts`
     end
 
 end

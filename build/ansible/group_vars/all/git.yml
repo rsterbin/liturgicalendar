@@ -1,0 +1,19 @@
+---
+# Variables for interacting with git
+deploy_user: ubuntu
+deploy_user_ssh_dir: /home/{{ deploy_user }}/.ssh
+github_deploy_private_keyfile: "{{ deploy_user_ssh_dir }}/id_rsa-deploy"
+github_deploy_public_keyfile: "{{ deploy_user_ssh_dir }}/id_rsa-deploy.pub"
+
+github_deploy_private_key: "{{ github_prod_deploy_private_key }}"
+github_deploy_public_key: "{{ github_prod_deploy_public_key }}"
+# github_prod_deploy_private_key: # see secrets.yml
+# github_prod_deploy_public_key: # see secrets.yml
+
+codebase_repo: git@github.com:rsterbin/liturgicalendar.git
+codebase_basedir: /opt/stmvirgin
+codebase_dest: "{{ codebase_basedir }}/liturgicalendar"
+codebase_branch: master
+
+environment_mode: prod
+...

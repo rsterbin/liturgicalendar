@@ -7,6 +7,13 @@ This will help you set up a development environment.
 1. Install [Ansible](http://docs.ansible.com/ansible/intro_installation.html#getting-ansible)
 2. Install [Vagrant](https://www.vagrantup.com/docs/installation/)
 3. Install [VirtualBox](https://www.virtualbox.org/wiki/Downloads)
+4. Install the vagrant triggers plugin:
+
+        $ vagrant plugin install vagrant-triggers
+
+5. Install the ansible roles:
+
+        $ ansible-galaxy install -r ../ansible/install_roles.yml
 
 ## Bring up your environment ##
 

@@ -1,4 +1,0 @@
----
-# Overrides for db hosts only
-db_host: localhost
-...

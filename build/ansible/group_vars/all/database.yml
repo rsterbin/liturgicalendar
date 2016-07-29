@@ -7,4 +7,15 @@ db_user_name: lcuser
 
 db_host_candidates: "{{ groups.get('tag_environment_' + environment_mode, []) | intersect(groups.get('tag_type_db', [])) }}"
 db_host: "{{ db_host_candidates[0] if ((db_host_candidates | length) > 0) else 'NODB' }}"
+db_port: 5432
+
+# TODO: generate cidr blocks instead of just using a single address
+db_back_host_candidates: "{{ groups.get('tag_environment_' + environment_mode, []) | intersect(groups.get('tag_type_back', [])) }}"
+db_back_host: "{{ db_back_host_candidates[0] if ((db_back_host_candidates | length) > 0) else 'NODB' }}"
+db_front_host_candidates: "{{ groups.get('tag_environment_' + environment_mode, []) | intersect(groups.get('tag_type_front', [])) }}"
+db_front_host: "{{ db_front_host_candidates[0] if ((db_front_host_candidates | length) > 0) else 'NODB' }}"
+
+db_owner_cidr: "{{ db_host }}/24"
+db_admin_cidr: "{{ db_back_host }}/24"
+db_user_cidr: "{{ db_front_host }}/24"
 ...

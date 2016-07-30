@@ -1147,17 +1147,30 @@ CREATE INDEX moveable_feasts_idx ON moveable_feasts (code);
 -- Major Feasts in Holy Week or Easter Week transfer all the way to the following Monday (and Tuesday, if both Saint Joseph and Annunciation fall within)
 -- Federal Holidays have notes and a schedule (church open 10-2)
 
--- todo: ask for clarification
+-- Answered questions:
 -- How do the days marked "Of Our Lady" work? There seems to be roughly one a month, but I don't know what the pattern is.
+    -- Saturdays the would otherwise be green, during a green season, become Of Our Lady
+    -- This used to be true year-round
+    -- Stopped in 2013 (year-round through 2012)
 -- Is the change from white to gold for Annunciation an intentional change or a mistake that got carried from the previous year's transfer?
+    -- YES, this is correct
 -- The list of Commemorations needs confirmation, as there are some important variations from the Episcopal calendars I've found (e.g. http://satucket.com/lectionary/Calendar.htm)
+    -- Will review
 -- If a major feast falls on a Saturday in Lent, what happens to Stations of the Cross?
+    -- Omitted for a solemn mass; mass is dropped for regular feasts
 -- How is the date of "The First Book of Common Prayer, 1549" determined?
+    -- First free weekday after Pentecost for which there's no other commemoration
 -- Do we celebrate Sacred Heart (19 days after Pentecost) anymore?  It appears through 2008.
--- July 18 [Bartolomé de las Casas, Friar and Missionary to the Indies, 1566] - WE SHOULD DO THIS: http://theoatmeal.com/comics/columbus_day
+    -- Officially done with that
 -- Was Ignatius of Loyola dropped from the calendar intentionally?
--- Get correct services and color for Assumption (i.e., switch from white + Mass on eve to gold + evensong only)
+    -- Yes, but Fr. Smith sometimes does it anyway
 -- Confirm that The Nativity of the Blessed Virgin Mary doesn't get transferred from Sunday, despite otherwise looking like a level 3
+    -- Correctly, it would be transferred as usual
+
+-- todo: suggestions
+-- July 18 [Bartolomé de las Casas, Friar and Missionary to the Indies, 1566] - WE SHOULD DO THIS: http://theoatmeal.com/comics/columbus_day
+
+-- todo: ask for clarification
 -- Confirm that Hildegard was meant to be a breif blip on the schedule
 -- Is there a Healing Mass on a feast day (level 3) at 12:10? At 6:20?
 -- Confirm that Saint Michael and All Angels *and* Holy Cross are level 2s but have a level 3 service schedule

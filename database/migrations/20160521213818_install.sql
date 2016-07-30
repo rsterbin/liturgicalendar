@@ -12,7 +12,7 @@ CREATE TABLE schedules (
     valid_start timestamp with time zone NULL,
     valid_end timestamp with time zone NULL,
     is_default boolean NOT NULL DEFAULT false,
-    CONSTRAINT schedules_pk PRIMARY KEY schedule_id
+    CONSTRAINT schedules_pk PRIMARY KEY (schedule_id)
 );
 
 CREATE INDEX schedules_code_idx ON schedules (code, valid_start, valid_end);
@@ -71,7 +71,7 @@ CREATE TABLE services (
     name text NOT NULL,
     start_time time with time zone NOT NULL,
     is_default boolean NOT NULL DEFAULT false,
-    CONSTRAINT services_pk PRIMARY KEY service_id
+    CONSTRAINT services_pk PRIMARY KEY (service_id)
 );
 
 CREATE INDEX services_start_time_idx ON services (start_time);
@@ -208,7 +208,6 @@ INSERT INTO schedule_services (schedule_id, service_id) VALUES (21, 5); -- requi
 INSERT INTO schedule_services (schedule_id, service_id) VALUES (21, 28); -- requiem-weekday
 INSERT INTO schedule_services (schedule_id, service_id) VALUES (22, 1); -- thursday-feast
 INSERT INTO schedule_services (schedule_id, service_id) VALUES (22, 2); -- thursday-feast
-INSERT INTO schedule_services (schedule_id, service_id) VALUES (22, 1); -- thursday-feast
 INSERT INTO schedule_services (schedule_id, service_id) VALUES (22, 5); -- thursday-feast
 INSERT INTO schedule_services (schedule_id, service_id) VALUES (22, 20); -- thursday-feast
 INSERT INTO schedule_services (schedule_id, service_id) VALUES (23, 8); -- saturday-vigil-mass
@@ -240,10 +239,10 @@ INSERT INTO schedule_services (schedule_id, service_id) VALUES (30, 7); -- blase
 INSERT INTO schedule_services (schedule_id, service_id) VALUES (31, 1); -- requiem-vigil
 INSERT INTO schedule_services (schedule_id, service_id) VALUES (31, 2); -- requiem-vigil
 INSERT INTO schedule_services (schedule_id, service_id) VALUES (31, 27); -- requiem-vigil
-INSERT INTO schedule_services (schedule_id, service_id) VALUES (3, 6); -- requiem-saturday
-INSERT INTO schedule_services (schedule_id, service_id) VALUES (3, 2); -- requiem-saturday
-INSERT INTO schedule_services (schedule_id, service_id) VALUES (3, 27); -- requiem-saturday
-INSERT INTO schedule_services (schedule_id, service_id) VALUES (3, 7); -- requiem-saturday
+INSERT INTO schedule_services (schedule_id, service_id) VALUES (32, 6); -- requiem-saturday
+INSERT INTO schedule_services (schedule_id, service_id) VALUES (32, 2); -- requiem-saturday
+INSERT INTO schedule_services (schedule_id, service_id) VALUES (32, 27); -- requiem-saturday
+INSERT INTO schedule_services (schedule_id, service_id) VALUES (32, 7); -- requiem-saturday
 INSERT INTO schedule_services (schedule_id, service_id) VALUES (33, 10); -- all-souls
 INSERT INTO schedule_services (schedule_id, service_id) VALUES (33, 2); -- all-souls
 INSERT INTO schedule_services (schedule_id, service_id) VALUES (33, 18); -- all-souls
@@ -324,7 +323,7 @@ INSERT INTO service_patterns (name, code,
         schedule_code_fri, schedule_code_fri_with_vigil, schedule_code_fri_vigil,
         schedule_code_sat, schedule_code_sat_with_vigil, schedule_code_sat_vigil,
         schedule_code_sun, schedule_code_sun_with_vigil, schedule_code_sun_vigil
-    ) VALUES ('Standard', 'standard'
+    ) VALUES ('Standard', 'standard',
         'weekday', 'weekday-vigil', null,
         'weekday', 'weekday-vigil', null,
         'wednesday', 'wednesday-vigil', null,
@@ -342,7 +341,7 @@ INSERT INTO service_patterns (name, code,
         schedule_code_fri, schedule_code_fri_with_vigil, schedule_code_fri_vigil,
         schedule_code_sat, schedule_code_sat_with_vigil, schedule_code_sat_vigil,
         schedule_code_sun, schedule_code_sun_with_vigil, schedule_code_sun_vigil
-    ) VALUES ('Standard Without Confessions', 'standard-no-confessions'
+    ) VALUES ('Standard Without Confessions', 'standard-no-confessions',
         'weekday', 'weekday-vigil', null,
         'weekday', 'weekday-vigil', null,
         'wednesday', 'wednesday-vigil', null,
@@ -360,7 +359,7 @@ INSERT INTO service_patterns (name, code,
         schedule_code_fri, schedule_code_fri_with_vigil, schedule_code_fri_vigil,
         schedule_code_sat, schedule_code_sat_with_vigil, schedule_code_sat_vigil,
         schedule_code_sun, schedule_code_sun_with_vigil, schedule_code_sun_vigil
-    ) VALUES ('Standard With Stations', 'standard-stations'
+    ) VALUES ('Standard With Stations', 'standard-stations',
         'weekday', 'weekday-vigil', null,
         'weekday', 'weekday-vigil', null,
         'wednesday', 'wednesday-vigil', null,
@@ -378,7 +377,7 @@ INSERT INTO service_patterns (name, code,
         schedule_code_fri, schedule_code_fri_with_vigil, schedule_code_fri_vigil,
         schedule_code_sat, schedule_code_sat_with_vigil, schedule_code_sat_vigil,
         schedule_code_sun, schedule_code_sun_with_vigil, schedule_code_sun_vigil
-    ) VALUES ('Major Fixed Feast', 'major-fixed-feast'
+    ) VALUES ('Major Fixed Feast', 'major-fixed-feast',
         'weekday-feast', 'weekday-feast', null,
         'weekday-feast', 'weekday-feast', null,
         'wednesday-feast', 'wednesday-feast', null,
@@ -396,7 +395,7 @@ INSERT INTO service_patterns (name, code,
         schedule_code_fri, schedule_code_fri_with_vigil, schedule_code_fri_vigil,
         schedule_code_sat, schedule_code_sat_with_vigil, schedule_code_sat_vigil,
         schedule_code_sun, schedule_code_sun_with_vigil, schedule_code_sun_vigil
-    ) VALUES ('Major Fixed Feast Eve', 'major-fixed-feast-eve'
+    ) VALUES ('Major Fixed Feast Eve', 'major-fixed-feast-eve',
         null, null, 'ep-only',
         null, null, 'ep-only',
         null, null, 'ep-only',
@@ -414,7 +413,7 @@ INSERT INTO service_patterns (name, code,
         schedule_code_fri, schedule_code_fri_with_vigil, schedule_code_fri_vigil,
         schedule_code_sat, schedule_code_sat_with_vigil, schedule_code_sat_vigil,
         schedule_code_sun, schedule_code_sun_with_vigil, schedule_code_sun_vigil
-    ) VALUES ('Solemn Fixed Feast', 'solemn-fixed-feast'
+    ) VALUES ('Solemn Fixed Feast', 'solemn-fixed-feast',
         'solemn-weekday-feast', 'solemn-weekday-feast', null,
         'solemn-weekday-feast', 'solemn-weekday-feast', null,
         'solemn-weekday-feast', 'solemn-weekday-feast', null,
@@ -432,7 +431,7 @@ INSERT INTO service_patterns (name, code,
         schedule_code_fri, schedule_code_fri_with_vigil, schedule_code_fri_vigil,
         schedule_code_sat, schedule_code_sat_with_vigil, schedule_code_sat_vigil,
         schedule_code_sun, schedule_code_sun_with_vigil, schedule_code_sun_vigil
-    ) VALUES ('Solemn Fixed Feast Eve', 'solemn-fixed-feast-eve'
+    ) VALUES ('Solemn Fixed Feast Eve', 'solemn-fixed-feast-eve',
         null, null, 'es-only',
         null, null, 'es-only',
         null, null, 'es-only',
@@ -450,7 +449,7 @@ INSERT INTO service_patterns (name, code,
         schedule_code_fri, schedule_code_fri_with_vigil, schedule_code_fri_vigil,
         schedule_code_sat, schedule_code_sat_with_vigil, schedule_code_sat_vigil,
         schedule_code_sun, schedule_code_sun_with_vigil, schedule_code_sun_vigil
-    ) VALUES ('Candlemas', 'candlemas'
+    ) VALUES ('Candlemas', 'candlemas',
         'candlemas', 'candlemas', null,
         'candlemas', 'candlemas', null,
         'candlemas', 'candlemas', null,
@@ -468,7 +467,7 @@ INSERT INTO service_patterns (name, code,
         schedule_code_fri, schedule_code_fri_with_vigil, schedule_code_fri_vigil,
         schedule_code_sat, schedule_code_sat_with_vigil, schedule_code_sat_vigil,
         schedule_code_sun, schedule_code_sun_with_vigil, schedule_code_sun_vigil
-    ) VALUES ('Candlemas Eve', 'candlemas-eve'
+    ) VALUES ('Candlemas Eve', 'candlemas-eve',
         null, null, 'eb-recital',
         null, null, 'eb-recital',
         null, null, 'eb-recital',
@@ -487,7 +486,7 @@ INSERT INTO service_patterns (name, code,
         schedule_code_sat, schedule_code_sat_with_vigil, schedule_code_sat_vigil,
         schedule_code_sun, schedule_code_sun_with_vigil, schedule_code_sun_vigil,
         valid_start
-    ) VALUES ('Assumption', 'assumption'
+    ) VALUES ('Assumption', 'assumption',
         'solemn-weekday-feast', 'solemn-weekday-feast', null,
         'solemn-weekday-feast', 'solemn-weekday-feast', null,
         'solemn-weekday-feast', 'solemn-weekday-feast', null,
@@ -507,7 +506,7 @@ INSERT INTO service_patterns (name, code,
         schedule_code_sat, schedule_code_sat_with_vigil, schedule_code_sat_vigil,
         schedule_code_sun, schedule_code_sun_with_vigil, schedule_code_sun_vigil,
         valid_start
-    ) VALUES ('Assumption Eve', 'assumption-eve'
+    ) VALUES ('Assumption Eve', 'assumption-eve',
         null, null, 'ep-only',
         null, null, 'ep-only',
         null, null, 'ep-only',
@@ -527,7 +526,7 @@ INSERT INTO service_patterns (name, code,
         schedule_code_sat, schedule_code_sat_with_vigil, schedule_code_sat_vigil,
         schedule_code_sun, schedule_code_sun_with_vigil, schedule_code_sun_vigil,
         valid_end
-    ) VALUES ('Assumption', 'assumption'
+    ) VALUES ('Assumption', 'assumption',
         'solemn-weekday-feast', 'solemn-weekday-feast', null,
         'solemn-weekday-feast', 'solemn-weekday-feast', null,
         'solemn-weekday-feast', 'solemn-weekday-feast', null,
@@ -547,7 +546,7 @@ INSERT INTO service_patterns (name, code,
         schedule_code_sat, schedule_code_sat_with_vigil, schedule_code_sat_vigil,
         schedule_code_sun, schedule_code_sun_with_vigil, schedule_code_sun_vigil,
         valid_end
-    ) VALUES ('Assumption Eve', 'assumption-eve'
+    ) VALUES ('Assumption Eve', 'assumption-eve',
         null, null, 'ep-vigil-mass',
         null, null, 'ep-vigil-mass',
         null, null, 'ep-vigil-mass',
@@ -566,7 +565,7 @@ INSERT INTO service_patterns (name, code,
         schedule_code_fri, schedule_code_fri_with_vigil, schedule_code_fri_vigil,
         schedule_code_sat, schedule_code_sat_with_vigil, schedule_code_sat_vigil,
         schedule_code_sun, schedule_code_sun_with_vigil, schedule_code_sun_vigil
-    ) VALUES ('St. Blase', 'blase'
+    ) VALUES ('St. Blase', 'blase',
         'blase', 'blase-vigil', null,
         'blase', 'blase-vigil', null,
         'blase', 'blase-vigil', null,
@@ -584,7 +583,7 @@ INSERT INTO service_patterns (name, code,
         schedule_code_fri, schedule_code_fri_with_vigil, schedule_code_fri_vigil,
         schedule_code_sat, schedule_code_sat_with_vigil, schedule_code_sat_vigil,
         schedule_code_sun, schedule_code_sun_with_vigil, schedule_code_sun_vigil
-    ) VALUES ('Parish Requiem', 'parish-requiem'
+    ) VALUES ('Parish Requiem', 'parish-requiem',
         'requiem-weekday', 'requiem-vigil', null,
         'requiem-weekday', 'requiem-vigil', null,
         'requiem-weekday', 'requiem-vigil', null,
@@ -602,7 +601,7 @@ INSERT INTO service_patterns (name, code,
         schedule_code_fri, schedule_code_fri_with_vigil, schedule_code_fri_vigil,
         schedule_code_sat, schedule_code_sat_with_vigil, schedule_code_sat_vigil,
         schedule_code_sun, schedule_code_sun_with_vigil, schedule_code_sun_vigil
-    ) VALUES ('All Souls', 'all-souls'
+    ) VALUES ('All Souls', 'all-souls',
         'all-souls', null, null,
         'all-souls', null, null,
         'all-souls', null, null,
@@ -620,7 +619,7 @@ INSERT INTO service_patterns (name, code,
         schedule_code_fri, schedule_code_fri_with_vigil, schedule_code_fri_vigil,
         schedule_code_sat, schedule_code_sat_with_vigil, schedule_code_sat_vigil,
         schedule_code_sun, schedule_code_sun_with_vigil, schedule_code_sun_vigil
-    ) VALUES ('Christmas', 'christmas'
+    ) VALUES ('Christmas', 'christmas',
         'christmas', 'christmas', null,
         'christmas', 'christmas', null,
         'christmas', 'christmas', null,
@@ -637,9 +636,8 @@ INSERT INTO service_patterns (name, code,
         schedule_code_thu, schedule_code_thu_with_vigil, schedule_code_thu_vigil,
         schedule_code_fri, schedule_code_fri_with_vigil, schedule_code_fri_vigil,
         schedule_code_sat, schedule_code_sat_with_vigil, schedule_code_sat_vigil,
-        schedule_code_sun, schedule_code_sun_with_vigil, schedule_code_sun_vigil,
-        valid_end
-    ) VALUES ('Christmas Eve', 'christmas-eve'
+        schedule_code_sun, schedule_code_sun_with_vigil, schedule_code_sun_vigil
+    ) VALUES ('Christmas Eve', 'christmas-eve',
         null, null, 'christmas-eve',
         null, null, 'christmas-eve',
         null, null, 'christmas-eve',
@@ -657,7 +655,7 @@ INSERT INTO service_patterns (name, code,
         schedule_code_fri, schedule_code_fri_with_vigil, schedule_code_fri_vigil,
         schedule_code_sat, schedule_code_sat_with_vigil, schedule_code_sat_vigil,
         schedule_code_sun, schedule_code_sun_with_vigil, schedule_code_sun_vigil
-    ) VALUES ('Without Prayers', 'without-prayers'
+    ) VALUES ('Without Prayers', 'without-prayers',
         'weekday-no-prayers', null, null,
         'weekday-no-prayers', null, null,
         'weekday-no-prayers', null, null,
@@ -880,7 +878,7 @@ CREATE TABLE fixed_feasts (
     valid_start timestamp with time zone NULL,
     valid_end timestamp with time zone NULL,
     CONSTRAINT fixed_feasts_pk PRIMARY KEY (fixed_id),
-    CONSTRAINT fixed_feasts_otype_fk PRIMARY KEY (otype_id)
+    CONSTRAINT fixed_feasts_otype_fk FOREIGN KEY (otype_id)
         REFERENCES observance_types (otype_id)
         ON DELETE RESTRICT ON UPDATE NO ACTION
 );
@@ -1101,8 +1099,8 @@ INSERT INTO fixed_feasts (name, otype_id, month, day, schedule_pattern, has_eve,
 INSERT INTO fixed_feasts (name, otype_id, month, day, schedule_pattern, has_eve, eve_schedule_pattern, eve_name, color, note, valid_end) VALUES ('The Nativity of Our Lord Jesus Christ: Christmas Day', 1, 12, 25, 'christmas', true, 'christmas-eve', 'Eve of the Nativity of our Lord Jesus Christ: Christmas Eve', 'white', 'The church opens at 10:00 AM today and closes at 2:00 PM.', '2009-12-31 23:59:59' AT TIME ZONE 'America/New_York');
 INSERT INTO fixed_feasts (name, otype_id, month, day, schedule_pattern, color, valid_start) VALUES ('Saint Stephen, Deacon and Martyr', 3, 12, 26, 'without-prayers', 'red', '2009-01-01 00:00:00' AT TIME ZONE 'America/New_York');
 INSERT INTO fixed_feasts (name, otype_id, month, day, schedule_pattern, color, valid_end) VALUES ('Saint Stephen, Deacon and Martyr', 3, 12, 26, 'weekday-feast', 'red', '2008-12-31 23:59:59' AT TIME ZONE 'America/New_York');
-INSERT INTO fixed_feasts (name, otype_id, month, day, color) VALUES ('Saint John, Apostle and Evangelist', 3, 12, 27, 'weekday-feast', 'white');
-INSERT INTO fixed_feasts (name, otype_id, month, day, color) VALUES ('The Holy Innocents', 3, 12, 28, 'weekday-feast', 'red');
+INSERT INTO fixed_feasts (name, otype_id, month, day, schedule_pattern, color) VALUES ('Saint John, Apostle and Evangelist', 3, 12, 27, 'weekday-feast', 'white');
+INSERT INTO fixed_feasts (name, otype_id, month, day, schedule_pattern, color) VALUES ('The Holy Innocents', 3, 12, 28, 'weekday-feast', 'red');
 INSERT INTO fixed_feasts (name, otype_id, month, day, color) VALUES ('Thomas Becket, 1170', 4, 12, 29, 'red');
 
 --
@@ -1126,8 +1124,8 @@ CREATE TABLE moveable_feasts (
     note text,
     valid_start timestamp with time zone NULL,
     valid_end timestamp with time zone NULL,
-    CONSTRAINT moveable_feasts_pk PRIMARY KEY (fixed_id),
-    CONSTRAINT moveable_feasts_otype_fk PRIMARY KEY (otype_id)
+    CONSTRAINT moveable_feasts_pk PRIMARY KEY (moveable_id),
+    CONSTRAINT moveable_feasts_otype_fk FOREIGN KEY (otype_id)
         REFERENCES observance_types (otype_id)
         ON DELETE RESTRICT ON UPDATE NO ACTION
 );
@@ -1188,7 +1186,11 @@ CREATE INDEX moveable_feasts_idx ON moveable_feasts (code);
 
 -- rambler down
 
+DROP TABLE moveable_feasts;
 DROP TABLE fixed_feasts;
+DROP TABLE liturigal_seasons;
+DROP TABLE observance_types;
+DROP TABLE service_patterns;
 DROP TABLE schedule_services;
 DROP TABLE services;
 DROP TABLE schedules;

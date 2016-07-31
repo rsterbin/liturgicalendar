@@ -1,6 +1,6 @@
 ---
 # Database variables available to all roles
-db_name: liturgicalandar
+db_name: liturgicalendar
 db_owner_name: lcowner
 db_admin_name: lcadmin
 db_user_name: lcuser

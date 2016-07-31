@@ -61,6 +61,10 @@ INSERT INTO schedules (name, code, is_default) VALUES ('Wednesday Basic With Vig
 INSERT INTO schedules (name, code, is_default) VALUES ('Wednesday Feast', 'wednesday-feast', true); -- 41
 INSERT INTO schedules (name, code, is_default) VALUES ('Weekday Basic Without Prayers', 'weekday-no-prayers', true); -- 42
 INSERT INTO schedules (name, code, is_default) VALUES ('Thursday Basic Without Prayers', 'thursday-no-prayers', true); -- 43
+INSERT INTO schedules (name, code, is_default) VALUES ('Easter Vigil', 'easter-vigil', true); -- 44
+INSERT INTO schedules (name, code, is_default, valid_start) VALUES ('Easter Day', 'easter-day', true, '2014-01-01 00:00:00' AT TIME ZONE 'America/New_York'); -- 45
+INSERT INTO schedules (name, code, is_default, valid_start, valid_end) VALUES ('Easter Day', 'easter-day', true, '2008-01-01 00:00:00' AT TIME ZONE 'America/New_York', '2013-12-31 23:59:59' AT TIME ZONE 'America/New_York'); -- 46
+INSERT INTO schedules (name, code, is_default, valid_end) VALUES ('Easter Day', 'easter-day', true, '2007-12-31 23:59:59' AT TIME ZONE 'America/New_York'); -- 47
 
 -- TODO: old summer sunday schedule
 -- TODO: old weekday schedule (with 6:20 Mass after evening prayer)
@@ -122,6 +126,13 @@ INSERT INTO services (name, start_time, is_default) VALUES ('Choral Music & Caro
 INSERT INTO services (name, start_time, is_default) VALUES ('Carols for Choir & Congregation', '16:30:00', false); -- 43
 INSERT INTO services (name, start_time, is_default) VALUES ('Sung Mass with Hymns and Carols', '17:00:00', false); -- 44
 INSERT INTO services (name, start_time, is_default) VALUES ('Carols for Choir & Congregation', '22:30:00', false); -- 45
+INSERT INTO services (name, start_time, is_default) VALUES ('The Great Vigil of Easter', '19:00:00', false); -- 46
+INSERT INTO services (name, start_time, is_default) VALUES ('Mass with Hymns', '09:00:00', false); -- 47
+INSERT INTO services (name, start_time, is_default) VALUES ('Mass with Hymns', '10:00:00', false); -- 48
+INSERT INTO services (name, start_time, is_default) VALUES ('Said Mass with Hymns', '09:00:00', false); -- 49
+INSERT INTO services (name, start_time, is_default) VALUES ('Sung Mass', '10:00:00', false); -- 50
+INSERT INTO services (name, start_time, is_default) VALUES ('Organ Recital', '16:30:00', true); -- 51
+INSERT INTO services (name, start_time, is_default) VALUES ('Solemn Paschal Evensong & Benediction', '17:00:00', true); -- 52
 
 CREATE TABLE schedule_services (
     schedule_id integer NOT NULL,
@@ -279,6 +290,24 @@ INSERT INTO schedule_services (schedule_id, service_id) VALUES (42, 2); -- weekd
 INSERT INTO schedule_services (schedule_id, service_id) VALUES (42, 3); -- weekday-no-prayers
 INSERT INTO schedule_services (schedule_id, service_id) VALUES (43, 2); -- thursday-no-prayers
 INSERT INTO schedule_services (schedule_id, service_id) VALUES (43, 4); -- thursday-no-prayers
+INSERT INTO schedule_services (schedule_id, service_id) VALUES (44, 46); -- easter-vigil
+INSERT INTO schedule_services (schedule_id, service_id) VALUES (45, 10); -- easter-day
+INSERT INTO schedule_services (schedule_id, service_id) VALUES (45, 47); -- easter-day
+INSERT INTO schedule_services (schedule_id, service_id) VALUES (45, 48); -- easter-day
+INSERT INTO schedule_services (schedule_id, service_id) VALUES (45, 13); -- easter-day
+INSERT INTO schedule_services (schedule_id, service_id) VALUES (45, 51); -- easter-day
+INSERT INTO schedule_services (schedule_id, service_id) VALUES (45, 52); -- easter-day
+INSERT INTO schedule_services (schedule_id, service_id) VALUES (46, 10); -- easter-day (older)
+INSERT INTO schedule_services (schedule_id, service_id) VALUES (46, 11); -- easter-day (older)
+INSERT INTO schedule_services (schedule_id, service_id) VALUES (46, 12); -- easter-day (older)
+INSERT INTO schedule_services (schedule_id, service_id) VALUES (46, 13); -- easter-day (older)
+INSERT INTO schedule_services (schedule_id, service_id) VALUES (46, 51); -- easter-day (older)
+INSERT INTO schedule_services (schedule_id, service_id) VALUES (46, 52); -- easter-day (older)
+INSERT INTO schedule_services (schedule_id, service_id) VALUES (47, 10); -- easter-day (oldest)
+INSERT INTO schedule_services (schedule_id, service_id) VALUES (47, 49); -- easter-day (oldest)
+INSERT INTO schedule_services (schedule_id, service_id) VALUES (47, 50); -- easter-day (oldest)
+INSERT INTO schedule_services (schedule_id, service_id) VALUES (47, 13); -- easter-day (oldest)
+INSERT INTO schedule_services (schedule_id, service_id) VALUES (47, 52); -- easter-day (oldest)
 
 --
 -- Define service patterns for seasons, fixed feasts, and moveable feasts that vary by day of the week
@@ -663,6 +692,42 @@ INSERT INTO service_patterns (name, code,
         'weekday-no-prayers', null, null,
         'saturday-no-confessions', null, null,
         null, null, null
+    );
+
+INSERT INTO service_patterns (name, code,
+        schedule_code_mon, schedule_code_mon_with_vigil, schedule_code_mon_vigil,
+        schedule_code_tue, schedule_code_tue_with_vigil, schedule_code_tue_vigil,
+        schedule_code_wed, schedule_code_wed_with_vigil, schedule_code_wed_vigil,
+        schedule_code_thu, schedule_code_thu_with_vigil, schedule_code_thu_vigil,
+        schedule_code_fri, schedule_code_fri_with_vigil, schedule_code_fri_vigil,
+        schedule_code_sat, schedule_code_sat_with_vigil, schedule_code_sat_vigil,
+        schedule_code_sun, schedule_code_sun_with_vigil, schedule_code_sun_vigil
+    ) VALUES ('Easter Eve', 'easter-eve',
+        null, null, null,
+        null, null, null,
+        null, null, null,
+        null, null, null,
+        null, null, null,
+        null, null, 'easter-vigil',
+        null, null, null
+    );
+
+INSERT INTO service_patterns (name, code,
+        schedule_code_mon, schedule_code_mon_with_vigil, schedule_code_mon_vigil,
+        schedule_code_tue, schedule_code_tue_with_vigil, schedule_code_tue_vigil,
+        schedule_code_wed, schedule_code_wed_with_vigil, schedule_code_wed_vigil,
+        schedule_code_thu, schedule_code_thu_with_vigil, schedule_code_thu_vigil,
+        schedule_code_fri, schedule_code_fri_with_vigil, schedule_code_fri_vigil,
+        schedule_code_sat, schedule_code_sat_with_vigil, schedule_code_sat_vigil,
+        schedule_code_sun, schedule_code_sun_with_vigil, schedule_code_sun_vigil
+    ) VALUES ('Easter Day', 'easter',
+        null, null, null,
+        null, null, null,
+        null, null, null,
+        null, null, null,
+        null, null, null,
+        null, null, null,
+        'easter-day', null, null
     );
 
 --
@@ -1112,6 +1177,7 @@ CREATE TABLE moveable_feasts (
     name text NOT NULL,
     code text NOT NULL,
     otype_id integer NOT NULL,
+    placement_index integer,
     algorithm text NOT NULL,
     arg1 text,
     arg2 text,
@@ -1120,6 +1186,7 @@ CREATE TABLE moveable_feasts (
     schedule_pattern text,
     has_eve boolean NOT NULL DEFAULT FALSE,
     eve_schedule_pattern text,
+    eve_name text,
     color text,
     note text,
     valid_start timestamp with time zone NULL,
@@ -1130,7 +1197,23 @@ CREATE TABLE moveable_feasts (
         ON DELETE RESTRICT ON UPDATE NO ACTION
 );
 
-CREATE INDEX moveable_feasts_idx ON moveable_feasts (code);
+CREATE INDEX moveable_feasts_code_idx ON moveable_feasts (code);
+CREATE INDEX moveable_feasts_placement_idx ON moveable_feasts (placement_index);
+
+INSERT INTO moveable_feasts (name, code, otype_id, placement_index, algorithm,
+        schedule_pattern, has_eve, eve_schedule_pattern, eve_name, color,
+        valid_start)
+    VALUES ('Easter Day', 'easter', 1, 1, 1, 'easter',
+        'easter', true, 'easter-eve', 'Easter Eve', 'gold',
+        '2011-01-01 00:00:00' AT TIME ZONE 'America/New_York');
+
+INSERT INTO moveable_feasts (name, code, otype_id, placement_index, algorithm,
+        schedule_pattern, has_eve, eve_schedule_pattern, eve_name, color,
+        valid_end)
+    VALUES ('The Sunday of the Resurrection: Easter Day', 'easter', 1, 1, 1, 'easter',
+        'easter', true, 'easter-eve', 'Easter Eve', 'white',
+        '2010-12-31 23:59:59' AT TIME ZONE 'America/New_York');
+
 
 -- todo: movable notes
 -- in January: 'Birthday of Martin Luther King, Jr. – Federal Holiday Schedule<br />The church opens today at 10:00 AM and closes at 2:00 PM.'

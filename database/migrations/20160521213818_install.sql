@@ -730,6 +730,63 @@ INSERT INTO service_patterns (name, code,
         'easter-day', null, null
     );
 
+-- 2016:
+-- Mass 7:00 AM
+-- Mass 8:00 AM
+-- Sung Mass 12:10 PM
+-- Solemn Mass 6:00 PM
+-- 
+-- title 2008-2016:
+-- Ash Wednesday
+-- 
+-- title 2004-2007:
+-- The First Day of Lent: Ash Wednesday
+-- 
+-- services 2013-2015:
+-- Mass 7:00 AM
+-- Mass 8:00 AM
+-- Sung Mass 12:10 PM
+-- Solemn Mass 6:00 PM
+-- 
+-- services 2007-2012:
+-- Mass 7:00 AM
+-- Mass 8:00 AM
+-- Noonday Prayer 12:00 PM
+-- Sung Mass 12:10 PM
+-- Solemn Mass 6:00 PM
+-- 
+-- services 2004-2006:
+-- Said Mass 7:00 AM
+-- Said Mass 8:00 AM
+-- Sung Mass 12:10 PM
+-- Solemn Mass 6:00 PM
+-- 
+-- notes 2004-2007:
+-- Fast & Abstinence 
+-- Ashes are offered from 7:00 AM to 8:00 PM.
+-- Weekdays in Lent are observed by special acts of discipline and self-denial.
+-- Fridays of Lent are observed by abstinence from flesh meats.
+-- 
+-- notes 2008-2009:
+-- Ashes will be offered throughout the day from 7:00 AM to 8:00 PM.
+-- 
+-- notes 2010:
+-- Imposition of Ashes will be offered throughout the day from 7:00 AM to 8:00 PM.
+-- 
+-- notes 2011-2012:
+-- Fast and Abstinence
+-- Imposition of Ashes will be offered throughout the day from 7:00 AM to 8:00 PM.
+-- 
+-- notes 2013-2015:
+-- Fast and Abstinence
+-- Imposition of Ashes will be offered throughout the day from 7:00 AM to 8:00 PM.
+-- The Daily Office is not offered on this day.
+-- 
+-- notes 2016:
+-- Fast and Abstinence
+-- Imposition of Ashes will be offered throughout the day from 7:00 AM to 8:00 PM.
+-- The Daily Office is not prayed publicly on this day.
+
 --
 -- Define precedence
 --
@@ -763,6 +820,7 @@ CREATE TABLE liturigal_seasons (
     arg4 text,
     weekday_precedence integer NOT NULL,
     has_rose_sunday boolean NOT NULL,
+    has_last_sunday boolean NOT NULL DEFAULT FALSE,
     continue_counting boolean NOT NULL,
     schedule_pattern text NOT NULL,
     name_pattern_mon text NOT NULL,
@@ -811,27 +869,27 @@ INSERT INTO liturigal_seasons (name, code, color, sort_order, algorithm, arg1, a
         'Friday Abstinence is not observed during the Christmas Season.', 'Confessions are not heard, except by appointment, on the Saturdays of the Christmas Season.', NULL
     );
 
-INSERT INTO liturigal_seasons (name, code, color, sort_order, algorithm,
-        weekday_precedence, has_rose_sunday, continue_counting, schedule_pattern,
+INSERT INTO liturigal_seasons (name, code, color, sort_order, algorithm, weekday_precedence,
+        has_rose_sunday, has_last_sunday, continue_counting, schedule_pattern,
         name_pattern_mon, name_pattern_tue, name_pattern_wed, name_pattern_thu,
         name_pattern_fri, name_pattern_sat, name_pattern_sat_vigil, name_pattern_sun,
         default_note_mon, default_note_tue, default_note_wed, default_note_thu,
         default_note_fri, default_note_sat, default_note_sun
-    ) VALUES ('Ordinary Time After Epiphany', 'after-epiphany', 'green', 2, 'continue',
-        60, false, false, 'standard',
+    ) VALUES ('Ordinary Time After Epiphany', 'after-epiphany', 'green', 2, 'continue', 60,
+        false, true, false, 'standard',
         'Weekday', 'Weekday', 'Weekday', 'Weekday',
         'Weekday', 'Weekday', 'Eve of the %s Sunday after the Epiphany', 'The %s Sunday after the Epiphany',
         NULL, NULL, NULL, NULL,
         'Friday Abstinence', NULL, NULL
     );
 
-INSERT INTO liturigal_seasons (name, code, color, sort_order, algorithm, arg1, arg2,
+INSERT INTO liturigal_seasons (name, code, color, sort_order, algorithm, arg1,
         weekday_precedence, has_rose_sunday, continue_counting, schedule_pattern,
         name_pattern_mon, name_pattern_tue, name_pattern_wed, name_pattern_thu,
         name_pattern_fri, name_pattern_sat, name_pattern_sat_vigil, name_pattern_sun,
         default_note_mon, default_note_tue, default_note_wed, default_note_thu,
         default_note_fri, default_note_sat, default_note_sun
-    ) VALUES ('Lent', 'lent', 'purple', 3, 'days_before', 33, 'easter',
+    ) VALUES ('Lent', 'lent', 'purple', 3, 'start_at', 'ash-wednesday',
         45, true, false, 'standard-stations',
         'Weekday of Lent', 'Weekday of Lent', 'Weekday of Lent', 'Weekday of Lent',
         'Weekday of Lent', 'Weekday of Lent', 'Eve of the %s Sunday in Lent', 'The %s Sunday in Lent',
@@ -909,14 +967,14 @@ INSERT INTO liturigal_seasons (name, code, color, sort_order, algorithm,
         'Friday Abstinence', NULL, NULL
     );
 
-INSERT INTO liturigal_seasons (name, code, color, sort_order, algorithm,
-        weekday_precedence, has_rose_sunday, continue_counting, schedule_pattern,
+INSERT INTO liturigal_seasons (name, code, color, sort_order, algorithm, weekday_precedence,
+        has_rose_sunday, has_last_sunday, continue_counting, schedule_pattern,
         name_pattern_mon, name_pattern_tue, name_pattern_wed, name_pattern_thu,
         name_pattern_fri, name_pattern_sat, name_pattern_sat_vigil, name_pattern_sun,
         default_note_mon, default_note_tue, default_note_wed, default_note_thu,
         default_note_fri, default_note_sat, default_note_sun
-    ) VALUES ('Ordinary Time After Pentecost (Fall)', 'pentecost-fall', 'green', 9, 'continue',
-        60, false, true, 'standard',
+    ) VALUES ('Ordinary Time After Pentecost (Fall)', 'pentecost-fall', 'green', 9, 'continue', 60,
+        false, true, true, 'standard',
         'Weekday', 'Weekday', 'Weekday', 'Weekday',
         'Weekday', 'Weekday', 'Eve of the %s Sunday after Pentecost', 'The %s Sunday after Pentecost',
         NULL, NULL, NULL, NULL,
@@ -1214,6 +1272,24 @@ INSERT INTO moveable_feasts (name, code, otype_id, placement_index, algorithm,
         'easter', true, 'easter-eve', 'Easter Eve', 'white',
         '2010-12-31 23:59:59' AT TIME ZONE 'America/New_York');
 
+-- TODO: Remaining moveable feasts
+
+-- INSERT INTO moveable_feasts (name, code, otype_id, placement_index,
+--         algorithm, arg1, arg2, schedule_pattern, color)
+--     VALUES ('Ash Wednesday', 'ash-wednesday', 1, 1, 1,
+--         'days_before', 'easter', 40, 'ash-wednesday', 'purple');
+
+-- Ash Wednesday
+-- Good Friday
+-- Ascension Day
+-- Day of Pentecost
+-- Trinity Sunday
+-- Corpus Christi
+-- Thanksgiving Day
+-- "Of Our Lady" Saturdays
+-- The First Book of Common Prayer, 1549
+-- Dedication of the Church (old timing)
+
 
 -- todo: movable notes
 -- in January: 'Birthday of Martin Luther King, Jr. – Federal Holiday Schedule<br />The church opens today at 10:00 AM and closes at 2:00 PM.'
@@ -1224,11 +1300,10 @@ INSERT INTO moveable_feasts (name, code, otype_id, placement_index, algorithm,
 -- in October: 'Columbus Day – Federal Holiday Schedule<br />The church opens today at 10:00 AM and closes at 2:00 PM.'
 
 -- todo: remember
--- There is a Last Sunday After Epiphany
 -- Major Feasts in Holy Week or Easter Week transfer all the way to the following Monday (and Tuesday, if both Saint Joseph and Annunciation fall within)
 -- Federal Holidays have notes and a schedule (church open 10-2)
 
--- Answered questions:
+-- todo: answered questions:
 -- How do the days marked "Of Our Lady" work? There seems to be roughly one a month, but I don't know what the pattern is.
     -- Saturdays the would otherwise be green, during a green season, become Of Our Lady
     -- This used to be true year-round

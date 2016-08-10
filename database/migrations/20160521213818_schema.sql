@@ -25,6 +25,7 @@ CREATE TABLE schedules (
     valid_start timestamp with time zone NULL,
     valid_end timestamp with time zone NULL,
     is_default boolean NOT NULL DEFAULT false,
+    is_custom boolean NOT NULL DEFAULT false,
     CONSTRAINT schedules_pk PRIMARY KEY (schedule_id)
 );
 
@@ -189,8 +190,29 @@ CREATE TABLE moveable_feasts (
 CREATE INDEX moveable_feasts_code_idx ON moveable_feasts (code);
 CREATE INDEX moveable_feasts_placement_idx ON moveable_feasts (placement_index);
 
+--
+-- Define customizations (one-time calendar changes)
+--
+
+CREATE TABLE customizations (
+    custom_id serial,
+    override_date date NOT NULL,
+    is_eve_schedule boolean NOT NULL DEFAULT false,
+    override_title text,
+    override_color text,
+    override_note text,
+    override_schedule_id integer,
+    CONSTRAINT customizations_pk PRIMARY KEY (custom_id),
+    CONSTRAINT customizations_override_schedule_fk FOREIGN KEY (override_schedule_id)
+        REFERENCES schedules (schedule_id)
+        ON DELETE RESTRICT ON UPDATE NO ACTION
+);
+
+CREATE INDEX customizations_idx ON customizations (override_date);
+
 -- rambler down
 
+DROP TABLE customizations;
 DROP TABLE moveable_feasts;
 DROP TABLE fixed_feasts;
 DROP TABLE liturigal_seasons;

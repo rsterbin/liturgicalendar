@@ -65,6 +65,13 @@ INSERT INTO schedules (name, code, is_default) VALUES ('Easter Vigil', 'easter-v
 INSERT INTO schedules (name, code, is_default, valid_start) VALUES ('Easter Day', 'easter-day', true, '2014-01-01 00:00:00' AT TIME ZONE 'America/New_York'); -- 45
 INSERT INTO schedules (name, code, is_default, valid_start, valid_end) VALUES ('Easter Day', 'easter-day', true, '2008-01-01 00:00:00' AT TIME ZONE 'America/New_York', '2013-12-31 23:59:59' AT TIME ZONE 'America/New_York'); -- 46
 INSERT INTO schedules (name, code, is_default, valid_end) VALUES ('Easter Day', 'easter-day', true, '2007-12-31 23:59:59' AT TIME ZONE 'America/New_York'); -- 47
+INSERT INTO schedules (name, code, is_default, valid_start) VALUES ('Ash Wednesday', 'ash-wednesday', true, '2013-01-01 00:00:00' AT TIME ZONE 'America/New_York'); -- 48
+INSERT INTO schedules (name, code, is_default, valid_start, valid_end) VALUES ('Ash Wednesday', 'ash-wednesday', true, '2007-01-01 00:00:00' AT TIME ZONE 'America/New_York', '2012-12-31 23:59:59' AT TIME ZONE 'America/New_York'); -- 49
+INSERT INTO schedules (name, code, is_default, valid_end) VALUES ('Ash Wednesday', 'ash-wednesday', true, '2006-12-31 23:59:59' AT TIME ZONE 'America/New_York'); -- 50
+
+INSERT INTO schedules (name, code, is_default, valid_start) VALUES ('Good Friday', 'good-friday', true, '2015-01-01 00:00:00' AT TIME ZONE 'America/New_York'); -- 51
+INSERT INTO schedules (name, code, is_default, valid_start, valid_end) VALUES ('Good Friday', 'good-friday', true, '2011-01-01 00:00:00' AT TIME ZONE 'America/New_York', '2014-12-31 23:59:59' AT TIME ZONE 'America/New_York'); -- 52
+INSERT INTO schedules (name, code, is_default, valid_end) VALUES ('Good Friday', 'good-friday', true, '2010-12-31 23:59:59' AT TIME ZONE 'America/New_York'); -- 53
 
 -- TODO: old summer sunday schedule
 -- TODO: old weekday schedule (with 6:20 Mass after evening prayer)
@@ -133,6 +140,17 @@ INSERT INTO services (name, start_time, is_default) VALUES ('Said Mass with Hymn
 INSERT INTO services (name, start_time, is_default) VALUES ('Sung Mass', '10:00:00', false); -- 50
 INSERT INTO services (name, start_time, is_default) VALUES ('Organ Recital', '16:30:00', true); -- 51
 INSERT INTO services (name, start_time, is_default) VALUES ('Solemn Paschal Evensong & Benediction', '17:00:00', true); -- 52
+INSERT INTO services (name, start_time, is_default) VALUES ('Mass', '07:00:00', false); -- 53
+INSERT INTO services (name, start_time, is_default) VALUES ('Mass', '08:00:00', false); -- 54
+INSERT INTO services (name, start_time, is_default) VALUES ('Said Mass', '07:00:00', false); -- 55
+INSERT INTO services (name, start_time, is_default) VALUES ('Said Mass', '08:00:00', false); -- 56
+
+INSERT INTO services (name, start_time, is_default) VALUES ('Liturgy of Good Friday', '12:30:00', false); -- 57
+INSERT INTO services (name, start_time, is_default) VALUES ('Liturgy of Good Friday', '18:00:00', false); -- 58
+INSERT INTO services (name, start_time, is_default) VALUES ('Celebration of the Passion', '12:30:00', false); -- 59
+INSERT INTO services (name, start_time, is_default) VALUES ('Celebration of the Passion', '18:00:00', false); -- 60
+INSERT INTO services (name, start_time, is_default) VALUES ('The Celebration of the Passion of the Lord', '12:30:00', false); -- 61
+INSERT INTO services (name, start_time, is_default) VALUES ('The Celebration of the Passion of the Lord', '18:00:00', false); -- 62
 
 CREATE TABLE schedule_services (
     schedule_id integer NOT NULL,
@@ -308,6 +326,28 @@ INSERT INTO schedule_services (schedule_id, service_id) VALUES (47, 49); -- east
 INSERT INTO schedule_services (schedule_id, service_id) VALUES (47, 50); -- easter-day (oldest)
 INSERT INTO schedule_services (schedule_id, service_id) VALUES (47, 13); -- easter-day (oldest)
 INSERT INTO schedule_services (schedule_id, service_id) VALUES (47, 52); -- easter-day (oldest)
+INSERT INTO schedule_services (schedule_id, service_id) VALUES (48, 53); -- ash-wednesday
+INSERT INTO schedule_services (schedule_id, service_id) VALUES (48, 54); -- ash-wednesday
+INSERT INTO schedule_services (schedule_id, service_id) VALUES (48, 18); -- ash-wednesday
+INSERT INTO schedule_services (schedule_id, service_id) VALUES (48, 21); -- ash-wednesday
+INSERT INTO schedule_services (schedule_id, service_id) VALUES (49, 53); -- ash-wednesday (older)
+INSERT INTO schedule_services (schedule_id, service_id) VALUES (49, 54); -- ash-wednesday (older)
+INSERT INTO schedule_services (schedule_id, service_id) VALUES (49, 2); -- ash-wednesday (older)
+INSERT INTO schedule_services (schedule_id, service_id) VALUES (49, 18); -- ash-wednesday (older)
+INSERT INTO schedule_services (schedule_id, service_id) VALUES (49, 21); -- ash-wednesday (older)
+INSERT INTO schedule_services (schedule_id, service_id) VALUES (50, 55); -- ash-wednesday (oldest)
+INSERT INTO schedule_services (schedule_id, service_id) VALUES (50, 56); -- ash-wednesday (oldest)
+INSERT INTO schedule_services (schedule_id, service_id) VALUES (50, 18); -- ash-wednesday (oldest)
+INSERT INTO schedule_services (schedule_id, service_id) VALUES (50, 21); -- ash-wednesday (oldest)
+INSERT INTO schedule_services (schedule_id, service_id) VALUES (51, 10); -- good-friday
+INSERT INTO schedule_services (schedule_id, service_id) VALUES (51, 57); -- good-friday
+INSERT INTO schedule_services (schedule_id, service_id) VALUES (51, 58); -- good-friday
+INSERT INTO schedule_services (schedule_id, service_id) VALUES (52, 10); -- good-friday (older)
+INSERT INTO schedule_services (schedule_id, service_id) VALUES (52, 59); -- good-friday (older)
+INSERT INTO schedule_services (schedule_id, service_id) VALUES (52, 60); -- good-friday (older)
+INSERT INTO schedule_services (schedule_id, service_id) VALUES (53, 10); -- good-friday (oldest)
+INSERT INTO schedule_services (schedule_id, service_id) VALUES (53, 61); -- good-friday (oldest)
+INSERT INTO schedule_services (schedule_id, service_id) VALUES (53, 62); -- good-friday (oldest)
 
 --
 -- Define service patterns for seasons, fixed feasts, and moveable feasts that vary by day of the week
@@ -730,62 +770,41 @@ INSERT INTO service_patterns (name, code,
         'easter-day', null, null
     );
 
--- 2016:
--- Mass 7:00 AM
--- Mass 8:00 AM
--- Sung Mass 12:10 PM
--- Solemn Mass 6:00 PM
--- 
--- title 2008-2016:
--- Ash Wednesday
--- 
--- title 2004-2007:
--- The First Day of Lent: Ash Wednesday
--- 
--- services 2013-2015:
--- Mass 7:00 AM
--- Mass 8:00 AM
--- Sung Mass 12:10 PM
--- Solemn Mass 6:00 PM
--- 
--- services 2007-2012:
--- Mass 7:00 AM
--- Mass 8:00 AM
--- Noonday Prayer 12:00 PM
--- Sung Mass 12:10 PM
--- Solemn Mass 6:00 PM
--- 
--- services 2004-2006:
--- Said Mass 7:00 AM
--- Said Mass 8:00 AM
--- Sung Mass 12:10 PM
--- Solemn Mass 6:00 PM
--- 
--- notes 2004-2007:
--- Fast & Abstinence 
--- Ashes are offered from 7:00 AM to 8:00 PM.
--- Weekdays in Lent are observed by special acts of discipline and self-denial.
--- Fridays of Lent are observed by abstinence from flesh meats.
--- 
--- notes 2008-2009:
--- Ashes will be offered throughout the day from 7:00 AM to 8:00 PM.
--- 
--- notes 2010:
--- Imposition of Ashes will be offered throughout the day from 7:00 AM to 8:00 PM.
--- 
--- notes 2011-2012:
--- Fast and Abstinence
--- Imposition of Ashes will be offered throughout the day from 7:00 AM to 8:00 PM.
--- 
--- notes 2013-2015:
--- Fast and Abstinence
--- Imposition of Ashes will be offered throughout the day from 7:00 AM to 8:00 PM.
--- The Daily Office is not offered on this day.
--- 
--- notes 2016:
--- Fast and Abstinence
--- Imposition of Ashes will be offered throughout the day from 7:00 AM to 8:00 PM.
--- The Daily Office is not prayed publicly on this day.
+INSERT INTO service_patterns (name, code,
+        schedule_code_mon, schedule_code_mon_with_vigil, schedule_code_mon_vigil,
+        schedule_code_tue, schedule_code_tue_with_vigil, schedule_code_tue_vigil,
+        schedule_code_wed, schedule_code_wed_with_vigil, schedule_code_wed_vigil,
+        schedule_code_thu, schedule_code_thu_with_vigil, schedule_code_thu_vigil,
+        schedule_code_fri, schedule_code_fri_with_vigil, schedule_code_fri_vigil,
+        schedule_code_sat, schedule_code_sat_with_vigil, schedule_code_sat_vigil,
+        schedule_code_sun, schedule_code_sun_with_vigil, schedule_code_sun_vigil
+    ) VALUES ('Ash Wednesday', 'ash-wednesday',
+        null, null, null,
+        null, null, null,
+        'ash-wednesday', null, null,
+        null, null, null,
+        null, null, null,
+        null, null, null,
+        null, null, null
+    );
+
+INSERT INTO service_patterns (name, code,
+        schedule_code_mon, schedule_code_mon_with_vigil, schedule_code_mon_vigil,
+        schedule_code_tue, schedule_code_tue_with_vigil, schedule_code_tue_vigil,
+        schedule_code_wed, schedule_code_wed_with_vigil, schedule_code_wed_vigil,
+        schedule_code_thu, schedule_code_thu_with_vigil, schedule_code_thu_vigil,
+        schedule_code_fri, schedule_code_fri_with_vigil, schedule_code_fri_vigil,
+        schedule_code_sat, schedule_code_sat_with_vigil, schedule_code_sat_vigil,
+        schedule_code_sun, schedule_code_sun_with_vigil, schedule_code_sun_vigil
+    ) VALUES ('Good Friday', 'good-friday',
+        null, null, null,
+        null, null, null,
+        null, null, null,
+        null, null, null,
+        'good-friday', null, null,
+        null, null, null,
+        null, null, null
+    );
 
 --
 -- Define precedence
@@ -1272,15 +1291,68 @@ INSERT INTO moveable_feasts (name, code, otype_id, placement_index, algorithm,
         'easter', true, 'easter-eve', 'Easter Eve', 'white',
         '2010-12-31 23:59:59' AT TIME ZONE 'America/New_York');
 
+INSERT INTO moveable_feasts (name, code, otype_id, placement_index,
+        algorithm, arg1, arg2, schedule_pattern, color, note,
+        valid_start)
+    VALUES ('Ash Wednesday', 'ash-wednesday', 1, 1, 1,
+        'days_before', 'easter', 40, 'ash-wednesday', 'purple',
+        'Fast and Abstinence
+Imposition of Ashes will be offered throughout the day from 7:00 AM to 8:00 PM.
+The Daily Office is not prayed publicly on this day.',
+        '2013-01-01 00:00:00' AT TIME ZONE 'America/New_York');
+
+INSERT INTO moveable_feasts (name, code, otype_id, placement_index,
+        algorithm, arg1, arg2, schedule_pattern, color, note,
+        valid_start, valid_end)
+    VALUES ('Ash Wednesday', 'ash-wednesday', 1, 1, 1,
+        'days_before', 'easter', 40, 'ash-wednesday', 'purple',
+        'Fast and Abstinence
+Imposition of Ashes will be offered throughout the day from 7:00 AM to 8:00 PM.',
+        '2008-01-01 00:00:00' AT TIME ZONE 'America/New_York',
+        '2012-12-31 23:59:59' AT TIME ZONE 'America/New_York');
+
+INSERT INTO moveable_feasts (name, code, otype_id, placement_index,
+        algorithm, arg1, arg2, schedule_pattern, color, note,
+        valid_end)
+    VALUES ('The First Day of Lent: Ash Wednesday', 'ash-wednesday', 1, 1, 1,
+        'days_before', 'easter', 40, 'ash-wednesday', 'purple',
+        'Fast & Abstinence
+Ashes are offered from 7:00 AM to 8:00 PM.
+Weekdays in Lent are observed by special acts of discipline and self-denial.
+Fridays of Lent are observed by abstinence from flesh meats.',
+        '2007-12-31 23:59:59' AT TIME ZONE 'America/New_York');
+
+INSERT INTO moveable_feasts (name, code, otype_id, placement_index, algorithm, arg1, arg2,
+        schedule_pattern, has_eve, eve_schedule_pattern, eve_name, color, note,
+        valid_start)
+    VALUES ('Good Friday', 'good-friday', 1, 1, 1, 'days_before', 2, 'easter',
+        'good-friday', true, 'red', 'Fast & Abstinence
+The parish clergy hear confessions following the liturgies.',
+        '2014-01-01 00:00:00' AT TIME ZONE 'America/New_York');
+
+INSERT INTO moveable_feasts (name, code, otype_id, placement_index, algorithm, arg1, arg2,
+        schedule_pattern, has_eve, eve_schedule_pattern, eve_name, color, note,
+        valid_start, valid_end)
+    VALUES ('Good Friday', 'good-friday', 1, 1, 1, 'days_before', 2, 'easter',
+        'good-friday', true, 'red', 'Fast & Friday Abstinence
+Confessions are heard following the liturgies.',
+        '2011-01-01 00:00:00' AT TIME ZONE 'America/New_York',
+        '2013-12-31 23:59:59' AT TIME ZONE 'America/New_York');
+
+INSERT INTO moveable_feasts (name, code, otype_id, placement_index, algorithm, arg1, arg2,
+        schedule_pattern, has_eve, eve_schedule_pattern, eve_name, color, note,
+        valid_end)
+    VALUES ('Good Friday', 'good-friday', 1, 1, 1, 'days_before', 2, 'easter',
+        'good-friday', true, 'red', 'Fast & Lenten Abstinence
+The Good Friday Liturgy is celebrated twice for the pastoral needs of the community.
+Confessions are heard following both liturgies by the parish clergy.',
+        '2010-12-31 23:59:59' AT TIME ZONE 'America/New_York');
+
+
 -- TODO: Remaining moveable feasts
 
--- INSERT INTO moveable_feasts (name, code, otype_id, placement_index,
---         algorithm, arg1, arg2, schedule_pattern, color)
---     VALUES ('Ash Wednesday', 'ash-wednesday', 1, 1, 1,
---         'days_before', 'easter', 40, 'ash-wednesday', 'purple');
-
--- Ash Wednesday
--- Good Friday
+-- Holy Saturday
+-- Maundy Thursday
 -- Ascension Day
 -- Day of Pentecost
 -- Trinity Sunday
@@ -1341,6 +1413,16 @@ INSERT INTO moveable_feasts (name, code, otype_id, placement_index, algorithm,
 -- 9/11 Requiem
 -- Willibrord, Archbishop of Utrecht, Missionary to Frisia, 739 missing in 2006
 -- Anniversary of the Dedication of the Church sometimes has an eve and occasionally a nonstandard Mass
+
+-- todo: special case in 2004:
+-- GOOD FRIDAY
+-- Morning Prayer 8:30 AM
+-- THE CELEBRATION OF THE PASSION OF THE LORD 12:30 PM
+-- THE CELEBRATION OF THE PASSION OF THE LORD 6:00 PM
+-- Fast & Abstinence
+-- The Good Friday Liturgy is celebrated twice for the pastoral needs of the community.
+-- Confessions are heard following both liturgies by the parish clergy.
+-- Evening Prayer is only said by those who are not able to participate in the Celebration of the Passion of the Lord.
 
 -- rambler down
 

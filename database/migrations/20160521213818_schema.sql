@@ -200,6 +200,8 @@ DROP TABLE schedule_services;
 DROP TABLE schedules;
 DROP TABLE services;
 
+-- todo: distinguish notes from abstinence notes
+
 -- todo: movable notes
 -- in January: 'Birthday of Martin Luther King, Jr. – Federal Holiday Schedule<br />The church opens today at 10:00 AM and closes at 2:00 PM.'
 -- in February: 'Washington’s Birthday – Federal Holiday Schedule<br />The church opens today at 10:00 AM and closes at 2:00 PM.'
@@ -219,7 +221,15 @@ DROP TABLE services;
 -- Willibrord, Archbishop of Utrecht, Missionary to Frisia, 739 missing in 2006
 -- Anniversary of the Dedication of the Church sometimes has an eve and occasionally a nonstandard Mass
 
--- todo: special case in 2004:
+-- todo: special cases in 2004:
+
+-- MAUNDY THURSDAY
+-- Morning Prayer 8:30 AM
+-- There is no 12:15 PM Mass today.
+-- THE EVENING MASS OF THE LORD'S SUPPER 6:00 PM
+-- The Watch Before the Blessed Sacrament follows the liturgy.
+-- Evening Prayer is said only by those who are unable to participate in the Evening Mass of the Lord's Supper.
+
 -- GOOD FRIDAY
 -- Morning Prayer 8:30 AM
 -- THE CELEBRATION OF THE PASSION OF THE LORD 12:30 PM

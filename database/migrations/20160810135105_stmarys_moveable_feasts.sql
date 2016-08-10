@@ -86,13 +86,29 @@ INSERT INTO moveable_feasts (name, code, otype_id, placement_index, algorithm, a
         'holy-saturday', 'red', null,
         '2010-12-31 23:59:59' AT TIME ZONE 'America/New_York');
 
+INSERT INTO moveable_feasts (name, code, otype_id, placement_index, algorithm, arg1, arg2,
+        schedule_pattern, color, note,
+        valid_start)
+    VALUES ('Maundy Thursday', 'maundy-thursday', 1, 3, 'days_before', 3, 'easter',
+        'maundy-thursday', 'white', 'Abstinence
+There are no noonday services today.
+The Watch Before the Blessed Sacrament follows the Mass.',
+        '2011-01-01 00:00:00' AT TIME ZONE 'America/New_York');
+
+INSERT INTO moveable_feasts (name, code, otype_id, placement_index, algorithm, arg1, arg2,
+        schedule_pattern, color, note,
+        valid_end)
+    VALUES ('Maundy Thursday', 'maundy-thursday', 1, 3, 'days_before', 3, 'easter',
+        'maundy-thursday', 'white', 'There are no noonday services today.
+The Watch Before the Blessed Sacrament follows the Mass.',
+        '2010-12-31 23:59:59' AT TIME ZONE 'America/New_York');
+
 -- rambler down
 
 TRUNCATE TABLE moveable_feasts RESTART IDENTITY;
 
 -- TODO: Remaining moveable feasts
 
--- Maundy Thursday
 -- Ascension Day
 -- Day of Pentecost
 -- Trinity Sunday

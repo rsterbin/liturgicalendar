@@ -67,6 +67,8 @@ INSERT INTO services (name, start_time, is_default) VALUES ('Celebration of the 
 INSERT INTO services (name, start_time, is_default) VALUES ('Celebration of the Passion', '18:00:00', false); -- 60
 INSERT INTO services (name, start_time, is_default) VALUES ('The Celebration of the Passion of the Lord', '12:30:00', false); -- 61
 INSERT INTO services (name, start_time, is_default) VALUES ('The Celebration of the Passion of the Lord', '18:00:00', false); -- 62
+INSERT INTO services (name, start_time, is_default) VALUES ('The Holy Eucharist', '18:00:00', false); -- 63
+INSERT INTO services (name, start_time, is_default) VALUES ('Evening Mass of the Lord’s Supper', '18:00:00', false); -- 64
 
 --
 -- Define types of service schedules
@@ -126,6 +128,9 @@ INSERT INTO schedules (name, code, is_default, valid_start) VALUES ('Good Friday
 INSERT INTO schedules (name, code, is_default, valid_start, valid_end) VALUES ('Good Friday', 'good-friday', true, '2011-01-01 00:00:00' AT TIME ZONE 'America/New_York', '2014-12-31 23:59:59' AT TIME ZONE 'America/New_York'); -- 52
 INSERT INTO schedules (name, code, is_default, valid_end) VALUES ('Good Friday', 'good-friday', true, '2010-12-31 23:59:59' AT TIME ZONE 'America/New_York'); -- 53
 INSERT INTO schedules (name, code, is_default) VALUES ('Holy Saturday', 'holy-saturday', true); -- 54
+
+INSERT INTO schedules (name, code, is_default, valid_start) VALUES ('Maundy Thursday', 'maundy-thursday', true, '2015-01-01 00:00:00' AT TIME ZONE 'America/New_York'); -- 55
+INSERT INTO schedules (name, code, is_default, valid_end) VALUES ('Maundy Thursday', 'maundy-thursday', true, '2014-12-31 23:59:59' AT TIME ZONE 'America/New_York'); -- 56
 
 --
 -- Map services to schedules
@@ -316,6 +321,10 @@ INSERT INTO schedule_services (schedule_id, service_id) VALUES (53, 10); -- good
 INSERT INTO schedule_services (schedule_id, service_id) VALUES (53, 61); -- good-friday (oldest)
 INSERT INTO schedule_services (schedule_id, service_id) VALUES (53, 62); -- good-friday (oldest)
 INSERT INTO schedule_services (schedule_id, service_id) VALUES (54, 10); -- holy-saturday
+INSERT INTO schedule_services (schedule_id, service_id) VALUES (55, 10); -- maundy-thursday
+INSERT INTO schedule_services (schedule_id, service_id) VALUES (55, 63); -- maundy-thursday
+INSERT INTO schedule_services (schedule_id, service_id) VALUES (56, 10); -- maundy-thursday (old)
+INSERT INTO schedule_services (schedule_id, service_id) VALUES (56, 64); -- maundy-thursday (old)
 
 --
 -- Define service patterns for seasons, fixed feasts, and moveable feasts, as
@@ -758,6 +767,24 @@ INSERT INTO service_patterns (name, code,
         null, null, null,
         null, null, null,
         null, 'holy-saturday', null,
+        null, null, null,
+        null, null, null
+    );
+
+INSERT INTO service_patterns (name, code,
+        schedule_code_mon, schedule_code_mon_with_vigil, schedule_code_mon_vigil,
+        schedule_code_tue, schedule_code_tue_with_vigil, schedule_code_tue_vigil,
+        schedule_code_wed, schedule_code_wed_with_vigil, schedule_code_wed_vigil,
+        schedule_code_thu, schedule_code_thu_with_vigil, schedule_code_thu_vigil,
+        schedule_code_fri, schedule_code_fri_with_vigil, schedule_code_fri_vigil,
+        schedule_code_sat, schedule_code_sat_with_vigil, schedule_code_sat_vigil,
+        schedule_code_sun, schedule_code_sun_with_vigil, schedule_code_sun_vigil
+    ) VALUES ('Maundy Thursday', 'maundy-thursday',
+        null, null, null,
+        null, null, null,
+        null, null, null,
+        'maundy-thursday', null, null,
+        null, null, null,
         null, null, null,
         null, null, null
     );

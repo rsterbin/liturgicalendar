@@ -47,43 +47,43 @@ Fridays of Lent are observed by abstinence from flesh meats.',
         '2007-12-31 23:59:59' AT TIME ZONE 'America/New_York');
 
 INSERT INTO moveable_feasts (name, code, otype_id, placement_index, algorithm, arg1, arg2,
-        schedule_pattern, has_eve, eve_schedule_pattern, eve_name, color, note,
+        schedule_pattern, color, note,
         valid_start)
     VALUES ('Good Friday', 'good-friday', 1, 2, 'days_before', 2, 'easter',
-        'good-friday', true, 'red', 'Fast & Abstinence
+        'good-friday', 'red', 'Fast & Abstinence
 The parish clergy hear confessions following the liturgies.',
         '2014-01-01 00:00:00' AT TIME ZONE 'America/New_York');
 
 INSERT INTO moveable_feasts (name, code, otype_id, placement_index, algorithm, arg1, arg2,
-        schedule_pattern, has_eve, eve_schedule_pattern, eve_name, color, note,
+        schedule_pattern, color, note,
         valid_start, valid_end)
     VALUES ('Good Friday', 'good-friday', 1, 2, 'days_before', 2, 'easter',
-        'good-friday', true, 'black', 'Fast & Friday Abstinence
+        'good-friday', 'black', 'Fast & Friday Abstinence
 Confessions are heard following the liturgies.',
         '2011-01-01 00:00:00' AT TIME ZONE 'America/New_York',
         '2013-12-31 23:59:59' AT TIME ZONE 'America/New_York');
 
 INSERT INTO moveable_feasts (name, code, otype_id, placement_index, algorithm, arg1, arg2,
-        schedule_pattern, has_eve, eve_schedule_pattern, eve_name, color, note,
+        schedule_pattern, color, note,
         valid_end)
     VALUES ('Good Friday', 'good-friday', 1, 2, 'days_before', 2, 'easter',
-        'good-friday', true, 'red', 'Fast & Lenten Abstinence
+        'good-friday', 'red', 'Fast & Lenten Abstinence
 The Good Friday Liturgy is celebrated twice for the pastoral needs of the community.
 Confessions are heard following both liturgies by the parish clergy.',
         '2010-12-31 23:59:59' AT TIME ZONE 'America/New_York');
 
 INSERT INTO moveable_feasts (name, code, otype_id, placement_index, algorithm, arg1, arg2,
-        schedule_pattern, has_eve, eve_schedule_pattern, eve_name, color, note,
+        schedule_pattern, color, note,
         valid_start)
     VALUES ('Holy Saturday', 'holy-saturday', 1, 3, 'days_before', 1, 'easter',
-        'holy-saturday', true, 'red', 'Abstinence',
+        'holy-saturday', 'red', 'Abstinence',
         '2011-01-01 00:00:00' AT TIME ZONE 'America/New_York');
 
 INSERT INTO moveable_feasts (name, code, otype_id, placement_index, algorithm, arg1, arg2,
-        schedule_pattern, has_eve, eve_schedule_pattern, eve_name, color, note,
+        schedule_pattern, color, note,
         valid_end)
     VALUES ('Holy Saturday', 'holy-saturday', 1, 3, 'days_before', 1, 'easter',
-        'holy-saturday', true, 'red', null,
+        'holy-saturday', 'red', null,
         '2010-12-31 23:59:59' AT TIME ZONE 'America/New_York');
 
 -- rambler down

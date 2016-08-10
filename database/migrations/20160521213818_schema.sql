@@ -100,11 +100,9 @@ CREATE TABLE liturigal_seasons (
     code text NOT NULL,
     color text NOT NULL,
     sort_order integer NOT NULL,
+    calculate_from text NOT NULL,
     algorithm text NOT NULL,
-    arg1 text,
-    arg2 text,
-    arg3 text,
-    arg4 text,
+    distance integer,
     weekday_precedence integer NOT NULL,
     has_rose_sunday boolean NOT NULL,
     has_last_sunday boolean NOT NULL DEFAULT FALSE,
@@ -125,7 +123,8 @@ CREATE TABLE liturigal_seasons (
     default_note_fri text,
     default_note_sat text,
     default_note_sun text,
-    CONSTRAINT liturigal_seasons_pk PRIMARY KEY (season_id)
+    CONSTRAINT liturigal_seasons_pk PRIMARY KEY (season_id),
+    CONSTRAINT liturigal_seasons_calc_from CHECK (calculate_from IN ('easter', 'christmas', NULL))
 );
 
 --
@@ -168,11 +167,9 @@ CREATE TABLE moveable_feasts (
     code text NOT NULL,
     otype_id integer NOT NULL,
     placement_index integer,
+    calculate_from text NOT NULL,
     algorithm text NOT NULL,
-    arg1 text,
-    arg2 text,
-    arg3 text,
-    arg4 text,
+    distance integer,
     schedule_pattern text,
     has_eve boolean NOT NULL DEFAULT FALSE,
     eve_schedule_pattern text,
@@ -184,7 +181,8 @@ CREATE TABLE moveable_feasts (
     CONSTRAINT moveable_feasts_pk PRIMARY KEY (moveable_id),
     CONSTRAINT moveable_feasts_otype_fk FOREIGN KEY (otype_id)
         REFERENCES observance_types (otype_id)
-        ON DELETE RESTRICT ON UPDATE NO ACTION
+        ON DELETE RESTRICT ON UPDATE NO ACTION,
+    CONSTRAINT moveable_feasts_calc_from CHECK (calculate_from IN ('easter', 'christmas', NULL))
 );
 
 CREATE INDEX moveable_feasts_code_idx ON moveable_feasts (code);

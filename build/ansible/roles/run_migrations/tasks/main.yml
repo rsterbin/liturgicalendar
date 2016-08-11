@@ -1,0 +1,7 @@
+---
+# Runs all the available database migrations
+
+- name: run rambler apply-all
+  command: "rambler -c {{ codebase_dest }}/database/config.json apply -a"
+
+...

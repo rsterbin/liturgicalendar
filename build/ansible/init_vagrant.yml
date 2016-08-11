@@ -1,4 +1,5 @@
 ---
+# Initializes the vagrant environment
 - hosts: tag_type_db
   roles:
     - common
@@ -26,6 +27,7 @@
       }
     - dbprivs
     - rambler
+    - run_migrations
 
 - hosts: tag_type_back
   roles:

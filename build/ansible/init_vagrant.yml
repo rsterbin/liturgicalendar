@@ -33,6 +33,7 @@
   roles:
     - common
     - { role: nodesource.node, become: true }
+    - calendar_builder
 
 - hosts: tag_type_front
   roles:

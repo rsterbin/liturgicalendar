@@ -791,10 +791,13 @@ INSERT INTO service_patterns (name, code,
 
 -- rambler down
 
-TRUNCATE TABLE service_patterns RESTART IDENTITY;
-TRUNCATE TABLE schedule_services RESTART IDENTITY;
-TRUNCATE TABLE schedules RESTART IDENTITY;
-TRUNCATE TABLE services RESTART IDENTITY;
+DELETE FROM service_patterns;
+ALTER SEQUENCE service_patterns_pattern_id_seq RESTART;
+DELETE FROM schedule_services;
+DELETE FROM schedules;
+ALTER SEQUENCE schedules_schedule_id_seq RESTART;
+DELETE FROM services;
+ALTER SEQUENCE services_service_id_seq RESTART;
 
 -- todo: old summer sunday schedule
 -- todo: old weekday schedule (with 6:20 Mass after evening prayer)

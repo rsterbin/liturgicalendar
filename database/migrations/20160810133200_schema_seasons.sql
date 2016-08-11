@@ -16,7 +16,6 @@ CREATE TABLE liturigal_seasons (
     algorithm text NOT NULL,
     distance integer,
     weekday_precedence integer NOT NULL,
-    has_rose_sunday boolean NOT NULL,
     has_last_sunday boolean NOT NULL DEFAULT FALSE,
     continue_counting boolean NOT NULL,
     schedule_pattern text NOT NULL,

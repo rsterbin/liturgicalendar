@@ -26,8 +26,7 @@ INSERT INTO moveable_feasts (name, code, otype_id, placement_index,
         valid_start)
     VALUES ('Ash Wednesday', 'ash-wednesday', 1, 2,
         'easter', 'days_before', 40,
-        'ash-wednesday', 'purple',
-        'Fast and Abstinence
+        'ash-wednesday', 'purple', 'Fast and Abstinence
 Imposition of Ashes will be offered throughout the day from 7:00 AM to 8:00 PM.
 The Daily Office is not prayed publicly on this day.',
         '2013-01-01 00:00:00' AT TIME ZONE 'America/New_York');
@@ -38,8 +37,7 @@ INSERT INTO moveable_feasts (name, code, otype_id, placement_index,
         valid_start, valid_end)
     VALUES ('Ash Wednesday', 'ash-wednesday', 1, 2,
         'easter', 'days_before', 40,
-        'ash-wednesday', 'purple',
-        'Fast and Abstinence
+        'ash-wednesday', 'purple', 'Fast and Abstinence
 Imposition of Ashes will be offered throughout the day from 7:00 AM to 8:00 PM.',
         '2008-01-01 00:00:00' AT TIME ZONE 'America/New_York',
         '2012-12-31 23:59:59' AT TIME ZONE 'America/New_York');
@@ -118,6 +116,7 @@ The Watch Before the Blessed Sacrament follows the Mass.',
         '2011-01-01 00:00:00' AT TIME ZONE 'America/New_York');
 
 INSERT INTO moveable_feasts (name, code, otype_id, placement_index,
+        calculate_from, algorithm, distance,
         schedule_pattern, color, note,
         valid_end)
     VALUES ('Maundy Thursday', 'maundy-thursday', 1, 3,

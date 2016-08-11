@@ -2,3 +2,4 @@ build/dev-vagrant/.vagrant
 build/dev-vagrant/hosts
 .*.swp
 build/ansible/*.retry
+database/config.json

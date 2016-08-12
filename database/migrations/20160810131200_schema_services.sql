@@ -97,5 +97,5 @@ DROP TABLE service_patterns;
 DROP TABLE schedule_services;
 DROP TABLE schedules;
 DROP TABLE services;
-DROP FUNCTION valid_for_date;
+DROP FUNCTION valid_for_date(given timestamp with time zone, valid_start timestamp with time zone, valid_end timestamp with time zone);
 

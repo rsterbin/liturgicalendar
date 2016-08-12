@@ -76,6 +76,21 @@ CREATE TABLE service_patterns (
 
 CREATE INDEX service_patterns_code_idx ON service_patterns (code, valid_start, valid_end);
 
+--
+-- This function makes it easier to pull the right schedules and service patterns
+--
+
+CREATE FUNCTION valid_for_date(
+    given timestamp with time zone,
+    valid_start timestamp with time zone,
+    valid_end timestamp with time zone
+) RETURNS boolean AS '
+    SELECT ( $2 is null and $3 is null )
+        or ( $2 is null and $3 > $1 )
+        or ( $3 is null and $2 < $1 )
+        or ( $2 is not null and $3 is not null and $1 between $2 and $3 );'
+    LANGUAGE SQL;
+
 -- rambler down
 
 DROP TABLE service_patterns;

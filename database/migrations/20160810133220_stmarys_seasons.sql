@@ -40,7 +40,7 @@ INSERT INTO liturigal_seasons (name, code, color, sort_order,
         default_note_mon, default_note_tue, default_note_wed, default_note_thu,
         default_note_fri, default_note_sat, default_note_sun
     ) VALUES ('Ordinary Time After Epiphany', 'after-epiphany', 'green', 2,
-        'easter', 'days_before', 40, 60, true, false, 'standard',
+        'easter', 'tuesdays_before', 7, 60, true, false, 'standard',
         'Weekday', 'Weekday', 'Weekday', 'Weekday',
         'Weekday', 'Weekday', 'Eve of the %s Sunday after the Epiphany', 'The %s Sunday after the Epiphany',
         NULL, NULL, NULL, NULL,

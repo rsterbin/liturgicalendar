@@ -80,7 +80,7 @@ CREATE INDEX service_patterns_code_idx ON service_patterns (code, valid_start, v
 -- This function makes it easier to pull the right schedules and service patterns
 --
 
-CREATE FUNCTION valid_for_date(
+CREATE OR REPLACE FUNCTION valid_for_date(
     given timestamp with time zone,
     valid_start timestamp with time zone,
     valid_end timestamp with time zone
@@ -97,4 +97,5 @@ DROP TABLE service_patterns;
 DROP TABLE schedule_services;
 DROP TABLE schedules;
 DROP TABLE services;
+DROP FUNCTION valid_for_date(given timestamp with time zone, valid_start timestamp with time zone, valid_end timestamp with time zone);
 

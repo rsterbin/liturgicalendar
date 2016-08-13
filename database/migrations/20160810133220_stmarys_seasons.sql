@@ -34,13 +34,13 @@ INSERT INTO liturigal_seasons (name, code, color, sort_order,
     );
 
 INSERT INTO liturigal_seasons (name, code, color, sort_order,
-        calculate_from, algorithm, weekday_precedence, has_last_sunday, continue_counting, schedule_pattern,
+        calculate_from, algorithm, distance, weekday_precedence, has_last_sunday, continue_counting, schedule_pattern,
         name_pattern_mon, name_pattern_tue, name_pattern_wed, name_pattern_thu,
         name_pattern_fri, name_pattern_sat, name_pattern_sat_vigil, name_pattern_sun,
         default_note_mon, default_note_tue, default_note_wed, default_note_thu,
         default_note_fri, default_note_sat, default_note_sun
     ) VALUES ('Ordinary Time After Epiphany', 'after-epiphany', 'green', 2,
-        'easter', 'days_before', 40, true, false, 'standard',
+        'easter', 'tuesdays_before', 7, 60, true, false, 'standard',
         'Weekday', 'Weekday', 'Weekday', 'Weekday',
         'Weekday', 'Weekday', 'Eve of the %s Sunday after the Epiphany', 'The %s Sunday after the Epiphany',
         NULL, NULL, NULL, NULL,

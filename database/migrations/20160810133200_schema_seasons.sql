@@ -13,6 +13,7 @@ CREATE TABLE liturigal_seasons (
     color text NOT NULL,
     sort_order integer NOT NULL,
     calculate_from text NOT NULL,
+    church_year integer NOT NULL DEFAULT 0,
     algorithm text NOT NULL,
     distance integer,
     weekday_precedence integer NOT NULL,

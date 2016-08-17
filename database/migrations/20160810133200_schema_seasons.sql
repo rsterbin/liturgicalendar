@@ -13,6 +13,7 @@ CREATE TABLE liturigal_seasons (
     color text NOT NULL,
     sort_order integer NOT NULL,
     calculate_from text NOT NULL,
+    church_year integer NOT NULL DEFAULT 0,
     algorithm text NOT NULL,
     distance integer,
     weekday_precedence integer NOT NULL,
@@ -35,7 +36,7 @@ CREATE TABLE liturigal_seasons (
     default_note_sat text,
     default_note_sun text,
     CONSTRAINT liturigal_seasons_pk PRIMARY KEY (season_id),
-    CONSTRAINT liturigal_seasons_calc_from CHECK (calculate_from IN ('easter', 'christmas-before', 'christmas-after', NULL))
+    CONSTRAINT liturigal_seasons_calc_from CHECK (calculate_from IN ('easter', 'christmas', NULL))
 );
 
 -- rambler down

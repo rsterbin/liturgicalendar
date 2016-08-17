@@ -35,7 +35,7 @@ CREATE TABLE liturigal_seasons (
     default_note_sat text,
     default_note_sun text,
     CONSTRAINT liturigal_seasons_pk PRIMARY KEY (season_id),
-    CONSTRAINT liturigal_seasons_calc_from CHECK (calculate_from IN ('easter', 'christmas', NULL))
+    CONSTRAINT liturigal_seasons_calc_from CHECK (calculate_from IN ('easter', 'christmas-before', 'christmas-after', NULL))
 );
 
 -- rambler down

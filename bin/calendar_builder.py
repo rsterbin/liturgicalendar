@@ -71,17 +71,18 @@ class boundary_algorithms:
         return holiday_date - datetime.timedelta(days=holiday_date.weekday()) + datetime.timedelta(days=5, weeks=-1*number)
 
 cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
-cur.execute("select name, code, color, calculate_from, algorithm, distance from liturigal_seasons order by sort_order")
+cur.execute("select name, code, color, calculate_from, church_year, algorithm, distance from liturigal_seasons order by sort_order")
 seasons = cur.fetchall()
 
 for row in seasons:
     print row['name'] + ' // ' + row['calculate_from'] + ' // ' + row['algorithm'] + ' // ' + str(row['distance'])
     if row['calculate_from'] == 'easter':
         holiday = EASTER
-    elif row['calculate_from'] == 'christmas-before':
-        holiday = CHRISTMAS1
-    else:
-        holiday = CHRISTMAS2
+    elif row['calculate_from'] == 'christmas':
+        if row['church_year'] == 0:
+            holiday = CHRISTMAS1
+        else:
+            holiday = CHRISTMAS2
     end_date = getattr(boundary_algorithms, row['algorithm'])(holiday, row['distance'])
     print 'Ends: ' + end_date.strftime('%m/%d/%Y')
 

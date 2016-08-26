@@ -29,7 +29,15 @@ except:
     sys.exit(2)
 
 # Calculate for the church year starting with Advent 2014
-CALC_YEAR = 2012
+CALC_YEAR = 2014
+
+# Listings we'll be filling in
+full_year = {}
+base_day = {
+    'season': '',
+    'holiday_day': '',
+    'holiday_eve': '',
+}
 
 # Start by pinning down Easter and Christmas
 CHRISTMAS1 = datetime.date(CALC_YEAR, 12, 25)
@@ -70,9 +78,19 @@ class boundary_algorithms:
         "Finds the nth Saturday before the holiday"
         return holiday_date - datetime.timedelta(days=holiday_date.weekday()) + datetime.timedelta(days=5, weeks=-1*number)
 
+# Arbitrary rule: seasons for a year are noted valid for the Christmas of that
+# church year.
+#  e.g., to change the summer schedule boundaries starting in 2005, set valid_end
+#  to any date between 2003-12-26 and 2004-12-24.
 cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
-cur.execute("select name, code, color, calculate_from, church_year, algorithm, distance from liturigal_seasons order by sort_order")
+cur.execute("SELECT name, code, color, calculate_from, church_year, algorithm, distance " +
+    "FROM liturigal_seasons " +
+    "WHERE valid_for_date(%(christmas)s, valid_start, valid_end) " +
+    "ORDER BY sort_order",
+    { "christmas": CHRISTMAS1.strftime('%Y-%m-%d') })
 seasons = cur.fetchall()
+
+seasons_by_code = {}
 
 for row in seasons:
     print row['name'] + ' // ' + row['calculate_from'] + ' // ' + row['algorithm'] + ' // ' + str(row['distance'])
@@ -85,4 +103,12 @@ for row in seasons:
             holiday = CHRISTMAS2
     end_date = getattr(boundary_algorithms, row['algorithm'])(holiday, row['distance'])
     print 'Ends: ' + end_date.strftime('%m/%d/%Y')
+    seasons_by_code[row['code']] = {
+        'name': row['name'],
+        'code': row['code'],
+        'color': row['color'],
+        'end_date': end_date,
+    }
+
+print seasons_by_code
 

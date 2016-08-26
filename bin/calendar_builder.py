@@ -11,40 +11,7 @@ import sys
 # This is the hacky first version for getting the basic work laid down.  It can
 # be broken into reasonably sized modules later.
 
-# Connect to the database
-DB_CONFIG_PATH = os.path.dirname(os.path.realpath(__file__)) + '/config.json'
-cfg = {}
-try:
-    with open(DB_CONFIG_PATH) as f:
-        config_json = f.read()
-        cfg = json.loads(config_json)
-except IOError:
-    print "Cannot find database configuration"
-    sys.exit(1)
-DB_DSN = "host='%s' dbname='%s' user='%s' password='%s'" %(cfg.get('host'), cfg.get('database'), cfg.get('user'), cfg.get('password'))
-try:
-    conn = psycopg2.connect(DB_DSN)
-except:
-    print "Cannot connect to the database"
-    sys.exit(2)
-
-# Calculate for the church year starting with Advent 2014
-CALC_YEAR = 2014
-
-# Listings we'll be filling in
-full_year = {}
-base_day = {
-    'season': '',
-    'holiday_day': '',
-    'holiday_eve': '',
-}
-
-# Start by pinning down Easter and Christmas
-CHRISTMAS1 = datetime.date(CALC_YEAR, 12, 25)
-EASTER = easter(CALC_YEAR + 1)
-CHRISTMAS2 = datetime.date(CALC_YEAR + 1, 12, 25)
-
-# Calculate the season boundries
+# Class for calculating the season boundries
 class boundary_algorithms:
     "Algorithms for calculating season boundaries"
 
@@ -78,37 +45,84 @@ class boundary_algorithms:
         "Finds the nth Saturday before the holiday"
         return holiday_date - datetime.timedelta(days=holiday_date.weekday()) + datetime.timedelta(days=5, weeks=-1*number)
 
-# Arbitrary rule: seasons for a year are noted valid for the Christmas of that
-# church year.
-#  e.g., to change the summer schedule boundaries starting in 2005, set valid_end
-#  to any date between 2003-12-26 and 2004-12-24.
+# Function to determine a season's end date
+def get_season_end(season, year):
+    "Gets the end date for a season and a year"
+    if season['calculate_from'] == 'easter':
+        holiday = easter(year + season['holiday_year'])
+    elif season['calculate_from'] == 'christmas':
+        holiday = datetime.date(year + season['holiday_year'], 12, 25)
+    return getattr(boundary_algorithms, season['algorithm'])(holiday, season['distance'])
+
+# Connect to the database
+DB_CONFIG_PATH = os.path.dirname(os.path.realpath(__file__)) + '/config.json'
+cfg = {}
+try:
+    with open(DB_CONFIG_PATH) as f:
+        config_json = f.read()
+        cfg = json.loads(config_json)
+except IOError:
+    print "Cannot find database configuration"
+    sys.exit(1)
+DB_DSN = "host='%s' dbname='%s' user='%s' password='%s'" %(cfg.get('host'), cfg.get('database'), cfg.get('user'), cfg.get('password'))
+try:
+    conn = psycopg2.connect(DB_DSN)
+except:
+    print "Cannot connect to the database"
+    sys.exit(2)
+
+# Calculate for 2014
+CALC_YEAR = 2014
+
+# Listings we'll be filling in
+full_year = {}
+base_day = {
+    'season': '',
+    'holiday_day': '',
+    'holiday_eve': '',
+}
+
+# Arbitrary rule: seasons for a year are noted valid for the first of that year,
+# even though the church year properly begins with Advent.
 cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
-cur.execute("SELECT name, code, color, calculate_from, church_year, algorithm, distance " +
+cur.execute("SELECT name, code, color, calculate_from, holiday_year, algorithm, distance " +
     "FROM liturigal_seasons " +
-    "WHERE valid_for_date(%(christmas)s, valid_start, valid_end) " +
+    "WHERE valid_for_date(%(jan_first)s, valid_start, valid_end) " +
     "ORDER BY sort_order",
-    { "christmas": CHRISTMAS1.strftime('%Y-%m-%d') })
-seasons = cur.fetchall()
+    { "jan_first": datetime.date(CALC_YEAR, 1, 1).strftime('%Y-%m-%d') })
+all_seasons = cur.fetchall()
 
 seasons_by_code = {}
+season_loop = []
 
-for row in seasons:
-    print row['name'] + ' // ' + row['calculate_from'] + ' // ' + row['algorithm'] + ' // ' + str(row['distance'])
-    if row['calculate_from'] == 'easter':
-        holiday = EASTER
-    elif row['calculate_from'] == 'christmas':
-        if row['church_year'] == 0:
-            holiday = CHRISTMAS1
+for row in all_seasons:
+    seasons_by_code[row['code']] = row
+    season_loop.append(row['code'])
+
+# The year starts in the Christmas season of the previous year.
+current_season = {
+    'index': 0,
+    'started': datetime.date(CALC_YEAR - 1, 12, 25),
+    'ends': get_season_end(seasons_by_code['christmas'], CALC_YEAR),
+    'code': 'christmas',
+    'color': seasons_by_code['christmas']['color'],
+}
+current_day = datetime.date(CALC_YEAR, 1, 1)
+current_year = CALC_YEAR
+
+while current_day.year == CALC_YEAR:
+    print current_day.strftime('%m/%d/%Y') + ': SEASON ' + current_season['code'] + ' // COLOR ' + current_season['color']
+    current_day = current_day + datetime.timedelta(days=1)
+    if (current_day > current_season['ends']):
+        if (current_season['index'] + 1 < len(season_loop)):
+            current_season['index'] = current_season['index'] + 1
         else:
-            holiday = CHRISTMAS2
-    end_date = getattr(boundary_algorithms, row['algorithm'])(holiday, row['distance'])
-    print 'Ends: ' + end_date.strftime('%m/%d/%Y')
-    seasons_by_code[row['code']] = {
-        'name': row['name'],
-        'code': row['code'],
-        'color': row['color'],
-        'end_date': end_date,
-    }
-
-print seasons_by_code
+            current_season['index'] = 0
+            current_year += 1
+        print '----------- season boundary -----------'
+        code = season_loop[current_season['index']]
+        current_season['started'] = current_day
+        current_season['ends'] = get_season_end(seasons_by_code[code], current_year)
+        current_season['code'] = code
+        current_season['color'] = seasons_by_code[code]['color']
 

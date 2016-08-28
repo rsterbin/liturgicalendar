@@ -7,4 +7,8 @@ github_deploy_private_key: "{{ github_vagrant_deploy_private_key }}"
 github_deploy_public_key: "{{ github_vagrant_deploy_public_key }}"
 # github_vagrant_deploy_private_key: # see secrets.yml
 # github_vagrant_deploy_public_key: # see secrets.yml
+
+db_owner_password: "{{ db_owner_password_dev }}"
+db_admin_password: "{{ db_admin_password_dev }}"
+db_user_password: "{{ db_user_password_dev }}"
 ...

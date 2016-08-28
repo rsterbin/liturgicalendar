@@ -22,7 +22,7 @@
 
 - name: drop the config file
   template:
-    dest: "{{ codebase_dest }}/bin/config.json"
-    src: ../templates/config.json.j2
+    dest: "{{ codebase_dest }}/bin/config.yml"
+    src: ../templates/config.yml.j2
 
 ...

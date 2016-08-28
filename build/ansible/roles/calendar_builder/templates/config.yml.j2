@@ -1,0 +1,18 @@
+---
+# Config file for the calendar builder
+
+# This file is managed by ansible! Make your changes in the "calendar_builder"
+# role and re-run ansible to complete.
+
+# Database config
+database:
+    host: "{{ db_host }}"
+    port: {{ db_port }}
+    user: "{{ db_owner_name }}"
+    password: "{{ db_owner_password }}"
+    database: "{{ db_name }}"
+
+# Where do regular sundays of the year fall in precedence?
+sunday_precedence: 35
+
+...

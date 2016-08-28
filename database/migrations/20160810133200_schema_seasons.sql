@@ -34,6 +34,8 @@ CREATE TABLE liturigal_seasons (
     default_note_fri text,
     default_note_sat text,
     default_note_sun text,
+    valid_start timestamp with time zone NULL,
+    valid_end timestamp with time zone NULL,
     CONSTRAINT liturigal_seasons_pk PRIMARY KEY (season_id),
     CONSTRAINT liturigal_seasons_calc_from CHECK (calculate_from IN ('easter', 'christmas', NULL))
 );

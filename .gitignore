@@ -3,4 +3,5 @@ build/dev-vagrant/hosts
 .*.swp
 build/ansible/*.retry
 database/config.json
-bin/config.json
+bin/config.yml
+bin/*/*.pyc

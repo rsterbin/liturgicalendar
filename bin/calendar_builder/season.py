@@ -33,7 +33,7 @@ class YearIterator:
                 calculate_from AS ssn_calculate_from,
                 algorithm AS ssn_algorithm,
                 distance AS ssn_distance
-            FROM liturigal_seasons
+            FROM seasons
             WHERE valid_for_date(%(jan_first)s, valid_start, valid_end)
             ORDER BY sort_order""", {
                 "jan_first": datetime.date(year, 1, 1).strftime('%Y-%m-%d'),

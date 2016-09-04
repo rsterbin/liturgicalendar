@@ -2,10 +2,10 @@
 -- rambler up
 
 --
--- Define the liturigal seasons of the year
+-- Define the liturgical seasons of the year
 --
 
-INSERT INTO liturigal_seasons (name, code, color, sort_order,
+INSERT INTO seasons (name, code, color, sort_order,
         calculate_from, algorithm, distance, weekday_precedence, continue_counting, schedule_pattern,
         name_pattern_mon, name_pattern_tue, name_pattern_wed, name_pattern_thu,
         name_pattern_fri, name_pattern_sat, name_pattern_sat_vigil, name_pattern_sun,
@@ -19,7 +19,7 @@ INSERT INTO liturigal_seasons (name, code, color, sort_order,
         'Friday Abstinence is not observed during the Christmas Season.', 'Confessions are not heard, except by appointment, on the Saturdays of the Christmas Season.', NULL
     );
 
-INSERT INTO liturigal_seasons (name, code, color, sort_order,
+INSERT INTO seasons (name, code, color, sort_order,
         calculate_from, algorithm, distance, weekday_precedence, has_last_sunday, continue_counting, schedule_pattern,
         name_pattern_mon, name_pattern_tue, name_pattern_wed, name_pattern_thu,
         name_pattern_fri, name_pattern_sat, name_pattern_sat_vigil, name_pattern_sun,
@@ -33,7 +33,7 @@ INSERT INTO liturigal_seasons (name, code, color, sort_order,
         'Friday Abstinence', NULL, NULL
     );
 
-INSERT INTO liturigal_seasons (name, code, color, sort_order,
+INSERT INTO seasons (name, code, color, sort_order,
         calculate_from, algorithm, distance, weekday_precedence, continue_counting, schedule_pattern,
         name_pattern_mon, name_pattern_tue, name_pattern_wed, name_pattern_thu,
         name_pattern_fri, name_pattern_sat, name_pattern_sat_vigil, name_pattern_sun,
@@ -47,7 +47,7 @@ INSERT INTO liturigal_seasons (name, code, color, sort_order,
         'Lenten Friday Abstinence', 'Abstinence', 'Abstinence is not observed on Sundays in Lent.'
     );
 
-INSERT INTO liturigal_seasons (name, code, color, sort_order,
+INSERT INTO seasons (name, code, color, sort_order,
         calculate_from, algorithm, distance, weekday_precedence, continue_counting, schedule_pattern,
         name_pattern_mon, name_pattern_tue, name_pattern_wed, name_pattern_thu,
         name_pattern_fri, name_pattern_sat, name_pattern_sat_vigil, name_pattern_sun,
@@ -61,7 +61,7 @@ INSERT INTO liturigal_seasons (name, code, color, sort_order,
         'Fast & Abstinence', 'Abstinence', 'Abstinence is not observed on Palm Sunday.'
     );
 
-INSERT INTO liturigal_seasons (name, code, color, sort_order,
+INSERT INTO seasons (name, code, color, sort_order,
         calculate_from, algorithm, distance, weekday_precedence, continue_counting, schedule_pattern,
         name_pattern_mon, name_pattern_tue, name_pattern_wed, name_pattern_thu,
         name_pattern_fri, name_pattern_sat, name_pattern_sat_vigil, name_pattern_sun,
@@ -75,7 +75,7 @@ INSERT INTO liturigal_seasons (name, code, color, sort_order,
         'Friday abstinence is not observed in Eastertide.', 'Confessions are heard only by appointment during Easter Week.', NULL
     );
 
-INSERT INTO liturigal_seasons (name, code, color, sort_order,
+INSERT INTO seasons (name, code, color, sort_order,
         calculate_from, algorithm, distance, weekday_precedence, continue_counting, schedule_pattern,
         name_pattern_mon, name_pattern_tue, name_pattern_wed, name_pattern_thu,
         name_pattern_fri, name_pattern_sat, name_pattern_sat_vigil, name_pattern_sun,
@@ -89,7 +89,7 @@ INSERT INTO liturigal_seasons (name, code, color, sort_order,
         'Friday abstinence is not observed in Eastertide.', NULL, NULL
     );
 
-INSERT INTO liturigal_seasons (name, code, color, sort_order,
+INSERT INTO seasons (name, code, color, sort_order,
         calculate_from, algorithm, distance, weekday_precedence, continue_counting, schedule_pattern,
         name_pattern_mon, name_pattern_tue, name_pattern_wed, name_pattern_thu,
         name_pattern_fri, name_pattern_sat, name_pattern_sat_vigil, name_pattern_sun,
@@ -103,7 +103,7 @@ INSERT INTO liturigal_seasons (name, code, color, sort_order,
         'Friday Abstinence', NULL, NULL
     );
 
-INSERT INTO liturigal_seasons (name, code, color, sort_order,
+INSERT INTO seasons (name, code, color, sort_order,
         calculate_from, algorithm, distance, weekday_precedence, continue_counting, schedule_pattern,
         name_pattern_mon, name_pattern_tue, name_pattern_wed, name_pattern_thu,
         name_pattern_fri, name_pattern_sat, name_pattern_sat_vigil, name_pattern_sun,
@@ -117,7 +117,7 @@ INSERT INTO liturigal_seasons (name, code, color, sort_order,
         'Friday Abstinence', NULL, NULL
     );
 
-INSERT INTO liturigal_seasons (name, code, color, sort_order,
+INSERT INTO seasons (name, code, color, sort_order,
         calculate_from, algorithm, distance, weekday_precedence, has_last_sunday, continue_counting, schedule_pattern,
         name_pattern_mon, name_pattern_tue, name_pattern_wed, name_pattern_thu,
         name_pattern_fri, name_pattern_sat, name_pattern_sat_vigil, name_pattern_sun,
@@ -131,7 +131,7 @@ INSERT INTO liturigal_seasons (name, code, color, sort_order,
         'Friday Abstinence', NULL, NULL
     );
 
-INSERT INTO liturigal_seasons (name, code, color, sort_order,
+INSERT INTO seasons (name, code, color, sort_order,
         calculate_from, algorithm, distance, weekday_precedence, continue_counting, schedule_pattern,
         name_pattern_mon, name_pattern_tue, name_pattern_wed, name_pattern_thu,
         name_pattern_fri, name_pattern_sat, name_pattern_sat_vigil, name_pattern_sun,
@@ -147,5 +147,5 @@ INSERT INTO liturigal_seasons (name, code, color, sort_order,
 
 -- rambler down
 
-TRUNCATE TABLE liturigal_seasons RESTART IDENTITY;
+TRUNCATE TABLE seasons RESTART IDENTITY;
 

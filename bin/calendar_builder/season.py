@@ -1,7 +1,7 @@
 import datetime
 from sqlalchemy import text
 
-from models2 import Season
+from models import Season
 
 class YearIterator:
     """Class for stepping through seasons in a year"""

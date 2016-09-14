@@ -4,7 +4,7 @@ from sqlalchemy import Column, Integer, String
 from sqlalchemy.ext.declarative import declarative_base
 
 from config import config
-from boundary_algorithms import boundary_algorithms
+from algorithms import boundary_algorithms
 
 DeclarativeBase = declarative_base()
 

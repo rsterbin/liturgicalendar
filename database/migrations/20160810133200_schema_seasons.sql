@@ -2,11 +2,11 @@
 -- rambler up
 
 --
--- This table defines the liturigal seasons that set the base color, name,
+-- This table defines the liturgical seasons that set the base color, name,
 -- notes, and services for each part of the year
 --
 
-CREATE TABLE liturigal_seasons (
+CREATE TABLE seasons (
     season_id serial,
     name text NOT NULL,
     code text NOT NULL,
@@ -42,5 +42,5 @@ CREATE TABLE liturigal_seasons (
 
 -- rambler down
 
-DROP TABLE liturigal_seasons;
+DROP TABLE seasons;
 

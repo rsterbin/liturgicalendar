@@ -5,3 +5,4 @@ build/ansible/*.retry
 database/config.json
 bin/config.yml
 bin/*/*.pyc
+bin/*/*/*.pyc

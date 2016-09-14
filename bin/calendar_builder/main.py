@@ -39,7 +39,7 @@ base_day = {
 }
 
 # Season ticker
-season_ticker = season.year_iterator(conn, CALC_YEAR)
+season_ticker = season.YearIterator(conn, CALC_YEAR)
 
 # Walk though the year and lay down our defaults according to the season on that date
 current_day = datetime.date(CALC_YEAR, 1, 1)
@@ -51,8 +51,8 @@ while current_day.year == CALC_YEAR:
     full_year[cdate]['season'] = season_ticker.current()
     full_year[cdate]['weekday'] = current_day.strftime('%A').lower()
     full_year[cdate]['precedence'] = season_ticker.current().precedence(current_day)
-    full_year[cdate]['color'] = season_ticker.current().color
-    print cdate + ': WEEKDAY ' + full_year[cdate]['weekday'] + ' // SEASON ' + full_year[cdate]['season'].code + ' // COLOR ' + full_year[cdate]['color'] + ' // PRECEDENCE ' + str(full_year[cdate]['precedence'])
+    full_year[cdate]['color'] = season_ticker.current().column('color')
+    print cdate + ': WEEKDAY ' + full_year[cdate]['weekday'] + ' // SEASON ' + full_year[cdate]['season'].column('code') + ' // COLOR ' + full_year[cdate]['color'] + ' // PRECEDENCE ' + str(full_year[cdate]['precedence'])
 
     current_day = current_day + datetime.timedelta(days=1)
     if (current_day > season_ticker.ends):

@@ -357,6 +357,24 @@ INSERT INTO service_patterns (name, code,
         schedule_code_fri, schedule_code_fri_with_vigil, schedule_code_fri_vigil,
         schedule_code_sat, schedule_code_sat_with_vigil, schedule_code_sat_vigil,
         schedule_code_sun, schedule_code_sun_with_vigil, schedule_code_sun_vigil
+    ) VALUES ('Standard Summer', 'standard-summer',
+        'weekday', 'weekday-vigil', null,
+        'weekday', 'weekday-vigil', null,
+        'wednesday', 'wednesday-vigil', null,
+        'thursday', 'thursday-vigil', null,
+        'weekday', 'weekday-vigil', null,
+        'saturday', 'saturday', 'vigil',
+        'summer-sunday', null, null
+    );
+
+INSERT INTO service_patterns (name, code,
+        schedule_code_mon, schedule_code_mon_with_vigil, schedule_code_mon_vigil,
+        schedule_code_tue, schedule_code_tue_with_vigil, schedule_code_tue_vigil,
+        schedule_code_wed, schedule_code_wed_with_vigil, schedule_code_wed_vigil,
+        schedule_code_thu, schedule_code_thu_with_vigil, schedule_code_thu_vigil,
+        schedule_code_fri, schedule_code_fri_with_vigil, schedule_code_fri_vigil,
+        schedule_code_sat, schedule_code_sat_with_vigil, schedule_code_sat_vigil,
+        schedule_code_sun, schedule_code_sun_with_vigil, schedule_code_sun_vigil
     ) VALUES ('Standard Without Confessions', 'standard-no-confessions',
         'weekday', 'weekday-vigil', null,
         'weekday', 'weekday-vigil', null,

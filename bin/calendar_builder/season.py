@@ -1,5 +1,6 @@
 import datetime
 from sqlalchemy import text
+from sqlalchemy.orm import joinedload
 
 from models import Season
 
@@ -23,7 +24,8 @@ class YearIterator:
         self.by_code = {}
         self.loop = []
         for instance in self.session.query(Season).\
-                filter(text("valid_for_date(:jan_first, valid_start, valid_end)")).\
+                options(joinedload(Season.all_patterns)).\
+                filter(text("valid_for_date(:jan_first, seasons.valid_start, seasons.valid_end)")).\
                 params(jan_first=datetime.date(year, 1, 1).strftime('%Y-%m-%d')).\
                 order_by(Season.sort_order):
             code = instance.code

@@ -6,9 +6,10 @@
 
 # Database config
 database:
+    drivername: "postgres"
     host: "{{ db_host }}"
     port: {{ db_port }}
-    user: "{{ db_owner_name }}"
+    username: "{{ db_owner_name }}"
     password: "{{ db_owner_password }}"
     database: "{{ db_name }}"
 

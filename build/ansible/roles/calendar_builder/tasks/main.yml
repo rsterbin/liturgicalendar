@@ -12,13 +12,16 @@
     - libpq-dev
     - python-psycopg2
     - python-pip
+    - python-dev
   become: true
 
 - name: install dateutil
   pip: name=python-dateutil
   become: true
 
-# sudo pip install python-dateutil
+- name: install SQLAlchemy
+  pip: name=SQLAlchemy
+  become: true
 
 - name: drop the config file
   template:

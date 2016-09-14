@@ -2,9 +2,12 @@
 
 import copy
 import datetime
-import psycopg2
-import psycopg2.extras
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy.engine.url import URL
 import sys
+
+from season import YearIterator
 
 # Make sure we have a config
 try:
@@ -13,15 +16,18 @@ except IOError:
     print "Cannot find database configuration"
     sys.exit(1)
 
-# Import internal packages
-import season
+# DB connection function
+def db_connect():
+    """
+    Performs database connection using database settings from settings.py.
+    Returns sqlalchemy engine instance
+    """
+    return create_engine(URL(**config['database']))
 
-DB_DSN = "host='%s' dbname='%s' user='%s' password='%s'" %(config['database']['host'], config['database']['database'], config['database']['user'], config['database']['password'])
-try:
-    conn = psycopg2.connect(DB_DSN)
-except:
-    print "Cannot connect to the database"
-    sys.exit(2)
+
+engine = db_connect()
+Session = sessionmaker(bind=engine)
+session = Session()
 
 # Calculate for 2014
 CALC_YEAR = 2014
@@ -39,7 +45,7 @@ base_day = {
 }
 
 # Season ticker
-season_ticker = season.YearIterator(conn, CALC_YEAR)
+season_ticker = YearIterator(session, CALC_YEAR)
 
 # Walk though the year and lay down our defaults according to the season on that date
 current_day = datetime.date(CALC_YEAR, 1, 1)
@@ -51,8 +57,8 @@ while current_day.year == CALC_YEAR:
     full_year[cdate]['season'] = season_ticker.current()
     full_year[cdate]['weekday'] = current_day.strftime('%A').lower()
     full_year[cdate]['precedence'] = season_ticker.current().precedence(current_day)
-    full_year[cdate]['color'] = season_ticker.current().column('color')
-    print cdate + ': WEEKDAY ' + full_year[cdate]['weekday'] + ' // SEASON ' + full_year[cdate]['season'].column('code') + ' // COLOR ' + full_year[cdate]['color'] + ' // PRECEDENCE ' + str(full_year[cdate]['precedence'])
+    full_year[cdate]['color'] = season_ticker.current().color
+    print cdate + ': WEEKDAY ' + full_year[cdate]['weekday'] + ' // SEASON ' + full_year[cdate]['season'].code + ' // COLOR ' + full_year[cdate]['color'] + ' // PRECEDENCE ' + str(full_year[cdate]['precedence'])
 
     current_day = current_day + datetime.timedelta(days=1)
     if (current_day > season_ticker.ends):

@@ -1,17 +1,14 @@
-# Classes for handling the seasons of the church year
-
 import datetime
-import psycopg2
-import psycopg2.extras
+from sqlalchemy import text
 
-from models.Season import Season
+from models2 import Season
 
 class YearIterator:
     """Class for stepping through seasons in a year"""
 
-    def __init__(self, conn, year):
+    def __init__(self, session, year):
         """Sets up the iterator"""
-        self.conn = conn
+        self.session = session
         self.load_seasons(year)
 
         # The year starts in the Christmas season of the previous year, so load that up as our current season
@@ -23,32 +20,15 @@ class YearIterator:
         """Fetches the seasons from the database needed for a year"""
         # Arbitrary rule: seasons for a year are noted valid for the first of that year,
         # even though the church year properly begins with Advent.
-        cur = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
-        cur.execute("""SELECT
-                season_id AS ssn_season_id,
-                name AS ssn_name,
-                code AS ssn_code,
-                color AS ssn_color,
-                weekday_precedence AS ssn_weekday_precedence,
-                calculate_from AS ssn_calculate_from,
-                algorithm AS ssn_algorithm,
-                distance AS ssn_distance
-            FROM seasons
-            WHERE valid_for_date(%(jan_first)s, valid_start, valid_end)
-            ORDER BY sort_order""", {
-                "jan_first": datetime.date(year, 1, 1).strftime('%Y-%m-%d'),
-                "dec_last": datetime.date(year, 12, 31).strftime('%Y-%m-%d'),
-            })
-        found = cur.fetchall()
         self.by_code = {}
         self.loop = []
-        for row in found:
-            if (row['ssn_code'] not in self.by_code):
-                model = Season()
-                model.load(row)
-                code = model.column('code')
-                self.by_code[code] = model
-                self.loop.append(code)
+        for instance in self.session.query(Season).\
+                filter(text("valid_for_date(:jan_first, valid_start, valid_end)")).\
+                params(jan_first=datetime.date(year, 1, 1).strftime('%Y-%m-%d')).\
+                order_by(Season.sort_order):
+            code = instance.code
+            self.by_code[code] = instance
+            self.loop.append(code)
 
     def current(self):
         """Returns the current season"""

@@ -16,6 +16,7 @@ class YearIterator:
         self.current_index = 0
         self.started = datetime.date(year - 1, 12, 25)
         self.ends = self.current().end_date(self.started)
+        self.sunday_count = 1
 
     def load_seasons(self, year):
         """Fetches the seasons from the database needed for a year"""
@@ -37,6 +38,10 @@ class YearIterator:
         code = self.loop[self.current_index]
         return self.by_code[code]
 
+    def next_sunday(self):
+        """Pushes the sunday count up by one"""
+        self.sunday_count += 1
+
     def advance(self):
         """Tick forward by one season"""
         start = self.ends + datetime.timedelta(days=1)
@@ -46,4 +51,6 @@ class YearIterator:
             self.current_index = 0
         self.started = start
         self.ends = self.current().end_date(start)
+        if not self.current().continue_counting:
+            self.sunday_count = 1
 

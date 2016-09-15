@@ -3,6 +3,7 @@ from dateutil.easter import *
 from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, Boolean
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
+import inflect
 
 from config import config
 from algorithms import boundary_algorithms
@@ -155,11 +156,27 @@ class Season(DeclarativeBase):
     code = Column(String)
     color = Column(String)
     weekday_precedence = Column(Integer)
+    continue_counting = Column(Boolean)
     calculate_from = Column(String)
     algorithm = Column(String)
     distance = Column(Integer)
     sort_order = Column(Integer)
     schedule_pattern = Column(String, ForeignKey('service_patterns.code'))
+    name_pattern_mon = Column(String)
+    name_pattern_tue = Column(String)
+    name_pattern_wed = Column(String)
+    name_pattern_thu = Column(String)
+    name_pattern_fri = Column(String)
+    name_pattern_sat = Column(String)
+    name_pattern_sat_vigil = Column(String)
+    name_pattern_sun = Column(String)
+    default_note_mon = Column(String)
+    default_note_tue = Column(String)
+    default_note_wed = Column(String)
+    default_note_thu = Column(String)
+    default_note_fri = Column(String)
+    default_note_sat = Column(String)
+    default_note_sun = Column(String)
 
     all_patterns = relationship(ServicePattern, primaryjoin="ServicePattern.code==Season.schedule_pattern", uselist=True)
 
@@ -186,4 +203,21 @@ class Season(DeclarativeBase):
 
     def pattern(self, day):
         return valid_in_list(self.all_patterns, day)
+
+    def ordinal(self, number):
+        p = inflect.engine()
+        return p.number_to_words(p.ordinal(number))
+
+    def day_name(self, day, **kwargs):
+        weekday = day.strftime('%A').lower()[:3]
+        param = 'name_pattern_' + weekday
+        if weekday == 'sat' and 'is_vigil' in kwargs and kwargs['is_vigil']:
+            param += '_vigil'
+        name = getattr(self, param)
+        if 'sunday_count' in kwargs and '%s' in name:
+            name = name % self.ordinal(kwargs['sunday_count']).title()
+        return name
+
+    def day_note(self, day):
+        return getattr(self, 'default_note_' + day.strftime('%A').lower()[:3])
 

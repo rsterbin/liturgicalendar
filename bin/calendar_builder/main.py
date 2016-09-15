@@ -61,7 +61,7 @@ while current_day.year == CALC_YEAR:
     full_year[cdate]['weekday'] = current_day.strftime('%A').lower()
     full_year[cdate]['precedence'] = season_ticker.current().precedence(current_day)
     full_year[cdate]['color'] = season_ticker.current().color
-    print cdate + ': WEEKDAY ' + full_year[cdate]['weekday'] + ' // SEASON ' + full_year[cdate]['season'].code + ' // COLOR ' + full_year[cdate]['color'] + ' // PRECEDENCE ' + str(full_year[cdate]['precedence']) + ' // SERVICE PATTERN ' + full_year[cdate]['season'].pattern(current_day).name
+    print cdate + ': WEEKDAY ' + full_year[cdate]['weekday'] + ' // SEASON ' + full_year[cdate]['season'].code + ' // COLOR ' + full_year[cdate]['color'] + ' // PRECEDENCE ' + str(full_year[cdate]['precedence']) + ' // SCHEDULE ' + full_year[cdate]['season'].pattern(current_day).schedule(current_day).name
 
     current_day = current_day + datetime.timedelta(days=1)
     if (current_day > season_ticker.ends):

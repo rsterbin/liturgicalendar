@@ -22,6 +22,9 @@ class Schedule(DeclarativeBase):
     is_default = Column(Boolean)
     is_custom = Column(Boolean)
 
+    def __repr__(self):
+        return self.name + ' <' + self.code + '>'
+
 class ServicePattern(DeclarativeBase):
     """Sqlalchemy service patterns model"""
     __tablename__ = 'service_patterns'
@@ -75,6 +78,9 @@ class ServicePattern(DeclarativeBase):
     all_sun_with_vigil = relationship(Schedule, primaryjoin="Schedule.code==ServicePattern.schedule_code_sun_with_vigil", uselist=True)
     all_sun_vigil = relationship(Schedule, primaryjoin="Schedule.code==ServicePattern.schedule_code_sun_vigil", uselist=True)
 
+    def __repr__(self):
+        return self.name + ' <' + self.code + '>'
+
     def mon(self, day):
         return valid_in_list(self.all_mon, day)
     def mon_with_vigil(self, day):
@@ -123,6 +129,14 @@ class ServicePattern(DeclarativeBase):
         return valid_in_list(self.all_sun_with_vigil, day)
     def sun_vigil(self, day):
         return valid_in_list(self.all_sun_vigil, day)
+
+    def has_vigil(self, day):
+        param = 'schedule_code_' + day.strftime('%A').lower()[:3] + '_vigil'
+        code = getattr(self, param)
+        if code is None:
+            return False
+        else:
+            return True
 
     def schedule(self, day, **kwargs):
         method = day.strftime('%A').lower()[:3]

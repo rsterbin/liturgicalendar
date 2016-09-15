@@ -26,7 +26,7 @@ def db_connect():
     return create_engine(URL(**config['database']))
 
 logging.basicConfig()
-logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
+#logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
 
 engine = db_connect()
 Session = sessionmaker(bind=engine)
@@ -47,6 +47,36 @@ base_day = {
     'season': None,
 }
 
+class BaseDay:
+    """Describes a day in the year ticker"""
+
+    def __init__(self, day, season):
+        self.day = copy.deepcopy(day)
+        self.season = season
+
+    def weekday(self):
+        return self.day.strftime('%A').lower()[:3]
+
+    def precedence(self):
+        return self.season.precedence(self.day)
+
+    def color(self):
+        return self.season.color
+
+    def schedule(self):
+        if self.season.pattern(self.day).has_vigil(self.day):
+            return [ self.season.pattern(self.day).schedule(self.day, has_vigil = True), self.season.pattern(self.day).schedule(self.day, is_vigil = True) ]
+        else:
+            return [ self.season.pattern(self.day).schedule(self.day) ]
+
+    def __repr__(self):
+        return self.day.strftime('%Y-%m-%d') + ': WEEKDAY ' + self.weekday() +\
+                ' // SEASON ' + self.season.code +\
+                ' // COLOR ' + self.color() +\
+                ' // PRECEDENCE ' + str(self.precedence()) +\
+                ' // PATTERN ' + self.season.pattern(self.day).name +\
+                ' // SCHEDULE ' + ', '.join([str(x) for x in self.schedule()])
+
 # Season ticker
 season_ticker = YearIterator(session, CALC_YEAR)
 
@@ -55,13 +85,9 @@ current_day = datetime.date(CALC_YEAR, 1, 1)
 while current_day.year == CALC_YEAR:
 
     cdate = current_day.strftime('%Y-%m-%d')
-    full_year[cdate] = copy.deepcopy(base_day)
-    full_year[cdate]['date'] = copy.deepcopy(current_day)
-    full_year[cdate]['season'] = season_ticker.current()
-    full_year[cdate]['weekday'] = current_day.strftime('%A').lower()
-    full_year[cdate]['precedence'] = season_ticker.current().precedence(current_day)
-    full_year[cdate]['color'] = season_ticker.current().color
-    print cdate + ': WEEKDAY ' + full_year[cdate]['weekday'] + ' // SEASON ' + full_year[cdate]['season'].code + ' // COLOR ' + full_year[cdate]['color'] + ' // PRECEDENCE ' + str(full_year[cdate]['precedence']) + ' // SCHEDULE ' + full_year[cdate]['season'].pattern(current_day).schedule(current_day).name
+    full_year[cdate] = BaseDay(current_day, season_ticker.current())
+    # print cdate + ': WEEKDAY ' + full_year[cdate]['weekday'] + ' // SEASON ' + full_year[cdate]['season'].code + ' // COLOR ' + full_year[cdate]['color'] + ' // PRECEDENCE ' + str(full_year[cdate]['precedence']) + ' // SCHEDULE ' + full_year[cdate]['season'].pattern(current_day).schedule(current_day).name
+    print full_year[cdate]
 
     current_day = current_day + datetime.timedelta(days=1)
     if (current_day > season_ticker.ends):

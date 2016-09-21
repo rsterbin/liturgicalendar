@@ -156,7 +156,9 @@ class Season(DeclarativeBase):
     code = Column(String)
     color = Column(String)
     weekday_precedence = Column(Integer)
+    counting_index = Column(Integer)
     continue_counting = Column(Boolean)
+    has_last_sunday = Column(Boolean)
     calculate_from = Column(String)
     algorithm = Column(String)
     distance = Column(Integer)
@@ -215,7 +217,10 @@ class Season(DeclarativeBase):
             param += '_vigil'
         name = getattr(self, param)
         if 'sunday_count' in kwargs and '%s' in name:
-            name = name % self.ordinal(kwargs['sunday_count']).title()
+            if self.has_last_sunday and 'is_last' in kwargs and kwargs['is_last']:
+                name = name % 'Last'
+            else:
+                name = name % self.ordinal(kwargs['sunday_count']).title()
         return name
 
     def day_note(self, day):

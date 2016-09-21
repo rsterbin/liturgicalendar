@@ -17,6 +17,7 @@ CREATE TABLE seasons (
     distance integer,
     weekday_precedence integer NOT NULL,
     has_last_sunday boolean NOT NULL DEFAULT FALSE,
+    counting_index integer NOT NULL DEFAULT 1,
     continue_counting boolean NOT NULL,
     schedule_pattern text NOT NULL,
     name_pattern_mon text NOT NULL,

@@ -1,3 +1,4 @@
+import copy
 import datetime
 from sqlalchemy import text
 from sqlalchemy.orm import joinedload
@@ -17,7 +18,12 @@ class YearIterator:
         self.current_index = 0
         self.started = datetime.date(year - 1, 12, 25)
         self.ends = self.current().end_date(self.started)
-        self.sunday_count = 1
+        self.sunday_count = 0
+        check_day = copy.deepcopy(self.started)
+        while check_day < self.day:
+            if check_day.strftime('%A').lower()[:3] == 'sun':
+                self.sunday_count += 1
+            check_day = check_day + datetime.timedelta(days=1)
 
     def load_seasons(self):
         """Fetches the seasons from the database needed for this year"""
@@ -50,10 +56,6 @@ class YearIterator:
         if (self.day > self.ends):
             self.next_season()
 
-    def next_sunday(self):
-        """Pushes the sunday count up by one"""
-        self.sunday_count += 1
-
     def next_season(self):
         """Tick forward by one season"""
         start = self.ends + datetime.timedelta(days=1)
@@ -64,5 +66,7 @@ class YearIterator:
         self.started = start
         self.ends = self.current().end_date(start)
         if not self.current().continue_counting:
-            self.sunday_count = self.current().counting_index
+            self.sunday_count = 0
+            if self.day.strftime('%A').lower()[:3] == 'sun' and self.current().counting_index:
+                self.sunday_count += 1
 

@@ -32,11 +32,11 @@
 - hosts: tag_type_back
   roles:
     - common
-    - { role: nodesource.node, become: true, nodejs_version: '4.5' }
+    - { role: geerlingguy.nodejs, become: true, nodejs_version: '4.x' }
     - calendar_builder
 
 - hosts: tag_type_front
   roles:
     - common
-    - { role: nodesource.node, become: true, nodejs_version: '4.5' }
+    - { role: geerlingguy.nodejs, become: true, nodejs_version: '4.x' }
 ...

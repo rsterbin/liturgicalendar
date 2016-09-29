@@ -1,5 +1,5 @@
 ---
 # Basic node install
-- src: nodesource.node
+- src: geerlingguy.nodejs
 - src: ANXS.postgresql
 ...

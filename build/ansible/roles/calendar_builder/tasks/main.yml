@@ -23,7 +23,9 @@
   pip: name=SQLAlchemy
   become: true
 
-# TODO: sudo pip install git+https://github.com/pwdyson/inflect.py#egg=inflect
+- name: install inflect
+  pip: name="git+https://github.com/pwdyson/inflect.py#egg=inflect"
+  become: true
 
 - name: drop the config file
   template:

@@ -12,7 +12,7 @@ from valid_dates import valid_in_list
 DeclarativeBase = declarative_base()
 
 class Schedule(DeclarativeBase):
-    """Sqlalchemy service patterns model"""
+    """Sqlalchemy schedules model"""
     __tablename__ = 'schedules'
 
     id = Column('schedule_id', Integer, primary_key=True)
@@ -225,4 +225,48 @@ class Season(DeclarativeBase):
 
     def day_note(self, day):
         return getattr(self, 'default_note_' + day.strftime('%A').lower()[:3])
+
+class ObservanceType(DeclarativeBase):
+    """Sqlalchemy observance types model"""
+    __tablename__ = 'observance_types'
+
+    id = Column('otype_id', Integer, primary_key=True)
+    name = Column(String)
+    precedence = Column(Integer)
+
+class MoveableFeast(DeclarativeBase):
+    """Sqlalchemy moveable feasts model"""
+    __tablename__ = 'moveable_feasts'
+
+    id = Column('moveable_id', Integer, primary_key=True)
+    name = Column(String)
+    code = Column(String)
+    otype_id = Column(Integer, ForeignKey('observance_types.otype_id'))
+    placement_index = Column(Integer, nullable=True)
+    calculate_from = Column(String)
+    algorithm = Column(String)
+    distance = Column(Integer, nullable=True)
+    schedule_pattern = Column(String, ForeignKey('service_patterns.code'), nullable=True)
+    has_eve = Column(Boolean)
+    eve_schedule_pattern = Column(String, ForeignKey('service_patterns.code'), nullable=True)
+    eve_name = Column(String, nullable=True)
+    color = Column(String, nullable=True)
+    note = Column(String, nullable=True)
+    valid_start = Column(DateTime, nullable=True)
+    valid_end = Column(DateTime, nullable=True)
+
+    all_patterns = relationship(ServicePattern, primaryjoin="ServicePattern.code==MoveableFeast.schedule_pattern", uselist=True)
+    all_eve_patterns = relationship(ServicePattern, primaryjoin="ServicePattern.code==MoveableFeast.eve_schedule_pattern", uselist=True)
+
+    def __repr__(self):
+        return self.name + ' <' + self.code + '>'
+
+    def day(self, year):
+        pass
+
+    def pattern(self, day):
+        return valid_in_list(self.all_patterns, day)
+
+    def eve_pattern(self, day):
+        return valid_in_list(self.all_eve_patterns, day)
 

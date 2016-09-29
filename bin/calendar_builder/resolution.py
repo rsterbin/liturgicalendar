@@ -3,6 +3,7 @@ import datetime
 import sys
 
 from season import YearIterator
+from moveable_feasts import YearIterator
 
 class Resolution:
     """Describes a year in the resolution process"""
@@ -26,6 +27,12 @@ class Resolution:
             self.full_year[cdate].set_season(self.season_ticker.current(), self.season_ticker.sunday_count, self.season_ticker.is_last_week())
             self.season_ticker.advance_by_day()
 
+    def import_moveable_feasts(self):
+        self.moveable = MoveableFeasts(self.session, self.year)
+        for feast in self.moveable.feasts:
+            cdate = self._day_to_lookup(feast.date)
+            self.full_year[cdate].add_feast(feast)
+
     def before(self, day):
         """Returns the day before the day given"""
         target = copy.deepcopy(day)
@@ -46,11 +53,15 @@ class ResolutionDay:
         self.day = copy.deepcopy(day)
         self.year = year
         self.season = None
+        self.feasts = []
 
     def set_season(self, season, sunday_count, is_last_week):
         self.season = season
         self.sunday_count = sunday_count
         self.is_last_week = is_last_week
+
+    def add_feast(self, feast):
+        self.feasts.append(feast)
 
     def resolve(self):
         if self.season is not None:

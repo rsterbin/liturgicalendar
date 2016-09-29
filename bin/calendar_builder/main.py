@@ -40,6 +40,9 @@ resolution = Resolution(CALC_YEAR, session)
 # Set up the season framework
 resolution.import_seasons()
 
+# Add moveable feasts
+resolution.import_moveable_feasts()
+
 # Resolve and show
 for cdate in sorted(resolution.full_year.iterkeys()):
     resolution.full_year[cdate].resolve()

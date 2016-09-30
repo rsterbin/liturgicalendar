@@ -7,7 +7,7 @@ INSERT INTO moveable_feasts (name, code, otype_id, placement_index,
         schedule_pattern, has_eve, eve_schedule_pattern, eve_name, color,
         valid_start)
     VALUES ('Easter Day', 'easter', 1, 1,
-        'easter', 'easter', null,
+        'easter', 'exact', null,
         'easter', true, 'easter-eve', 'Easter Eve', 'gold',
         '2011-01-01 00:00:00' AT TIME ZONE 'America/New_York');
 
@@ -16,7 +16,7 @@ INSERT INTO moveable_feasts (name, code, otype_id, placement_index,
         schedule_pattern, has_eve, eve_schedule_pattern, eve_name, color,
         valid_end)
     VALUES ('The Sunday of the Resurrection: Easter Day', 'easter', 1, 1,
-        'easter', 'easter', null,
+        'easter', 'days_before', 1,
         'easter', true, 'easter-eve', 'Easter Eve', 'white',
         '2010-12-31 23:59:59' AT TIME ZONE 'America/New_York');
 

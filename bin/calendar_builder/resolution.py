@@ -3,7 +3,7 @@ import datetime
 import sys
 
 from season import YearIterator
-from moveable_feasts import YearIterator
+from moveable_feasts import MoveableFeasts
 
 class Resolution:
     """Describes a year in the resolution process"""
@@ -22,16 +22,15 @@ class Resolution:
         self.season_ticker = YearIterator(self.session, self.year)
         while self.season_ticker.day.year == self.year:
             cdate = self._day_to_lookup(self.season_ticker.day)
-            sys.stderr.write(cdate + ' // SUNDAY COUNT ' + str(self.season_ticker.sunday_count) + ' // LAST WEEK ' + str(self.season_ticker.is_last_week()) + "\n")
             self.full_year[cdate] = ResolutionDay(self.season_ticker.day, self)
             self.full_year[cdate].set_season(self.season_ticker.current(), self.season_ticker.sunday_count, self.season_ticker.is_last_week())
             self.season_ticker.advance_by_day()
 
     def import_moveable_feasts(self):
         self.moveable = MoveableFeasts(self.session, self.year)
-        for feast in self.moveable.feasts:
-            cdate = self._day_to_lookup(feast.date)
-            self.full_year[cdate].add_feast(feast)
+        for info in self.moveable.feasts_by_date():
+            cdate = self._day_to_lookup(info[0])
+            self.full_year[cdate].add_feast(info[1])
 
     def before(self, day):
         """Returns the day before the day given"""
@@ -64,6 +63,10 @@ class ResolutionDay:
         self.feasts.append(feast)
 
     def resolve(self):
+        for feast in self.feasts:
+            # TODO: precedence!
+            print "Found a feast " + str(feast) + " on day " + self.day.strftime('%Y-%m-%d')
+            pass
         if self.season is not None:
             pattern = self.season.pattern(self.day)
             if pattern.has_vigil(self.day):

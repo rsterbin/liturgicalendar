@@ -6,7 +6,7 @@ from sqlalchemy.orm import relationship
 import inflect
 
 from config import config
-from algorithms import boundary_algorithms
+from algorithms import boundary_algorithms, feast_algorithms
 from valid_dates import valid_in_list
 
 DeclarativeBase = declarative_base()
@@ -255,18 +255,26 @@ class MoveableFeast(DeclarativeBase):
     valid_start = Column(DateTime, nullable=True)
     valid_end = Column(DateTime, nullable=True)
 
+    otype = relationship(ObservanceType)
     all_patterns = relationship(ServicePattern, primaryjoin="ServicePattern.code==MoveableFeast.schedule_pattern", uselist=True)
     all_eve_patterns = relationship(ServicePattern, primaryjoin="ServicePattern.code==MoveableFeast.eve_schedule_pattern", uselist=True)
 
     def __repr__(self):
         return self.name + ' <' + self.code + '>'
 
-    def day(self, year):
-        pass
-
     def pattern(self, day):
         return valid_in_list(self.all_patterns, day)
 
     def eve_pattern(self, day):
         return valid_in_list(self.all_eve_patterns, day)
+
+    def day(self, year):
+        """Gets the date of this feast, given a year"""
+        if self.calculate_from == 'easter':
+            holiday = easter(year)
+        elif self.calculate_from == 'christmas':
+            holiday = datetime.date(year, 12, 25)
+        else:
+            raise ValueError('"{holiday}" is an unknown calculation starting point for moveable feasts; use "christmas" or "easter"'.format(holiday=repr(self.calculate_from)))
+        return getattr(feast_algorithms, self.algorithm)(holiday, self.distance)
 

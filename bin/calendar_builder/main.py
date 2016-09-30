@@ -25,7 +25,7 @@ def db_connect():
     return create_engine(URL(**config['database']))
 
 logging.basicConfig()
-#logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
+# logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
 
 engine = db_connect()
 Session = sessionmaker(bind=engine)

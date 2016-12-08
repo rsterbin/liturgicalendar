@@ -5,11 +5,11 @@ def valid_in_list(collection, date):
     for elem in collection:
         if elem.valid_start is None and elem.valid_end is None:
             return elem
-        elif elem.valid_start is None and date < elem.valid_end:
+        elif elem.valid_start is None and date < elem.valid_end.date():
             return elem
-        elif elem.valid_end is None and date > elem.valid_start:
+        elif elem.valid_end is None and date > elem.valid_start.date():
             return elem
-        elif date > elem.valid_start and date < elem.valid_end:
+        elif date > elem.valid_start.date() and date < elem.valid_end.date():
             return elem
     return None
 

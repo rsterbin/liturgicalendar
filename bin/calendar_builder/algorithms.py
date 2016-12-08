@@ -47,6 +47,11 @@ class feast_algorithms:
         return holiday_date + datetime.timedelta(days=number)
 
     @staticmethod
+    def wednesdays_before(holiday_date, number):
+        """Finds the nth Wednesday before the holiday"""
+        return holiday_date - datetime.timedelta(days=holiday_date.weekday()) + datetime.timedelta(days=2, weeks=-1*number)
+
+    @staticmethod
     def exact(holiday_date, number):
         """Exactly on the given holiday"""
         return holiday_date

@@ -36,6 +36,6 @@ class MoveableFeasts:
         by_date = []
         for code in self.feasts:
             f = self.by_code[code][0]
-            by_date.append((f.day(self.year), f))
+            by_date.append({ 'day': f.day(self.year), 'feasts': self.by_code[code] })
         return by_date
 

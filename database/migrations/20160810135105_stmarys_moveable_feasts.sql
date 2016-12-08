@@ -1,7 +1,6 @@
 
 -- rambler up
 
-
 INSERT INTO moveable_feasts (name, code, otype_id, placement_index,
         calculate_from, algorithm, distance,
         schedule_pattern, has_eve, eve_schedule_pattern, eve_name, color,
@@ -25,7 +24,7 @@ INSERT INTO moveable_feasts (name, code, otype_id, placement_index,
         schedule_pattern, color, note,
         valid_start)
     VALUES ('Ash Wednesday', 'ash-wednesday', 1, 2,
-        'easter', 'days_before', 40,
+        'easter', 'wednesdays_before', 6,
         'ash-wednesday', 'purple', 'Fast and Abstinence
 Imposition of Ashes will be offered throughout the day from 7:00 AM to 8:00 PM.
 The Daily Office is not prayed publicly on this day.',
@@ -36,7 +35,7 @@ INSERT INTO moveable_feasts (name, code, otype_id, placement_index,
         schedule_pattern, color, note,
         valid_start, valid_end)
     VALUES ('Ash Wednesday', 'ash-wednesday', 1, 2,
-        'easter', 'days_before', 40,
+        'easter', 'wednesdays_before', 6,
         'ash-wednesday', 'purple', 'Fast and Abstinence
 Imposition of Ashes will be offered throughout the day from 7:00 AM to 8:00 PM.',
         '2008-01-01 00:00:00' AT TIME ZONE 'America/New_York',
@@ -47,7 +46,7 @@ INSERT INTO moveable_feasts (name, code, otype_id, placement_index,
         schedule_pattern, color, note,
         valid_end)
     VALUES ('The First Day of Lent: Ash Wednesday', 'ash-wednesday', 1, 2,
-        'easter', 'days_before', 40,
+        'easter', 'wednesdays_before', 6,
         'ash-wednesday', 'purple', 'Fast & Abstinence
 Ashes are offered from 7:00 AM to 8:00 PM.
 Weekdays in Lent are observed by special acts of discipline and self-denial.

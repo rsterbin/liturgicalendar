@@ -4,7 +4,9 @@ import sys
 
 from season import YearIterator
 from moveable_feasts import MoveableFeasts
+from fixed_feasts import FixedFeasts
 from valid_dates import valid_in_list
+from config import config
 
 class Resolution:
     """Describes a year in the resolution process"""
@@ -30,6 +32,12 @@ class Resolution:
     def import_moveable_feasts(self):
         self.moveable = MoveableFeasts(self.session, self.year)
         for info in self.moveable.feasts_by_date():
+            cdate = self._day_to_lookup(info['day'])
+            self.full_year[cdate].add_feast(ResolutionFeast(info['feasts'], info['day']))
+
+    def import_fixed_feasts(self):
+        self.fixed = FixedFeasts(self.session, self.year)
+        for info in self.fixed.feasts_by_date():
             cdate = self._day_to_lookup(info['day'])
             self.full_year[cdate].add_feast(ResolutionFeast(info['feasts'], info['day']))
 
@@ -101,10 +109,10 @@ class ResolutionDay:
         current_feast = None
 
         for feast in self.feasts:
-            if feast.precedence() < current_precedence:
+            if feast.precedence() <= current_precedence:
                 current_precedence = feast.precedence()
                 current_feast = feast
-            elif feast.precedence() < config['transfer_precedence']:
+            elif feast.precedence() <= config['transfer_precedence']:
                 tomorrow = self.year.after(self.day)
                 tomorrow.add_feast(feast)
 
@@ -127,6 +135,8 @@ class ResolutionDay:
         if self.current_feast is None:
             return
         pattern = self.current_feast.pattern()
+        if pattern is None:
+            pattern = self.season.pattern(self.day)
         self.base_block = ResolutionBlock(
             color = self.current_feast.color(),
             name = self.current_feast.name(),
@@ -257,6 +267,7 @@ class ResolutionFeast:
         rep = '[' + str(self.color()) + '] ' + str(self.name())
         if self.note() is not None:
             rep += "\n\t\t(" + str(self.note()) + ')'
-        rep += "\n\t\t* " + str(self.pattern().schedule(self.current_day))
+        if self.pattern():
+            rep += "\n\t\t* " + str(self.pattern().schedule(self.current_day))
         return rep
 

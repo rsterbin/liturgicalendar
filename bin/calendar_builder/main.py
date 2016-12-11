@@ -43,6 +43,9 @@ resolution.import_seasons()
 # Add moveable feasts
 resolution.import_moveable_feasts()
 
+# Add fixed feasts
+resolution.import_fixed_feasts()
+
 # Resolve and show
 for cdate in sorted(resolution.full_year.iterkeys()):
     resolution.full_year[cdate].resolve()

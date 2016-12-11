@@ -278,3 +278,42 @@ class MoveableFeast(DeclarativeBase):
             raise ValueError('"{holiday}" is an unknown calculation starting point for moveable feasts; use "christmas" or "easter"'.format(holiday=repr(self.calculate_from)))
         return getattr(feast_algorithms, self.algorithm)(holiday, self.distance)
 
+class FixedFeast(DeclarativeBase):
+    """Sqlalchemy fixed feasts model"""
+    __tablename__ = 'fixed_feasts'
+
+    id = Column('fixed_id', Integer, primary_key=True)
+    name = Column(String)
+    code = Column(String)
+    otype_id = Column(Integer, ForeignKey('observance_types.otype_id'))
+    month = Column(Integer)
+    mday = Column('day', Integer)
+    schedule_pattern = Column(String, ForeignKey('service_patterns.code'), nullable=True)
+    has_eve = Column(Boolean)
+    eve_schedule_pattern = Column(String, ForeignKey('service_patterns.code'), nullable=True)
+    eve_name = Column(String, nullable=True)
+    color = Column(String, nullable=True)
+    note = Column(String, nullable=True)
+    valid_start = Column(DateTime, nullable=True)
+    valid_end = Column(DateTime, nullable=True)
+
+    otype = relationship(ObservanceType)
+    all_patterns = relationship(ServicePattern, primaryjoin="ServicePattern.code==FixedFeast.schedule_pattern", uselist=True)
+    all_eve_patterns = relationship(ServicePattern, primaryjoin="ServicePattern.code==FixedFeast.eve_schedule_pattern", uselist=True)
+
+    def __repr__(self):
+        if self.code:
+            return self.name + ' <' + self.code + '>'
+        else:
+            return self.name
+
+    def pattern(self, day):
+        return valid_in_list(self.all_patterns, day)
+
+    def eve_pattern(self, day):
+        return valid_in_list(self.all_eve_patterns, day)
+
+    def day(self, year):
+        """Gets the date of this feast, given a year"""
+        return datetime.date(year, self.month, self.mday)
+

@@ -784,8 +784,8 @@ INSERT INTO service_patterns (name, code,
         null, null, null,
         null, null, null,
         null, null, null,
-        null, 'holy-saturday', null,
         null, null, null,
+        null, 'holy-saturday', null,
         null, null, null
     );
 

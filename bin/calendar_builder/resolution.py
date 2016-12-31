@@ -108,6 +108,15 @@ class ResolutionDay:
             self._make_block_from_season()
 
     def resolve(self):
+        if self.season is None:
+            return
+
+        pattern = self.season.pattern(self.day)
+        if pattern.has_vigil(self.day):
+            self.set_vigil_for_season()
+        else:
+            self._make_block_from_season()
+
         current_precedence = self.season.precedence(self.day)
         current_feast = None
 
@@ -126,13 +135,6 @@ class ResolutionDay:
                 # Look back to yesterday and set the vigil
                 yesterday = self.year.before(self.day)
                 yesterday.set_vigil_for_feast(self.current_feast)
-
-        elif self.season is not None:
-            pattern = self.season.pattern(self.day)
-            if pattern.has_vigil(self.day):
-                self.set_vigil_for_season()
-            else:
-                self._make_block_from_season()
 
     def _make_block_from_feast(self):
         if self.current_feast is None:

@@ -50,6 +50,10 @@ resolution.import_fixed_feasts()
 for cdate in sorted(resolution.full_year.iterkeys()):
     resolution.full_year[cdate].resolve()
 
+current_month = 1
 for cdate in sorted(resolution.full_year.iterkeys()):
+    if current_month != resolution.full_year[cdate].day.month:
+        print ""
+        current_month = resolution.full_year[cdate].day.month
     print resolution.full_year[cdate]
 

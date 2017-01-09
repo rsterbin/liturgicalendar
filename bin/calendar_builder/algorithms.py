@@ -52,6 +52,21 @@ class feast_algorithms:
         return holiday_date - datetime.timedelta(days=holiday_date.weekday()) + datetime.timedelta(days=2, weeks=-1*number)
 
     @staticmethod
+    def thursdays_after(holiday_date, number):
+        """Finds the nth Thursday after the holiday"""
+        return holiday_date - datetime.timedelta(days=holiday_date.weekday()) + datetime.timedelta(days=3, weeks=number)
+
+    @staticmethod
+    def sundays_before(holiday_date, number):
+        """Finds the nth Sunday before the holiday"""
+        return holiday_date - datetime.timedelta(days=holiday_date.weekday()) + datetime.timedelta(days=6, weeks=-1*number)
+
+    @staticmethod
+    def sundays_after(holiday_date, number):
+        """Finds the nth Sunday after the holiday"""
+        return holiday_date - datetime.timedelta(days=holiday_date.weekday()) + datetime.timedelta(days=6, weeks=number)
+
+    @staticmethod
     def exact(holiday_date, number):
         """Exactly on the given holiday"""
         return holiday_date

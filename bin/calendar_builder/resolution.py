@@ -79,6 +79,8 @@ class ResolutionDay:
     def set_vigil_for_feast(self, feast):
         self.has_vigil = True
         pattern = feast.eve_pattern()
+        if pattern is None:
+            pattern = self.season.pattern(self.day)
         vigil_name = feast.eve_name()
         if vigil_name is None:
             vigil_name = 'Eve of ' + feast.name()

@@ -274,6 +274,10 @@ class MoveableFeast(DeclarativeBase):
             holiday = easter(year)
         elif self.calculate_from == 'christmas':
             holiday = datetime.date(year, 12, 25)
+        elif self.calculate_from == 'ash-wednesday':
+            # Ash Wednesday is the sixth Wednesday before Easter
+            eas = easter(year)
+            holiday = eas - datetime.timedelta(days=eas.weekday()) + datetime.timedelta(days=2, weeks=-6)
         else:
             raise ValueError('"{holiday}" is an unknown calculation starting point for moveable feasts; use "christmas" or "easter"'.format(holiday=repr(self.calculate_from)))
         return getattr(feast_algorithms, self.algorithm)(holiday, self.distance)

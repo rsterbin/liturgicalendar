@@ -65,7 +65,7 @@ class ServicePattern(DeclarativeBase):
     all_tue_vigil = relationship(Schedule, primaryjoin="Schedule.code==ServicePattern.schedule_code_tue_vigil", uselist=True)
     all_wed = relationship(Schedule, primaryjoin="Schedule.code==ServicePattern.schedule_code_wed", uselist=True)
     all_wed_with_vigil = relationship(Schedule, primaryjoin="Schedule.code==ServicePattern.schedule_code_wed_with_vigil", uselist=True)
-    all_wed_vigil = relationship(Schedule, primaryjoin="Schedule.code==ServicePattern.schedule_code_wed_with_vigil", uselist=True)
+    all_wed_vigil = relationship(Schedule, primaryjoin="Schedule.code==ServicePattern.schedule_code_wed_vigil", uselist=True)
     all_thu = relationship(Schedule, primaryjoin="Schedule.code==ServicePattern.schedule_code_thu", uselist=True)
     all_thu_with_vigil = relationship(Schedule, primaryjoin="Schedule.code==ServicePattern.schedule_code_thu_with_vigil", uselist=True)
     all_thu_vigil = relationship(Schedule, primaryjoin="Schedule.code==ServicePattern.schedule_code_thu_vigil", uselist=True)

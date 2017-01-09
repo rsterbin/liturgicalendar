@@ -84,10 +84,13 @@ class ResolutionDay:
         vigil_name = feast.eve_name()
         if vigil_name is None:
             vigil_name = 'Eve of ' + feast.name()
+        vigil_schedule = pattern.schedule(self.day, is_vigil = True)
+        if vigil_schedule is None:
+            return
         self.vigil_block = ResolutionBlock(
             color = feast.color(),
             name = vigil_name,
-            schedule = pattern.schedule(self.day, is_vigil = True)
+            schedule = vigil_schedule
         )
         if self.current_feast:
             self._make_block_from_feast()

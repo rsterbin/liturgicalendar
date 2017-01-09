@@ -13,7 +13,7 @@ INSERT INTO services (name, start_time, is_default) VALUES ('Evening Prayer', '1
 INSERT INTO services (name, start_time, is_default) VALUES ('Confessions', '11:30:00', true); -- 6
 INSERT INTO services (name, start_time, is_default) VALUES ('Confessions', '16:00:00', true); -- 7
 INSERT INTO services (name, start_time, is_default) VALUES ('Evening Prayer', '17:00:00', true); -- 8
-INSERT INTO services (name, start_time, is_default) VALUES ('Saturday Vigil Mass', '17:20:00', true); -- 9
+INSERT INTO services (name, start_time, is_default) VALUES ('Sunday Vigil Mass', '17:20:00', true); -- 9
 INSERT INTO services (name, start_time, is_default) VALUES ('Sung Matins', '08:30:00', true); -- 10
 INSERT INTO services (name, start_time, is_default) VALUES ('Mass', '09:00:00', true); -- 11
 INSERT INTO services (name, start_time, is_default) VALUES ('Mass', '10:00:00', true); -- 12
@@ -69,6 +69,7 @@ INSERT INTO services (name, start_time, is_default) VALUES ('The Celebration of 
 INSERT INTO services (name, start_time, is_default) VALUES ('The Celebration of the Passion of the Lord', '18:00:00', false); -- 62
 INSERT INTO services (name, start_time, is_default) VALUES ('The Holy Eucharist', '18:00:00', false); -- 63
 INSERT INTO services (name, start_time, is_default) VALUES ('Evening Mass of the Lord’s Supper', '18:00:00', false); -- 64
+INSERT INTO services (name, start_time, is_default) VALUES ('Solemn Mass, Procession through Times Square & Benediction', '11:00:00', false); -- 65
 
 --
 -- Define types of service schedules
@@ -128,9 +129,11 @@ INSERT INTO schedules (name, code, is_default, valid_start) VALUES ('Good Friday
 INSERT INTO schedules (name, code, is_default, valid_start, valid_end) VALUES ('Good Friday', 'good-friday', true, '2011-01-01 00:00:00' AT TIME ZONE 'America/New_York', '2014-12-31 23:59:59' AT TIME ZONE 'America/New_York'); -- 52
 INSERT INTO schedules (name, code, is_default, valid_end) VALUES ('Good Friday', 'good-friday', true, '2010-12-31 23:59:59' AT TIME ZONE 'America/New_York'); -- 53
 INSERT INTO schedules (name, code, is_default) VALUES ('Holy Saturday', 'holy-saturday', true); -- 54
-
 INSERT INTO schedules (name, code, is_default, valid_start) VALUES ('Maundy Thursday', 'maundy-thursday', true, '2015-01-01 00:00:00' AT TIME ZONE 'America/New_York'); -- 55
 INSERT INTO schedules (name, code, is_default, valid_end) VALUES ('Maundy Thursday', 'maundy-thursday', true, '2014-12-31 23:59:59' AT TIME ZONE 'America/New_York'); -- 56
+INSERT INTO schedules (name, code, is_default, valid_start) VALUES ('Corpus Christi', 'corpus-christi', true, '2009-01-01 00:00:00' AT TIME ZONE 'America/New_York'); -- 57
+INSERT INTO schedules (name, code, is_default, valid_end) VALUES ('Corpus Christi', 'corpus-christi', true, '2008-12-31 23:59:59' AT TIME ZONE 'America/New_York'); -- 58
+INSERT INTO schedules (name, code, is_default) VALUES ('Holy Name', 'holy-name', true); -- 59
 
 --
 -- Map services to schedules
@@ -325,6 +328,18 @@ INSERT INTO schedule_services (schedule_id, service_id) VALUES (55, 10); -- maun
 INSERT INTO schedule_services (schedule_id, service_id) VALUES (55, 63); -- maundy-thursday
 INSERT INTO schedule_services (schedule_id, service_id) VALUES (56, 10); -- maundy-thursday (old)
 INSERT INTO schedule_services (schedule_id, service_id) VALUES (56, 64); -- maundy-thursday (old)
+INSERT INTO schedule_services (schedule_id, service_id) VALUES (57, 10); -- corpus-christi
+INSERT INTO schedule_services (schedule_id, service_id) VALUES (57, 11); -- corpus-christi
+INSERT INTO schedule_services (schedule_id, service_id) VALUES (57, 12); -- corpus-christi
+INSERT INTO schedule_services (schedule_id, service_id) VALUES (57, 65); -- corpus-christi
+INSERT INTO schedule_services (schedule_id, service_id) VALUES (57, 8); -- corpus-christi
+INSERT INTO schedule_services (schedule_id, service_id) VALUES (58, 10); -- corpus-christi (old)
+INSERT INTO schedule_services (schedule_id, service_id) VALUES (58, 11); -- corpus-christi (old)
+INSERT INTO schedule_services (schedule_id, service_id) VALUES (58, 12); -- corpus-christi (old)
+INSERT INTO schedule_services (schedule_id, service_id) VALUES (58, 65); -- corpus-christi (old)
+INSERT INTO schedule_services (schedule_id, service_id) VALUES (58, 8); -- corpus-christi (old)
+INSERT INTO schedule_services (schedule_id, service_id) VALUES (58, 29); -- corpus-christi (old)
+INSERT INTO schedule_services (schedule_id, service_id) VALUES (59, 13); -- holy-name
 
 --
 -- Define service patterns for seasons, fixed feasts, and moveable feasts, as
@@ -805,6 +820,24 @@ INSERT INTO service_patterns (name, code,
         null, null, null,
         null, null, null,
         null, null, null
+    );
+
+INSERT INTO service_patterns (name, code,
+        schedule_code_mon, schedule_code_mon_with_vigil, schedule_code_mon_vigil,
+        schedule_code_tue, schedule_code_tue_with_vigil, schedule_code_tue_vigil,
+        schedule_code_wed, schedule_code_wed_with_vigil, schedule_code_wed_vigil,
+        schedule_code_thu, schedule_code_thu_with_vigil, schedule_code_thu_vigil,
+        schedule_code_fri, schedule_code_fri_with_vigil, schedule_code_fri_vigil,
+        schedule_code_sat, schedule_code_sat_with_vigil, schedule_code_sat_vigil,
+        schedule_code_sun, schedule_code_sun_with_vigil, schedule_code_sun_vigil
+    ) VALUES ('Corpus Christi', 'corpus-christi',
+        null, null, null,
+        null, null, null,
+        null, null, null,
+        null, null, null,
+        null, null, null,
+        null, null, null,
+        'corpus-christi', null, null
     );
 
 -- rambler down

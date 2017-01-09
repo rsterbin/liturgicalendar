@@ -2,7 +2,7 @@
 -- rambler up
 
 -- Fixed feasts: January
-INSERT INTO fixed_feasts (name, otype_id, month, day, color) VALUES ('The Holy Name of Our Lord Jesus Christ', 2, 1, 1, 'gold');
+INSERT INTO fixed_feasts (name, otype_id, month, day, schedule_pattern, color) VALUES ('The Holy Name of Our Lord Jesus Christ', 2, 1, 1, 'holy-name', 'gold');
 INSERT INTO fixed_feasts (name, otype_id, month, day, schedule_pattern, has_eve, eve_schedule_pattern, color) VALUES ('The Epiphany of Our Lord Jesus Christ', 1, 1, 6, 'solemn-fixed-feast', true, 'solemn-fixed-feast-eve', 'gold');
 INSERT INTO fixed_feasts (name, otype_id, month, day, color) VALUES ('William Laud, Archbishop of Canterbury, 1645', 4, 1, 10, 'red');
 INSERT INTO fixed_feasts (name, otype_id, month, day, color) VALUES ('Aelred, Abbot of Rievaulx, 1167', 4, 1, 12, 'white');
@@ -89,7 +89,7 @@ INSERT INTO fixed_feasts (name, otype_id, month, day, schedule_pattern, has_eve,
 
 -- Fixed feasts: July
 
-INSERT INTO fixed_feasts (name, otype_id, month, day, color) VALUES ('Independence Day', 4, 7, 4, 'white');
+INSERT INTO fixed_feasts (name, otype_id, month, day, color) VALUES ('Independence Day', 3, 7, 4, 'white');
 INSERT INTO fixed_feasts (name, otype_id, month, day, color, valid_start) VALUES ('Jan Hus, Prophetic Witness and Martyr, 1415', 4, 7, 6, 'red', '2012-01-01 00:00:00' AT TIME ZONE 'America/New_York');
 INSERT INTO fixed_feasts (name, otype_id, month, day, color) VALUES ('Benedict of Nursia, Abbot of Monte Casino, c. 540', 4, 7, 11, 'white');
 INSERT INTO fixed_feasts (name, otype_id, month, day, color, valid_start) VALUES ('Bonaventure, Bishop and Friar, 1274', 4, 7, 15, 'white', '2005-01-01 00:00:00' AT TIME ZONE 'America/New_York');
@@ -174,7 +174,7 @@ INSERT INTO fixed_feasts (name, otype_id, month, day, color) VALUES ('James Hann
 
 INSERT INTO fixed_feasts (name, otype_id, month, day, schedule_pattern, has_eve, eve_schedule_pattern, color, valid_end) VALUES ('All Saints', 1, 11, 1, 'solemn-fixed-feast', true, 'solemn-fixed-feast-eve', 'white', '2009-12-31 23:59:59' AT TIME ZONE 'America/New_York');
 INSERT INTO fixed_feasts (name, otype_id, month, day, schedule_pattern, has_eve, eve_schedule_pattern, color, valid_start) VALUES ('All Saints', 1, 11, 1, 'solemn-fixed-feast', true, 'solemn-fixed-feast-eve', 'gold', '2010-01-01 00:00:00' AT TIME ZONE 'America/New_York');
-INSERT INTO fixed_feasts (name, otype_id, month, day, schedule_pattern, color) VALUES ('All Souls Day', 3, 11, 2, 'all-souls', 'black');
+INSERT INTO fixed_feasts (name, otype_id, month, day, code, schedule_pattern, color) VALUES ('All Souls Day', 3, 11, 2, 'all-souls', 'all-souls', 'black');
 INSERT INTO fixed_feasts (name, otype_id, month, day, color, valid_start, valid_end) VALUES ('Richard Hooker, Priest, 1600', 4, 11, 3, 'white', '2007-01-01 00:00:00' AT TIME ZONE 'America/New_York', '2012-12-31 23:59:59' AT TIME ZONE 'America/New_York');
 INSERT INTO fixed_feasts (name, otype_id, month, day, color) VALUES ('Willibrord, Archbishop of Utrecht, Missionary to Frisia, 739', 4, 11, 7, 'white');
 INSERT INTO fixed_feasts (name, otype_id, month, day, color) VALUES ('Leo the Great, Bishop of Rome, 461', 4, 11, 10, 'white');
@@ -205,7 +205,7 @@ INSERT INTO fixed_feasts (name, otype_id, month, day, schedule_pattern, has_eve,
 INSERT INTO fixed_feasts (name, otype_id, month, day, schedule_pattern, has_eve, eve_schedule_pattern, color, valid_end) VALUES ('The Immaculate Conception', 3, 12, 8, 'solemn-fixed-feast', true, 'solemn-fixed-feast-eve', 'white', '2007-12-31 23:59:59' AT TIME ZONE 'America/New_York');
 INSERT INTO fixed_feasts (name, otype_id, month, day, color, valid_start) VALUES ('Anniversary of the Dedication of the Church, 1895', 2, 12, 12, 'gold', '2012-01-01 00:00:00' AT TIME ZONE 'America/New_York');
 INSERT INTO fixed_feasts (name, otype_id, month, day, has_eve, eve_schedule_pattern, color, valid_start, valid_end) VALUES ('Anniversary of the Consecration of the Church, 1895', 2, 12, 12, true, 'fixed-feast-eve', 'white', '2009-01-01 00:00:00' AT TIME ZONE 'America/New_York', '2011-12-31 23:59:59' AT TIME ZONE 'America/New_York');
-INSERT INTO fixed_feasts (name, otype_id, month, day, has_eve, eve_schedule_pattern, color, valid_end) VALUES ('Anniversary of the Dedication of the Church, 1895', 2, 12, 12, true, 'fixed-feast-eve', 'white', '2008-12-31 23:59:59' AT TIME ZONE 'America/New_York');
+INSERT INTO fixed_feasts (name, otype_id, month, day, has_eve, eve_schedule_pattern, color, valid_start, valid_end) VALUES ('Anniversary of the Dedication of the Church, 1895', 2, 12, 12, true, 'fixed-feast-eve', 'white', '2006-01-01 00:00:00' AT TIME ZONE 'America/New_York', '2008-12-31 23:59:59' AT TIME ZONE 'America/New_York');
 INSERT INTO fixed_feasts (name, otype_id, month, day, color, valid_start, valid_end) VALUES ('Lucy, Virgin and Martyr, c. 304', 4, 12, 13, 'red', '2005-01-01 00:00:00' AT TIME ZONE 'America/New_York', '2010-12-31 23:59:59' AT TIME ZONE 'America/New_York');
 INSERT INTO fixed_feasts (name, otype_id, month, day, color, valid_start) VALUES ('Lucy, Martyr at Syracuse, 304', 4, 12, 13, 'red', '2011-01-01 00:00:00' AT TIME ZONE 'America/New_York');
 INSERT INTO fixed_feasts (name, otype_id, month, day, color, valid_start, valid_end) VALUES ('John of the Cross, Priest, 1591', 4, 12, 14, 'white', '2007-01-01 00:00:00' AT TIME ZONE 'America/New_York', '2009-12-31 23:59:59' AT TIME ZONE 'America/New_York');

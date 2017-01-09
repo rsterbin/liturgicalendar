@@ -124,23 +124,66 @@ INSERT INTO moveable_feasts (name, code, otype_id, placement_index,
 The Watch Before the Blessed Sacrament follows the Mass.',
         '2010-12-31 23:59:59' AT TIME ZONE 'America/New_York');
 
+INSERT INTO moveable_feasts (name, code, otype_id, placement_index,
+        calculate_from, algorithm, distance,
+        schedule_pattern, has_eve, eve_schedule_pattern, color)
+    VALUES ('Ascension Day', 'ascension-day', 2, 4,
+        'easter', 'thursdays_after', 5,
+        'solemn-fixed-feast', true, 'solemn-fixed-feast-eve', 'gold');
+
+INSERT INTO moveable_feasts (name, code, otype_id, placement_index,
+        calculate_from, algorithm, distance, has_eve, color)
+    VALUES ('The Day of Pentecost: Whitsunday', 'pentecost', 2, 4,
+        'easter', 'sundays_after', 7, true, 'red');
+
+INSERT INTO moveable_feasts (name, code, otype_id, placement_index,
+        calculate_from, algorithm, distance, has_eve, color)
+    VALUES ('Trinity Sunday', 'trinity', 2, 4,
+        'easter', 'sundays_after', 8, true, 'gold');
+
+INSERT INTO moveable_feasts (name, code, otype_id, placement_index,
+        calculate_from, algorithm, distance,
+        schedule_pattern, has_eve, color, note)
+    VALUES ('The Body and Blood of Christ: Corpus Christi', 'corpus-christi', 2, 4,
+        'easter', 'sundays_after', 9,
+        'corpus-christi', true, 'gold', 'The Sunday summer schedule begins this evening.');
+
+INSERT INTO moveable_feasts (name, code, otype_id, placement_index,
+        calculate_from, algorithm, distance, has_eve, color)
+    VALUES ('The Third Sunday of Advent', 'rose-advent', 2, 5,
+        'christmas', 'sundays_before', 2, true, 'rose');
+
+INSERT INTO moveable_feasts (name, code, otype_id, placement_index,
+        calculate_from, algorithm, distance, has_eve, color)
+    VALUES ('The Fourth Sunday in Lent', 'rose-lent', 2, 5,
+        'ash-wednesday', 'sundays_after', 4, true, 'rose');
+
+INSERT INTO moveable_feasts (name, code, otype_id, placement_index,
+        calculate_from, algorithm, distance, has_eve, color,
+        valid_end)
+    VALUES ('The Sacred Heart of Jesus', 'sacred-heart', 3, 5,
+        'pentecost', 'days_after', 19, true, 'white',
+        '2008-12-31 23:59:59' AT TIME ZONE 'America/New_York');
+
 -- rambler down
 
 TRUNCATE TABLE moveable_feasts RESTART IDENTITY;
 
--- TODO: Remaining moveable feasts
 
--- Ascension Day
--- Day of Pentecost
--- Trinity Sunday
--- Corpus Christi
--- Thanksgiving Day
+-- TODO: Floating feasts
+
 -- "Of Our Lady" Saturdays
 -- The First Book of Common Prayer, 1549
--- Dedication of the Church (old timing)
--- Rose Sunday, Advent
--- Rose Sunday, Lent
 
+-- TODO: Federal holidays
+
+-- Thanksgiving Day
+-- Independence Day
+-- Martin Luther King Day
+-- Presidents' Day
+-- Memorial Day
+-- Labor Day
+-- Columbus Day
 
 -- todo: answered questions:
 -- How do the days marked "Of Our Lady" work? There seems to be roughly one a month, but I don't know what the pattern is.

@@ -278,6 +278,10 @@ class MoveableFeast(DeclarativeBase):
             # Ash Wednesday is the sixth Wednesday before Easter
             eas = easter(year)
             holiday = eas - datetime.timedelta(days=eas.weekday()) + datetime.timedelta(days=2, weeks=-6)
+        elif self.calculate_from == 'pentecost':
+            # Pentecost is the seventh Sunday after Easter
+            eas = easter(year)
+            holiday = eas + datetime.timedelta(weeks=7)
         else:
             raise ValueError('"{holiday}" is an unknown calculation starting point for moveable feasts; use "christmas" or "easter"'.format(holiday=repr(self.calculate_from)))
         return getattr(feast_algorithms, self.algorithm)(holiday, self.distance)
@@ -320,4 +324,36 @@ class FixedFeast(DeclarativeBase):
     def day(self, year):
         """Gets the date of this feast, given a year"""
         return datetime.date(year, self.month, self.mday)
+
+class FloatingFeast(DeclarativeBase):
+    """Sqlalchemy floating feasts model"""
+    __tablename__ = 'floating_feasts'
+
+    id = Column('floating_id', Integer, primary_key=True)
+    name = Column(String)
+    code = Column(String)
+    otype_id = Column(Integer, ForeignKey('observance_types.otype_id'))
+    placement_index = Column(Integer, nullable=True)
+    algorithm = Column(String)
+    schedule_pattern = Column(String, ForeignKey('service_patterns.code'), nullable=True)
+    has_eve = Column(Boolean)
+    eve_schedule_pattern = Column(String, ForeignKey('service_patterns.code'), nullable=True)
+    eve_name = Column(String, nullable=True)
+    color = Column(String, nullable=True)
+    note = Column(String, nullable=True)
+    valid_start = Column(DateTime, nullable=True)
+    valid_end = Column(DateTime, nullable=True)
+
+    otype = relationship(ObservanceType)
+    all_patterns = relationship(ServicePattern, primaryjoin="ServicePattern.code==FloatingFeast.schedule_pattern", uselist=True)
+    all_eve_patterns = relationship(ServicePattern, primaryjoin="ServicePattern.code==FloatingFeast.eve_schedule_pattern", uselist=True)
+
+    def __repr__(self):
+        return self.name + ' <' + self.code + '>'
+
+    def pattern(self, day):
+        return valid_in_list(self.all_patterns, day)
+
+    def eve_pattern(self, day):
+        return valid_in_list(self.all_eve_patterns, day)
 

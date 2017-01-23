@@ -1,7 +1,6 @@
 import datetime
 from sqlalchemy import text
 from sqlalchemy.orm import eagerload,joinedload
-import sys
 
 from models import MoveableFeast, ServicePattern
 

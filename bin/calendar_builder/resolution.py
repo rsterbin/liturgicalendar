@@ -1,10 +1,11 @@
 import copy
 import datetime
-import sys
+import utils
 
 from season import YearIterator
 from moveable_feasts import MoveableFeasts
 from fixed_feasts import FixedFeasts
+from floating_feasts import FloatingFeasts
 from valid_dates import valid_in_list
 from config import config
 
@@ -16,15 +17,11 @@ class Resolution:
         self.session = session
         self.full_year = {}
 
-    def _day_to_lookup(self, day):
-        """Turns a day into its lookup key in the full year hash"""
-        return day.strftime('%Y-%m-%d')
-
     def import_seasons(self):
         """Walk though the year and lay down our defaults according to the season on that date"""
         self.season_ticker = YearIterator(self.session, self.year)
         while self.season_ticker.day.year == self.year:
-            cdate = self._day_to_lookup(self.season_ticker.day)
+            cdate = utils.day_to_lookup(self.season_ticker.day)
             self.full_year[cdate] = ResolutionDay(self.season_ticker.day, self)
             self.full_year[cdate].set_season(self.season_ticker.current(), self.season_ticker.sunday_count, self.season_ticker.is_last_week())
             self.season_ticker.advance_by_day()
@@ -32,26 +29,32 @@ class Resolution:
     def import_moveable_feasts(self):
         self.moveable = MoveableFeasts(self.session, self.year)
         for info in self.moveable.feasts_by_date():
-            cdate = self._day_to_lookup(info['day'])
+            cdate = utils.day_to_lookup(info['day'])
             self.full_year[cdate].add_feast(ResolutionFeast(info['feasts'], info['day']))
 
     def import_fixed_feasts(self):
         self.fixed = FixedFeasts(self.session, self.year)
         for info in self.fixed.feasts_by_date():
-            cdate = self._day_to_lookup(info['day'])
+            cdate = utils.day_to_lookup(info['day'])
+            self.full_year[cdate].add_feast(ResolutionFeast(info['feasts'], info['day']))
+
+    def import_floating_feasts(self):
+        self.floating = FloatingFeasts(self.session, self.year)
+        for info in self.floating.get_for_year(self.year, self.full_year):
+            cdate = utils.day_to_lookup(info['day'])
             self.full_year[cdate].add_feast(ResolutionFeast(info['feasts'], info['day']))
 
     def before(self, day):
         """Returns the day before the day given"""
         target = copy.deepcopy(day)
         target = target - datetime.timedelta(days=1)
-        return self.full_year[self._day_to_lookup(target)]
+        return self.full_year[utils.day_to_lookup(target)]
 
     def after(self, day):
         """Returns the day after the day given"""
         target = copy.deepcopy(day)
         target = target + datetime.timedelta(days=1)
-        return self.full_year[self._day_to_lookup(target)]
+        return self.full_year[utils.day_to_lookup(target)]
 
 class ResolutionDay:
     """Describes a day in the resolution process"""
@@ -165,11 +168,8 @@ class ResolutionDay:
             schedule = pattern.schedule(self.day, has_vigil = self.has_vigil)
         )
 
-    def weekday(self):
-        return self.day.strftime('%A').lower()[:3]
-
     def __repr__(self):
-        rep = self.day.strftime('%Y-%m-%d') + ' (' + self.weekday() + '):'
+        rep = self.day.strftime('%Y-%m-%d') + ' (' + utils.weekday(self.day) + '):'
         rep += "\n\t" + str(self.base_block)
         if self.vigil_block is not None:
             rep += "\n\t" + str(self.vigil_block)

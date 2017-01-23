@@ -83,7 +83,7 @@ INSERT INTO fixed_feasts (name, otype_id, month, day, color) VALUES ('Joseph But
 INSERT INTO fixed_feasts (name, otype_id, month, day, color, valid_end) VALUES ('Bernard Mizeki, Catechist and Martyr in Rhodesia, 1896', 4, 6, 18, 'red', '2011-12-31 23:59:59' AT TIME ZONE 'America/New_York');
 INSERT INTO fixed_feasts (name, otype_id, month, day, color, valid_start) VALUES ('Bernard Mizeki, Catechist and Martyr in Mashonaland, 1896', 4, 6, 18, 'red', '2012-01-01 00:00:00' AT TIME ZONE 'America/New_York');
 INSERT INTO fixed_feasts (name, otype_id, month, day, color) VALUES ('Alban, First Martyr of Britain, c. 304', 4, 6, 22, 'red');
-INSERT INTO fixed_feasts (name, otype_id, month, day, schedule_pattern, has_eve, eve_schedule_pattern, color) VALUES ('The Nativity of Saint John the Baptist', 3, 6, 24, 'major-fixed-feast', true, 'major-fixed-feast-eve', 'white');
+INSERT INTO fixed_feasts (name, otype_id, month, day, schedule_pattern, has_eve, eve_schedule_pattern, color) VALUES ('The Nativity of Saint John the Baptist', 2, 6, 24, 'major-fixed-feast', true, 'major-fixed-feast-eve', 'white');
 INSERT INTO fixed_feasts (name, otype_id, month, day, color) VALUES ('Cyril, Patriarch of Alexandria, 444', 4, 6, 27, 'white');
 INSERT INTO fixed_feasts (name, otype_id, month, day, color) VALUES ('Irenaeus, Bishop of Lyons and Martyr, c. 202', 4, 6, 28, 'red');
 INSERT INTO fixed_feasts (name, otype_id, month, day, schedule_pattern, has_eve, eve_schedule_pattern, color) VALUES ('Saint Peter and Saint Paul, Apostles', 3, 6, 29, 'major-fixed-feast', true, 'major-fixed-feast-eve', 'red');
@@ -102,7 +102,7 @@ INSERT INTO fixed_feasts (name, otype_id, month, day, schedule_pattern, has_eve,
 INSERT INTO fixed_feasts (name, otype_id, month, day, color) VALUES ('Parents of the Blessed Virgin Mary', 4, 7, 26, 'white');
 INSERT INTO fixed_feasts (name, otype_id, month, day, color) VALUES ('William Reed Huntington, Priest, 1909', 4, 7, 27, 'white');
 INSERT INTO fixed_feasts (name, otype_id, month, day, color) VALUES ('Mary and Martha of Bethany', 4, 7, 29, 'white');
-INSERT INTO fixed_feasts (name, otype_id, month, day, color) VALUES ('William Wilberforce, 1833', 4, 7, 30, 'white');
+INSERT INTO fixed_feasts (name, otype_id, month, day, color) VALUES ('William Wilberforce, Abolitionist, 1833', 4, 7, 30, 'white');
 INSERT INTO fixed_feasts (name, otype_id, month, day, color, valid_end) VALUES ('Ignatius of Loyola, Priest and Monastic, 1556', 4, 7, 31, 'white', '2011-12-31 23:59:59' AT TIME ZONE 'America/New_York');
 
 -- Fixed feasts: August

@@ -146,10 +146,11 @@ INSERT INTO schedules (name, code, is_default) VALUES ('Holy Name', 'holy-name',
 INSERT INTO schedules (name, code, is_default, valid_start) VALUES ('Palm Sunday Eve', 'palm-sunday-eve', true, '2012-01-01 00:00:00' AT TIME ZONE 'America/New_York'); -- 60
 INSERT INTO schedules (name, code, is_default, valid_start, valid_end) VALUES ('Palm Sunday Eve', 'palm-sunday-eve', true, '2008-01-01 00:00:00' AT TIME ZONE 'America/New_York', '2011-12-31 23:59:59' AT TIME ZONE 'America/New_York'); -- 61
 INSERT INTO schedules (name, code, is_default, valid_end) VALUES ('Palm Sunday Eve', 'palm-sunday-eve', true, '2007-12-31 23:59:59' AT TIME ZONE 'America/New_York'); -- 62
-
 INSERT INTO schedules (name, code, is_default, valid_start) VALUES ('Palm Sunday', 'palm-sunday', true, '2014-01-01 00:00:00' AT TIME ZONE 'America/New_York'); -- 63
 INSERT INTO schedules (name, code, is_default, valid_start, valid_end) VALUES ('Palm Sunday', 'palm-sunday', true, '2012-01-01 00:00:00' AT TIME ZONE 'America/New_York', '2013-12-31 23:59:59' AT TIME ZONE 'America/New_York'); -- 64
 INSERT INTO schedules (name, code, is_default, valid_end) VALUES ('Palm Sunday', 'palm-sunday', true, '2011-12-31 23:59:59' AT TIME ZONE 'America/New_York'); -- 65
+INSERT INTO schedules (name, code, is_default) VALUES ('Sunday With Vigil', 'sunday-with-vigil', true); -- 66
+INSERT INTO schedules (name, code, is_default) VALUES ('Summer Sunday With Vigil', 'summer-sunday-with-vigil', true); -- 67
 
 --
 -- Map services to schedules
@@ -372,6 +373,14 @@ INSERT INTO schedule_services (schedule_id, service_id) VALUES (65, 10); -- palm
 INSERT INTO schedule_services (schedule_id, service_id) VALUES (65, 71); -- palm-sunday (oldest)
 INSERT INTO schedule_services (schedule_id, service_id) VALUES (65, 74); -- palm-sunday (oldest)
 INSERT INTO schedule_services (schedule_id, service_id) VALUES (65, 15); -- palm-sunday (oldest)
+INSERT INTO schedule_services (schedule_id, service_id) VALUES (66, 10); -- sunday-with-vigil
+INSERT INTO schedule_services (schedule_id, service_id) VALUES (66, 11); -- sunday-with-vigil
+INSERT INTO schedule_services (schedule_id, service_id) VALUES (66, 12); -- sunday-with-vigil
+INSERT INTO schedule_services (schedule_id, service_id) VALUES (66, 13); -- sunday-with-vigil
+INSERT INTO schedule_services (schedule_id, service_id) VALUES (67, 1); -- summer-sunday-with-vigil
+INSERT INTO schedule_services (schedule_id, service_id) VALUES (67, 11); -- summer-sunday-with-vigil
+INSERT INTO schedule_services (schedule_id, service_id) VALUES (67, 12); -- summer-sunday-with-vigil
+INSERT INTO schedule_services (schedule_id, service_id) VALUES (67, 13); -- summer-sunday-with-vigil
 
 --
 -- Define service patterns for seasons, fixed feasts, and moveable feasts, as
@@ -393,7 +402,7 @@ INSERT INTO service_patterns (name, code,
         'thursday', 'thursday-vigil', null,
         'weekday', 'weekday-vigil', null,
         'saturday', 'saturday', 'vigil',
-        'sunday', null, null
+        'sunday', 'sunday-with-vigil', null
     );
 
 INSERT INTO service_patterns (name, code,
@@ -411,7 +420,7 @@ INSERT INTO service_patterns (name, code,
         'thursday', 'thursday-vigil', null,
         'weekday', 'weekday-vigil', null,
         'saturday', 'saturday', 'vigil',
-        'summer-sunday', null, null
+        'summer-sunday', 'summer-sunday-with-vigil', null
     );
 
 INSERT INTO service_patterns (name, code,
@@ -429,7 +438,7 @@ INSERT INTO service_patterns (name, code,
         'thursday', 'thursday-vigil', null,
         'weekday', 'weekday-vigil', null,
         'saturday-no-confessions', 'saturday-no-confessions', 'vigil',
-        'sunday', null, null
+        'sunday', 'sunday-with-vigil', null
     );
 
 INSERT INTO service_patterns (name, code,
@@ -447,7 +456,7 @@ INSERT INTO service_patterns (name, code,
         'thursday', 'thursday-vigil', null,
         'lent-friday', 'weekday-vigil', null,
         'saturday', 'saturday', 'vigil',
-        'sunday', null, null
+        'sunday', 'sunday-with-vigil', null
     );
 
 INSERT INTO service_patterns (name, code,
@@ -465,7 +474,7 @@ INSERT INTO service_patterns (name, code,
         'thursday-feast', 'thursday-feast', null,
         'weekday-feast', 'weekday-feast', null,
         'saturday', 'saturday', null,
-        null, null, null
+        'sunday', 'sunday-with-vigil', null
     );
 
 INSERT INTO service_patterns (name, code,
@@ -482,8 +491,8 @@ INSERT INTO service_patterns (name, code,
         null, null, 'ep-only',
         null, null, 'ep-only',
         null, null, 'friday-eve',
-        null, null, null,
-        null, null, null
+        null, null, 'vigil',
+        null, null, 'ep-only'
     );
 
 INSERT INTO service_patterns (name, code,
@@ -501,7 +510,7 @@ INSERT INTO service_patterns (name, code,
         'solemn-weekday-feast', 'solemn-weekday-feast', null,
         'solemn-weekday-feast', 'solemn-weekday-feast', null,
         'saturday', 'saturday', null,
-        null, null, null
+        'sunday', 'sunday-with-vigil', null
     );
 
 INSERT INTO service_patterns (name, code,
@@ -518,8 +527,8 @@ INSERT INTO service_patterns (name, code,
         null, null, 'es-only',
         null, null, 'es-only',
         null, null, 'solemn-friday-eve',
-        null, null, null,
-        null, null, null
+        null, null, 'vigil',
+        null, null, 'es-only'
     );
 
 INSERT INTO service_patterns (name, code,
@@ -574,7 +583,7 @@ INSERT INTO service_patterns (name, code,
         'solemn-weekday-feast', 'solemn-weekday-feast', null,
         'solemn-weekday-feast', 'solemn-weekday-feast', null,
         'saturday', 'saturday', null,
-        'summer-sunday', 'summer-sunday', null,
+        'summer-sunday', 'summer-sunday-with-vigil', null,
         '2009-01-01 00:00:00' AT TIME ZONE 'America/New_York'
     );
 

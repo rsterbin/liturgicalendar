@@ -54,7 +54,9 @@ class Resolution:
         """Returns the day after the day given"""
         target = copy.deepcopy(day)
         target = target + datetime.timedelta(days=1)
-        return self.full_year[utils.day_to_lookup(target)]
+        cdate = utils.day_to_lookup(target)
+        if cdate in self.full_year:
+            return self.full_year[cdate]
 
 class ResolutionDay:
     """Describes a day in the resolution process"""
@@ -65,6 +67,7 @@ class ResolutionDay:
         self.year = year
         self.season = None
         self.current_feast = None
+        self.current_precedence = 100
         self.has_vigil = False
         self.feasts = []
         self.base_block = None
@@ -107,9 +110,11 @@ class ResolutionDay:
             self._make_block_from_season()
 
     def set_vigil_for_season(self):
-        self.has_vigil = True
         # Look ahead to the next day and use its info for the vigil
         tomorrow = self.year.after(self.day)
+        if tomorrow is None:
+            return
+        self.has_vigil = True
         tpattern = tomorrow.season.pattern(self.day)
         self.vigil_block = ResolutionBlock(
             color = tomorrow.season.color,
@@ -131,12 +136,12 @@ class ResolutionDay:
         else:
             self._make_block_from_season()
 
-        current_precedence = self.season.precedence(self.day)
+        self.current_precedence = self.season.precedence(self.day)
         current_feast = None
 
         for feast in self.feasts:
-            if feast.precedence() <= current_precedence:
-                current_precedence = feast.precedence()
+            if feast.precedence() <= self.current_precedence:
+                self.current_precedence = feast.precedence()
                 current_feast = feast
             elif feast.precedence() <= config['transfer_precedence']:
                 tomorrow = self.year.after(self.day)
@@ -229,6 +234,13 @@ class ResolutionFeast:
             return f.otype.precedence
         else:
             return -1
+
+    def code(self):
+        f = self._get_for_day(self.current_day);
+        if f:
+            return f.code
+        else:
+            return ''
 
     def color(self):
         f = self._get_for_day(self.current_day);

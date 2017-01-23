@@ -80,7 +80,6 @@ class ResolutionDay:
         self.feasts.append(feast)
 
     def set_vigil_for_feast(self, feast):
-        self.has_vigil = True
         pattern = feast.eve_pattern()
         if pattern is None:
             pattern = self.season.pattern(self.day)
@@ -90,6 +89,7 @@ class ResolutionDay:
         vigil_schedule = pattern.schedule(self.day, is_vigil = True)
         if vigil_schedule is None:
             return
+        self.has_vigil = True
         self.vigil_block = ResolutionBlock(
             color = feast.color(),
             name = vigil_name,

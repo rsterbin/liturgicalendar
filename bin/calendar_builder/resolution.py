@@ -89,6 +89,12 @@ class ResolutionDay:
         vigil_schedule = pattern.schedule(self.day, is_vigil = True)
         if vigil_schedule is None:
             return
+        cp = self.season.precedence(self.day)
+        for f in self.feasts:
+            if cp > f.precedence():
+                cp = f.precedence()
+        if cp < feast.precedence():
+            return
         self.has_vigil = True
         self.vigil_block = ResolutionBlock(
             color = feast.color(),

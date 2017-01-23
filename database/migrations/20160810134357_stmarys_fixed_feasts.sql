@@ -37,8 +37,8 @@ INSERT INTO fixed_feasts (name, otype_id, month, day, schedule_pattern, has_eve,
 -- Fixed feasts: March
 
 INSERT INTO fixed_feasts (name, otype_id, month, day, schedule_pattern, has_eve, eve_schedule_pattern, color) VALUES ('Saint Joseph', 3, 3, 19, 'major-fixed-feast', true, 'major-fixed-feast-eve', 'white');
-INSERT INTO fixed_feasts (name, otype_id, month, day, schedule_pattern, has_eve, eve_schedule_pattern, color, valid_end) VALUES ('The Annunciation of Our Lord Jesus Christ', 2, 3, 25, 'solemn-fixed-feast', true, 'solemn-fixed-feast-eve', 'blue', '2013-12-31 23:59:59' AT TIME ZONE 'America/New_York');
-INSERT INTO fixed_feasts (name, otype_id, month, day, schedule_pattern, has_eve, eve_schedule_pattern, color, valid_start) VALUES ('The Annunciation of Our Lord Jesus Christ', 2, 3, 25, 'solemn-fixed-feast', true, 'solemn-fixed-feast-eve', 'gold', '2014-01-01 00:00:00' AT TIME ZONE 'America/New_York');
+INSERT INTO fixed_feasts (name, otype_id, month, day, schedule_pattern, has_eve, eve_schedule_pattern, color, valid_end) VALUES ('The Annunciation of Our Lord Jesus Christ', 3, 3, 25, 'solemn-fixed-feast', true, 'solemn-fixed-feast-eve', 'white', '2013-12-31 23:59:59' AT TIME ZONE 'America/New_York');
+INSERT INTO fixed_feasts (name, otype_id, month, day, schedule_pattern, has_eve, eve_schedule_pattern, color, valid_start) VALUES ('The Annunciation of Our Lord Jesus Christ', 3, 3, 25, 'solemn-fixed-feast', true, 'solemn-fixed-feast-eve', 'gold', '2014-01-01 00:00:00' AT TIME ZONE 'America/New_York');
 
 -- Fixed feasts: April
 

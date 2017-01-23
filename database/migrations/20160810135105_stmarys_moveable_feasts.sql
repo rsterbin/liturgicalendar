@@ -55,6 +55,25 @@ Fridays of Lent are observed by abstinence from flesh meats.',
 
 INSERT INTO moveable_feasts (name, code, otype_id, placement_index,
         calculate_from, algorithm, distance,
+        schedule_pattern, has_eve, eve_schedule_pattern, color, note,
+        valid_start)
+    VALUES ('The Sunday of the Passion: Palm Sunday', 'palm-sunday', 1, 2,
+        'easter', 'days_before', 7,
+        'palm-sunday', true, 'palm-sunday-eve', 'red', 'Abstinence is not observed on Palm Sunday.
+There is no celebration of Mass at 10:00 AM today.',
+        '2011-01-01 00:00:00' AT TIME ZONE 'America/New_York');
+
+INSERT INTO moveable_feasts (name, code, otype_id, placement_index,
+        calculate_from, algorithm, distance,
+        schedule_pattern, has_eve, eve_schedule_pattern, color, note,
+        valid_end)
+    VALUES ('The Sunday of the Passion: Palm Sunday', 'palm-sunday', 1, 2,
+        'easter', 'days_before', 7,
+        'palm-sunday', true, 'palm-sunday-eve', 'red', 'There is no 10:00 AM liturgy today.',
+        '2010-12-31 23:59:59' AT TIME ZONE 'America/New_York');
+
+INSERT INTO moveable_feasts (name, code, otype_id, placement_index,
+        calculate_from, algorithm, distance,
         schedule_pattern, color, note,
         valid_start)
     VALUES ('Good Friday', 'good-friday', 1, 2,

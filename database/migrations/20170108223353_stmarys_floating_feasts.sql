@@ -15,8 +15,8 @@ INSERT INTO floating_feasts (name, code, otype_id, placement_index,
         'of_our_lady_old', 'white',
         '2012-12-31 23:59:59' AT TIME ZONE 'America/New_York');
 
-INSERT INTO floating_feasts (name, code, otype_id, placement_index, algorithm)
-    VALUES ('The First Book of Common Prayer, 1549', 'first-bcp', 4, 1, 'first_bcp');
+INSERT INTO floating_feasts (name, code, otype_id, placement_index, algorithm, color)
+    VALUES ('The First Book of Common Prayer, 1549', 'first-bcp', 4, 1, 'first_bcp', 'white');
 
 -- rambler down
 

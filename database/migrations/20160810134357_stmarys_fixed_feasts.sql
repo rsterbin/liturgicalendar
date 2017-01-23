@@ -161,7 +161,7 @@ INSERT INTO fixed_feasts (name, otype_id, month, day, color, valid_end) VALUES (
 INSERT INTO fixed_feasts (name, otype_id, month, day, color) VALUES ('Robert Grosseteste, Bishop of Lincoln, 1253', 4, 10, 9, 'white');
 INSERT INTO fixed_feasts (name, otype_id, month, day, color, valid_start) VALUES ('Philip, Deacon and Evangelist', 4, 10, 11, 'white', '2005-01-01 00:00:00' AT TIME ZONE 'America/New_York');
 INSERT INTO fixed_feasts (name, otype_id, month, day, color) VALUES ('Samuel Isaac Joseph Schereschewsky, Bishop of Shanghai, 1906', 4, 10, 14, 'white');
-INSERT INTO fixed_feasts (name, otype_id, month, day, color) VALUES ('Teresa of Avila, Nun, 1582', 4, 10, 5, 'white');
+INSERT INTO fixed_feasts (name, otype_id, month, day, color) VALUES ('Teresa of Avila, Nun, 1582', 4, 10, 15, 'white');
 INSERT INTO fixed_feasts (name, otype_id, month, day, color, valid_start) VALUES ('Hugh Latimer and Nicholas Ridley, Bishops, 1555', 4, 10, 16, 'red', '2012-01-01 00:00:00' AT TIME ZONE 'America/New_York');
 INSERT INTO fixed_feasts (name, otype_id, month, day, color) VALUES ('Ignatius, Bishop of Antioch, and Martyr, c. 115', 4, 10, 17, 'red');
 INSERT INTO fixed_feasts (name, otype_id, month, day, schedule_pattern, has_eve, eve_schedule_pattern, color) VALUES ('Saint Luke the Evangelist', 3, 10, 18, 'major-fixed-feast', true, 'major-fixed-feast-eve', 'red');

@@ -840,6 +840,24 @@ INSERT INTO service_patterns (name, code,
         'corpus-christi', null, null
     );
 
+INSERT INTO service_patterns (name, code,
+        schedule_code_mon, schedule_code_mon_with_vigil, schedule_code_mon_vigil,
+        schedule_code_tue, schedule_code_tue_with_vigil, schedule_code_tue_vigil,
+        schedule_code_wed, schedule_code_wed_with_vigil, schedule_code_wed_vigil,
+        schedule_code_thu, schedule_code_thu_with_vigil, schedule_code_thu_vigil,
+        schedule_code_fri, schedule_code_fri_with_vigil, schedule_code_fri_vigil,
+        schedule_code_sat, schedule_code_sat_with_vigil, schedule_code_sat_vigil,
+        schedule_code_sun, schedule_code_sun_with_vigil, schedule_code_sun_vigil
+    ) VALUES ('Holy Name', 'holy-name',
+        'holy-name', 'holy-name', null,
+        'holy-name', 'holy-name', null,
+        'holy-name', 'holy-name', null,
+        'holy-name', 'holy-name', null,
+        'holy-name', 'holy-name', null,
+        'holy-name', 'holy-name', null,
+        'holy-name', 'holy-name', null
+    );
+
 -- rambler down
 
 DELETE FROM service_patterns;

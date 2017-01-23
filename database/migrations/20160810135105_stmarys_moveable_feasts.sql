@@ -188,33 +188,3 @@ INSERT INTO moveable_feasts (name, code, otype_id, placement_index,
 
 TRUNCATE TABLE moveable_feasts RESTART IDENTITY;
 
-
--- TODO: Floating feasts
-
--- "Of Our Lady" Saturdays
--- The First Book of Common Prayer, 1549
-
--- TODO: Federal holidays
-
--- Thanksgiving Day
--- Independence Day
--- Martin Luther King Day
--- Presidents' Day
--- Memorial Day
--- Labor Day
--- Columbus Day
-
--- todo: answered questions:
--- How do the days marked "Of Our Lady" work? There seems to be roughly one a month, but I don't know what the pattern is.
-    -- Saturdays the would otherwise be green, during a green season, become Of Our Lady
-    -- This used to be true year-round
-    -- Stopped in 2013 (year-round through 2012)
--- How is the date of "The First Book of Common Prayer, 1549" determined?
-    -- First free weekday after Pentecost for which there's no other commemoration
--- Do we celebrate Sacred Heart (19 days after Pentecost) anymore?  It appears through 2008.
-    -- Officially done with that
-
--- todo: ask for clarification
--- Should I standardize the shifting names of the Dedication of the Church? (if so, we just have one color change, not three name changes)
--- Need more info on how the Dedication of the Church works, as its description in LF&F is similar to a level 2, but we don't seem to treat it quite that way
-

@@ -5,17 +5,15 @@
 
 -- todo: distinguish notes from abstinence notes
 
--- todo: movable notes
--- in January: 'Birthday of Martin Luther King, Jr. – Federal Holiday Schedule<br />The church opens today at 10:00 AM and closes at 2:00 PM.'
--- in February: 'Washington’s Birthday – Federal Holiday Schedule<br />The church opens today at 10:00 AM and closes at 2:00 PM.'
--- in May: 'Memorial Day – Federal Holiday Schedule<br />The church opens today at 10:00 AM and closes at 2:00 PM.'
--- in July: 'Federal Holiday Schedule<br />The church opens today at 10:00 AM and closes at 2:00 PM.' (for Independence Day or the closest weekday)
--- in September: 'Labor Day – Federal Holiday Schedule<br />The church opens today at 10:00 AM and closes at 2:00 PM.'
--- in October: 'Columbus Day – Federal Holiday Schedule<br />The church opens today at 10:00 AM and closes at 2:00 PM.'
-
--- todo: remember
--- Major Feasts in Holy Week or Easter Week transfer all the way to the following Monday (and Tuesday, if both Saint Joseph and Annunciation fall within)
--- Federal Holidays have notes and a schedule (church open 10-2)
+-- todo: federal holidays / church open 10-2
+-- New Year's Day
+-- Thanksgiving Day
+-- Independence Day
+-- Martin Luther King Day
+-- Presidents' Day
+-- Memorial Day
+-- Labor Day
+-- Columbus Day
 
 -- todo: by-year overrides
 -- Candlemas

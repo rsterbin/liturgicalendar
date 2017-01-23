@@ -156,7 +156,7 @@ INSERT INTO moveable_feasts (name, code, otype_id, placement_index,
 INSERT INTO moveable_feasts (name, code, otype_id, placement_index,
         calculate_from, algorithm, distance, has_eve, color)
     VALUES ('The Fourth Sunday in Lent', 'rose-lent', 2, 5,
-        'ash-wednesday', 'sundays_after', 4, true, 'rose');
+        'ash-wednesday', 'sundays_after', 3, true, 'rose');
 
 INSERT INTO moveable_feasts (name, code, otype_id, placement_index,
         calculate_from, algorithm, distance, has_eve, color,

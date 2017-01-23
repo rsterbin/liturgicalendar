@@ -147,7 +147,7 @@ INSERT INTO moveable_feasts (name, code, otype_id, placement_index,
         calculate_from, algorithm, distance,
         schedule_pattern, has_eve, eve_schedule_pattern, color)
     VALUES ('Ascension Day', 'ascension-day', 2, 4,
-        'easter', 'thursdays_after', 5,
+        'easter', 'thursdays_after', 6,
         'solemn-fixed-feast', true, 'solemn-fixed-feast-eve', 'gold');
 
 INSERT INTO moveable_feasts (name, code, otype_id, placement_index,

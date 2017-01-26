@@ -184,6 +184,34 @@ INSERT INTO moveable_feasts (name, code, otype_id, placement_index,
         'pentecost', 'days_after', 19, true, 'white',
         '2008-12-31 23:59:59' AT TIME ZONE 'America/New_York');
 
+INSERT INTO moveable_feasts (name, code, otype_id, placement_index,
+        calculate_from, algorithm, distance, has_eve, color)
+    VALUES ('Thanksgiving Day', 'thanksgiving', 3, 5,
+        '10/31', 'thursdays_after', 3, true, 'white');
+
+INSERT INTO moveable_feasts (name, code, otype_id, placement_index,
+        calculate_from, algorithm, distance, has_eve, color,
+        valid_end)
+    VALUES ('Feast of Christ the King', 'christ-the-king', 2, 4,
+        'christmas', 'sundays_before', 5, true, 'white',
+        '2007-12-31 23:59:59' AT TIME ZONE 'America/New_York');
+
+INSERT INTO moveable_feasts (name, code, otype_id, placement_index,
+        calculate_from, algorithm, distance, has_eve, color,
+        valid_start,
+        valid_end)
+    VALUES ('The Last Sunday after Pentecost: Christ the King', 'christ-the-king', 2, 4,
+        'christmas', 'sundays_before', 5, true, 'white',
+        '2008-01-01 00:00:00' AT TIME ZONE 'America/New_York',
+        '2012-12-31 23:59:59' AT TIME ZONE 'America/New_York');
+
+INSERT INTO moveable_feasts (name, code, otype_id, placement_index,
+        calculate_from, algorithm, distance, has_eve, color,
+        valid_start)
+    VALUES ('The Last Sunday after Pentecost: Christ the King', 'christ-the-king', 2, 4,
+        'christmas', 'sundays_before', 5, true, 'gold',
+        '2013-01-01 00:00:00' AT TIME ZONE 'America/New_York');
+
 -- rambler down
 
 TRUNCATE TABLE moveable_feasts RESTART IDENTITY;

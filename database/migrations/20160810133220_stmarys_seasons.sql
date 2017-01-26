@@ -13,7 +13,7 @@ INSERT INTO seasons (name, code, color, sort_order,
         default_note_mon, default_note_tue, default_note_wed, default_note_thu,
         default_note_fri, default_note_sat, default_note_sun
     ) VALUES ('Christmas', 'christmas', 'white', 0,
-        'christmas', 'days_after', 12, 45,
+        'christmas', 'days_after', 12, 55,
         1, false, 'standard-no-confessions',
         'Weekday of Christmas', 'Weekday of Christmas', 'Weekday of Christmas', 'Weekday of Christmas',
         'Weekday of Christmas', 'Weekday of Christmas', 'Eve of the %s Sunday after Christmas Day', 'The %s Sunday after Christmas Day',

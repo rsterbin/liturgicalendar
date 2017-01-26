@@ -217,7 +217,7 @@ INSERT INTO fixed_feasts (name, otype_id, month, day, schedule_pattern, color, v
 INSERT INTO fixed_feasts (name, otype_id, month, day, schedule_pattern, color, valid_end) VALUES ('Saint Stephen, Deacon and Martyr', 3, 12, 26, 'weekday-feast', 'red', '2008-12-31 23:59:59' AT TIME ZONE 'America/New_York');
 INSERT INTO fixed_feasts (name, otype_id, month, day, schedule_pattern, color) VALUES ('Saint John, Apostle and Evangelist', 3, 12, 27, 'weekday-feast', 'white');
 INSERT INTO fixed_feasts (name, otype_id, month, day, schedule_pattern, color) VALUES ('The Holy Innocents', 3, 12, 28, 'weekday-feast', 'red');
-INSERT INTO fixed_feasts (name, otype_id, month, day, color) VALUES ('Thomas Becket, 1170', 4, 12, 29, 'red');
+INSERT INTO fixed_feasts (name, otype_id, month, day, color) VALUES ('Thomas Becket, Archbishop of Canterbury, 1170', 4, 12, 29, 'red');
 
 -- rambler down
 

@@ -282,6 +282,8 @@ class MoveableFeast(DeclarativeBase):
             # Pentecost is the seventh Sunday after Easter
             eas = easter(year)
             holiday = eas + datetime.timedelta(weeks=7)
+        elif self.calculate_from == '10/31':
+            holiday = datetime.date(year, 10, 31)
         else:
             raise ValueError('"{holiday}" is an unknown calculation starting point for moveable feasts; use "christmas" or "easter"'.format(holiday=repr(self.calculate_from)))
         return getattr(feast_algorithms, self.algorithm)(holiday, self.distance)

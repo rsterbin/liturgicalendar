@@ -212,6 +212,29 @@ INSERT INTO moveable_feasts (name, code, otype_id, placement_index,
         'christmas', 'sundays_before', 5, true, 'gold',
         '2013-01-01 00:00:00' AT TIME ZONE 'America/New_York');
 
+INSERT INTO moveable_feasts (name, code, otype_id, placement_index,
+        calculate_from, algorithm, distance, has_eve, color,
+        valid_end)
+    VALUES ('The First Sunday after the Epiphany: The Baptism of Our Lord', 'baptism', 2, 5,
+        'epiphany', 'sundays_after', 0, true, 'white',
+        '2008-12-31 23:59:59' AT TIME ZONE 'America/New_York');
+
+INSERT INTO moveable_feasts (name, code, otype_id, placement_index,
+        calculate_from, algorithm, distance, has_eve, color,
+        valid_start,
+        valid_end)
+    VALUES ('The First Sunday after the Epiphany: The Baptism of Our Lord Jesus Christ', 'baptism', 2, 5,
+        'epiphany', 'sundays_after', 0, true, 'white',
+        '2009-01-01 00:00:00' AT TIME ZONE 'America/New_York',
+        '2010-12-31 23:59:59' AT TIME ZONE 'America/New_York');
+
+INSERT INTO moveable_feasts (name, code, otype_id, placement_index,
+        calculate_from, algorithm, distance, has_eve, color,
+        valid_start)
+    VALUES ('The First Sunday after the Epiphany: The Baptism of Our Lord Jesus Christ', 'baptism', 2, 5,
+        'epiphany', 'sundays_after', 0, true, 'gold',
+        '2011-01-01 00:00:00' AT TIME ZONE 'America/New_York');
+
 -- rambler down
 
 TRUNCATE TABLE moveable_feasts RESTART IDENTITY;

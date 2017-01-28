@@ -46,6 +46,7 @@ class YearIterator:
         return self.by_code[code]
 
     def is_last_week(self):
+        """Returns whether this is the last week of the season"""
         return (self.ends - self.day).days < 7
 
     def advance_by_day(self):

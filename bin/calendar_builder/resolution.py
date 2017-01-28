@@ -6,6 +6,7 @@ from season import YearIterator
 from moveable_feasts import MoveableFeasts
 from fixed_feasts import FixedFeasts
 from floating_feasts import FloatingFeasts
+from federal_holidays import FederalHolidays
 from valid_dates import valid_in_list
 from config import config
 
@@ -13,6 +14,7 @@ class Resolution:
     """Describes a year in the resolution process"""
 
     def __init__(self, year, session):
+        """Constructor"""
         self.year = year
         self.session = session
         self.full_year = {}
@@ -27,22 +29,32 @@ class Resolution:
             self.season_ticker.advance_by_day()
 
     def import_moveable_feasts(self):
+        """Fetch moveable feasts and place them on the proper days"""
         self.moveable = MoveableFeasts(self.session, self.year)
         for info in self.moveable.feasts_by_date():
             cdate = utils.day_to_lookup(info['day'])
             self.full_year[cdate].add_feast(ResolutionFeast(info['feasts'], info['day']))
 
     def import_fixed_feasts(self):
+        """Fetch fixed feasts and place them on the proper days"""
         self.fixed = FixedFeasts(self.session, self.year)
         for info in self.fixed.feasts_by_date():
             cdate = utils.day_to_lookup(info['day'])
             self.full_year[cdate].add_feast(ResolutionFeast(info['feasts'], info['day']))
 
     def import_floating_feasts(self):
+        """Fetch floating feasts and place them on the proper days"""
         self.floating = FloatingFeasts(self.session, self.year)
         for info in self.floating.get_for_year(self.year, self.full_year):
             cdate = utils.day_to_lookup(info['day'])
             self.full_year[cdate].add_feast(ResolutionFeast(info['feasts'], info['day']))
+
+    def import_federal_holidays(self):
+        """Fetch federal holidays and place them on the proper days"""
+        self.federal = FederalHolidays(self.session, self.year)
+        for info in self.federal.holidays_by_date():
+            cdate = utils.day_to_lookup(info['day'])
+            self.full_year[cdate].add_holiday(ResolutionHoliday(info['holidays'], info['day']))
 
     def before(self, day):
         """Returns the day before the day given"""
@@ -70,19 +82,96 @@ class ResolutionDay:
         self.current_precedence = 100
         self.has_vigil = False
         self.feasts = []
+        self.holidays = []
         self.base_block = None
         self.vigil_block = None
 
     def set_season(self, season, sunday_count, is_last_week):
+        """Sets the season info for this day"""
         self.season = season
         self.sunday_count = sunday_count
         self.is_last_week = is_last_week
 
     def add_feast(self, feast):
+        """Adds a feast"""
         feast.change_day(self.day)
         self.feasts.append(feast)
 
-    def set_vigil_for_feast(self, feast):
+    def add_holiday(self, holiday):
+        """Adds a holiday"""
+        holiday.change_day(self.day)
+        self.holidays.append(holiday)
+
+    def resolve(self):
+        """Look at today's season and any feasts, then set the main and vigil blocks accordingly"""
+        if self.season is None:
+            return
+
+        pattern = self.season.pattern(self.day)
+        if pattern.has_vigil(self.day):
+            self._set_vigil_for_season()
+        else:
+            self._make_block_from_season()
+
+        self.current_precedence = self.season.precedence(self.day)
+        current_feast = None
+
+        for feast in self.feasts:
+            if feast.precedence() <= self.current_precedence:
+                self.current_precedence = feast.precedence()
+                current_feast = feast
+            elif feast.precedence() <= config['transfer_precedence']:
+                tomorrow = self.year.after(self.day)
+                tomorrow.add_feast(feast)
+
+        if current_feast is not None:
+            self.current_feast = current_feast
+            self._make_block_from_feast()
+            if self.current_feast.has_eve():
+                # Look back to yesterday and set the vigil
+                yesterday = self.year.before(self.day)
+                yesterday._set_vigil_for_feast(self.current_feast)
+
+        for holiday in self.holidays:
+            # TODO: open and close times!
+            note_lines = []
+            if not holiday.skip_name():
+                note_lines.append(holiday.name())
+            if holiday.note() is not None:
+                note_lines.append(holiday.note())
+            if self.base_block.note is not None and len(note_lines) > 0:
+                self.base_block.note = "\n".join(note_lines) + "\n" + self.base_block.note
+            elif len(note_lines) > 0:
+                self.base_block.note = "\n".join(note_lines)
+
+    def _make_block_from_feast(self):
+        """Use the current feast to set today's main block"""
+        if self.current_feast is None:
+            return
+        pattern = self.current_feast.pattern()
+        if pattern is None:
+            pattern = self.season.pattern(self.day)
+        self.base_block = ResolutionBlock(
+            color = self.current_feast.color(),
+            name = self.current_feast.name(),
+            note = self.current_feast.note(),
+            schedule = pattern.schedule(self.day, has_vigil = self.has_vigil)
+        )
+
+    def _make_block_from_season(self):
+        """Use the current season to set today's main block"""
+        if self.season is None:
+            return
+        pattern = self.season.pattern(self.day)
+        self.base_block = ResolutionBlock(
+            color = self.season.color,
+            name = self.season.day_name(self.day, sunday_count = self.sunday_count, is_last = self.is_last_week),
+            note = self.season.day_note(self.day),
+            schedule = pattern.schedule(self.day, has_vigil = self.has_vigil)
+        )
+
+    def _set_vigil_for_feast(self, feast):
+        """Sets the vigil block on this day for a feast happening tomorrow"""
         pattern = feast.eve_pattern()
         if pattern is None:
             pattern = self.season.pattern(self.day)
@@ -109,8 +198,8 @@ class ResolutionDay:
         else:
             self._make_block_from_season()
 
-    def set_vigil_for_season(self):
-        # Look ahead to the next day and use its info for the vigil
+    def _set_vigil_for_season(self):
+        """Sets the vigil block on this day using tomorrow's season info"""
         tomorrow = self.year.after(self.day)
         if tomorrow is None:
             return
@@ -126,60 +215,8 @@ class ResolutionDay:
         else:
             self._make_block_from_season()
 
-    def resolve(self):
-        if self.season is None:
-            return
-
-        pattern = self.season.pattern(self.day)
-        if pattern.has_vigil(self.day):
-            self.set_vigil_for_season()
-        else:
-            self._make_block_from_season()
-
-        self.current_precedence = self.season.precedence(self.day)
-        current_feast = None
-
-        for feast in self.feasts:
-            if feast.precedence() <= self.current_precedence:
-                self.current_precedence = feast.precedence()
-                current_feast = feast
-            elif feast.precedence() <= config['transfer_precedence']:
-                tomorrow = self.year.after(self.day)
-                tomorrow.add_feast(feast)
-
-        if current_feast is not None:
-            self.current_feast = current_feast
-            self._make_block_from_feast()
-            if self.current_feast.has_eve():
-                # Look back to yesterday and set the vigil
-                yesterday = self.year.before(self.day)
-                yesterday.set_vigil_for_feast(self.current_feast)
-
-    def _make_block_from_feast(self):
-        if self.current_feast is None:
-            return
-        pattern = self.current_feast.pattern()
-        if pattern is None:
-            pattern = self.season.pattern(self.day)
-        self.base_block = ResolutionBlock(
-            color = self.current_feast.color(),
-            name = self.current_feast.name(),
-            note = self.current_feast.note(),
-            schedule = pattern.schedule(self.day, has_vigil = self.has_vigil)
-        )
-
-    def _make_block_from_season(self):
-        if self.season is None:
-            return
-        pattern = self.season.pattern(self.day)
-        self.base_block = ResolutionBlock(
-            color = self.season.color,
-            name = self.season.day_name(self.day, sunday_count = self.sunday_count, is_last = self.is_last_week),
-            note = self.season.day_note(self.day),
-            schedule = pattern.schedule(self.day, has_vigil = self.has_vigil)
-        )
-
     def __repr__(self):
+        """Displays the day as a string"""
         rep = self.day.strftime('%Y-%m-%d') + ' (' + utils.weekday(self.day) + '):'
         rep += "\n\t" + str(self.base_block)
         if self.vigil_block is not None:
@@ -190,6 +227,7 @@ class ResolutionBlock:
     """Describes a service block on a particular day"""
 
     def __init__(self, **kwargs):
+        """Constructor"""
         if 'color' in kwargs:
             self.color = kwargs['color']
         else:
@@ -208,6 +246,7 @@ class ResolutionBlock:
             self.schedule = None
 
     def __repr__(self):
+        """Displays the block as a string"""
         rep = '[' + str(self.color) + '] ' + str(self.name)
         if self.note is not None:
             rep += "\n\t\t(" + str(self.note) + ')'
@@ -218,17 +257,21 @@ class ResolutionFeast:
     """Describes a feast we're putting on the calendar"""
 
     def __init__(self, feasts, day):
+        """Constructor"""
         self.feasts = feasts
         self.original_day = day
         self.current_day = day
 
     def _get_for_day(self, day):
+        """Selects the feast model that's valid for a given day"""
         return valid_in_list(self.feasts, day)
 
     def change_day(self, day):
+        """Changes the current day"""
         self.current_day = day
 
     def precedence(self):
+        """Selects the precedence for this feast"""
         f = self._get_for_day(self.current_day);
         if f:
             return f.otype.precedence
@@ -236,6 +279,7 @@ class ResolutionFeast:
             return -1
 
     def code(self):
+        """Selects the code for this feast"""
         f = self._get_for_day(self.current_day);
         if f:
             return f.code
@@ -243,6 +287,7 @@ class ResolutionFeast:
             return ''
 
     def color(self):
+        """Selects the color for this feast"""
         f = self._get_for_day(self.current_day);
         if f:
             return f.color
@@ -250,6 +295,7 @@ class ResolutionFeast:
             return ''
 
     def name(self):
+        """Selects the name for this feast"""
         f = self._get_for_day(self.current_day);
         if f:
             return f.name
@@ -257,6 +303,7 @@ class ResolutionFeast:
             return ''
 
     def note(self):
+        """Selects the note for this feast"""
         f = self._get_for_day(self.current_day);
         if f:
             return f.note
@@ -264,6 +311,7 @@ class ResolutionFeast:
             return ''
 
     def pattern(self):
+        """Selects the pattern for this feast"""
         f = self._get_for_day(self.current_day);
         if f:
             return f.pattern(self.current_day)
@@ -271,6 +319,7 @@ class ResolutionFeast:
             return ''
 
     def has_eve(self):
+        """Selects the eve flag for this feast"""
         f = self._get_for_day(self.current_day);
         if f:
             return f.has_eve
@@ -278,6 +327,7 @@ class ResolutionFeast:
             return ''
 
     def eve_name(self):
+        """Selects the eve name for this feast"""
         f = self._get_for_day(self.current_day);
         if f:
             return f.eve_name
@@ -285,6 +335,7 @@ class ResolutionFeast:
             return ''
 
     def eve_pattern(self):
+        """Selects the eve pattern for this feast"""
         f = self._get_for_day(self.current_day);
         if f:
             return f.eve_pattern(self.current_day)
@@ -292,10 +343,83 @@ class ResolutionFeast:
             return ''
 
     def __repr__(self):
+        """Displays the feast as a string"""
         rep = '[' + str(self.color()) + '] ' + str(self.name())
         if self.note() is not None:
             rep += "\n\t\t(" + str(self.note()) + ')'
         if self.pattern():
             rep += "\n\t\t* " + str(self.pattern().schedule(self.current_day))
+        return rep
+
+class ResolutionHoliday:
+    """Describes a holiday we're putting on the calendar"""
+
+    def __init__(self, holidays, day):
+        """Constructor"""
+        self.holidays = holidays
+        self.original_day = day
+        self.current_day = day
+
+    def _get_for_day(self, day):
+        """Selects the holiday model that's valid for a given day"""
+        return valid_in_list(self.holidays, day)
+
+    def change_day(self, day):
+        """Changes the current day"""
+        self.current_day = day
+
+    def name(self):
+        """Selects the name for this holiday"""
+        h = self._get_for_day(self.current_day);
+        if h:
+            return h.name
+        else:
+            return ''
+
+    def code(self):
+        """Selects the code for this holiday"""
+        h = self._get_for_day(self.current_day);
+        if h:
+            return h.code
+        else:
+            return ''
+
+    def note(self):
+        """Selects the note for this holiday"""
+        h = self._get_for_day(self.current_day);
+        if h:
+            return h.note
+        else:
+            return ''
+
+    def open_time(self):
+        """Selects the church open time for this holiday"""
+        h = self._get_for_day(self.current_day);
+        if h:
+            return h.open_time
+        else:
+            return ''
+
+    def close_time(self):
+        """Selects the church close time for this holiday"""
+        h = self._get_for_day(self.current_day);
+        if h:
+            return h.close_time
+        else:
+            return ''
+
+    def skip_name(self):
+        """Selects the skip-name flag for this holiday"""
+        h = self._get_for_day(self.current_day);
+        if h:
+            return h.skip_name
+        else:
+            return False
+
+    def __repr__(self):
+        """Displays the holiday as a string"""
+        rep = str(self.name()) + ' <' + str(self.code()) + '>: Church open ' + str(self.open_time()) + ' to ' + str(self.close_time())
+        if self.note() is not None:
+            rep += "\n\t\t(" + str(self.note()) + ')'
         return rep
 

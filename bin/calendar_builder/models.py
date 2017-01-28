@@ -1,12 +1,12 @@
 import datetime
 from dateutil.easter import *
-from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, Boolean
+from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, Boolean, Time
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 import inflect
 
 from config import config
-from algorithms import boundary_algorithms, feast_algorithms
+from algorithms import boundary_algorithms, feast_algorithms, holiday_algorithms
 from valid_dates import valid_in_list
 
 DeclarativeBase = declarative_base()
@@ -274,6 +274,8 @@ class MoveableFeast(DeclarativeBase):
             holiday = easter(year)
         elif self.calculate_from == 'christmas':
             holiday = datetime.date(year, 12, 25)
+        elif self.calculate_from == 'epiphany':
+            holiday = datetime.date(year, 1, 6)
         elif self.calculate_from == 'ash-wednesday':
             # Ash Wednesday is the sixth Wednesday before Easter
             eas = easter(year)
@@ -282,8 +284,8 @@ class MoveableFeast(DeclarativeBase):
             # Pentecost is the seventh Sunday after Easter
             eas = easter(year)
             holiday = eas + datetime.timedelta(weeks=7)
-        elif self.calculate_from == '10/31':
-            holiday = datetime.date(year, 10, 31)
+        elif self.calculate_from == '11/1':
+            holiday = datetime.date(year, 11, 1)
         else:
             raise ValueError('"{holiday}" is an unknown calculation starting point for moveable feasts; use "christmas" or "easter"'.format(holiday=repr(self.calculate_from)))
         return getattr(feast_algorithms, self.algorithm)(holiday, self.distance)
@@ -358,4 +360,51 @@ class FloatingFeast(DeclarativeBase):
 
     def eve_pattern(self, day):
         return valid_in_list(self.all_eve_patterns, day)
+
+class FederalHoliday(DeclarativeBase):
+    """Sqlalchemy federal holidays model"""
+    __tablename__ = 'federal_holidays'
+
+    id = Column('holiday_id', Integer, primary_key=True)
+    name = Column(String)
+    code = Column(String)
+    calculate_from = Column(String)
+    algorithm = Column(String)
+    distance = Column(Integer, nullable=True)
+    placement_index = Column(Integer, nullable=True)
+    open_time = Column(Time, nullable=True)
+    close_time = Column(Time, nullable=True)
+    note = Column(String, nullable=True)
+    skip_name = Column(Boolean)
+    valid_start = Column(DateTime, nullable=True)
+    valid_end = Column(DateTime, nullable=True)
+
+    def __repr__(self):
+        return self.name + ' <' + self.code + '>'
+
+    def _get_calc_from(self, year):
+        """Converts the calculate_from column into a day to calculate from, given a year"""
+        parts = self.calculate_from.split('/')
+        if len(parts) != 2:
+            return None
+        try:
+            month = int(parts[0])
+            day = int(parts[1])
+        except ValueError:
+            return None
+        if month < 1 or month > 12:
+            return None
+        if day < 1 or day > 31:
+            return None
+        calc_from = datetime.date(year, month, day)
+        if calc_from.year != year or calc_from.month != month or calc_from.day != day:
+            return None
+        return calc_from
+
+    def day(self, year):
+        """Gets the date of this holiday, given a year"""
+        calc_from = self._get_calc_from(year)
+        if calc_from is None:
+            raise ValueError('"{calc_from}" is an unknown calculation starting point for federal holidays; use "MM-DD"'.format(calc_from=repr(self.calculate_from)))
+        return getattr(holiday_algorithms, self.algorithm)(calc_from, self.distance)
 

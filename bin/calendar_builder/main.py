@@ -46,7 +46,10 @@ resolution.import_moveable_feasts()
 # Add fixed feasts
 resolution.import_fixed_feasts()
 
-# Resolve moveable and fixed feasts
+# Add federal holidays
+resolution.import_federal_holidays()
+
+# Resolve
 for cdate in sorted(resolution.full_year.iterkeys()):
     resolution.full_year[cdate].resolve()
 

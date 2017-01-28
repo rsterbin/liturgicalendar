@@ -55,7 +55,7 @@ class feast_algorithms:
     @staticmethod
     def thursdays_after(holiday_date, number):
         """Finds the nth Thursday after the holiday"""
-        return holiday_date - datetime.timedelta(days=holiday_date.weekday()) + datetime.timedelta(days=3, weeks=number)
+        return helpers.nth_weekdays_after(holiday_date, 3, number)
 
     @staticmethod
     def sundays_before(holiday_date, number):
@@ -65,7 +65,7 @@ class feast_algorithms:
     @staticmethod
     def sundays_after(holiday_date, number):
         """Finds the nth Sunday after the holiday"""
-        return holiday_date - datetime.timedelta(days=holiday_date.weekday()) + datetime.timedelta(days=6, weeks=number)
+        return helpers.nth_weekdays_after(holiday_date, 6, number)
 
     @staticmethod
     def nth_thursday(holiday_date, number):
@@ -124,6 +124,14 @@ class helpers:
     def nth_weekday_of_month(calc_from, target_weekday, number):
         """Finds the nth target weekday of the month (e.g., 3rd Monday in January)"""
         start = datetime.date(calc_from.year, calc_from.month, 1)
+        days_ahead = target_weekday - start.weekday()
+        if days_ahead < 0:
+            days_ahead += 7
+        return start + datetime.timedelta(days=days_ahead, weeks=(number - 1))
+
+    @staticmethod
+    def nth_weekdays_after(start, target_weekday, number):
+        """Finds the nth target weekday after the given day"""
         days_ahead = target_weekday - start.weekday()
         if days_ahead <= 0:
             days_ahead += 7

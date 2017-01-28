@@ -187,7 +187,7 @@ INSERT INTO moveable_feasts (name, code, otype_id, placement_index,
 INSERT INTO moveable_feasts (name, code, otype_id, placement_index,
         calculate_from, algorithm, distance, has_eve, color)
     VALUES ('Thanksgiving Day', 'thanksgiving', 3, 5,
-        '10/31', 'thursdays_after', 3, true, 'white');
+        '11/1', 'nth_thursday', 4, true, 'white');
 
 INSERT INTO moveable_feasts (name, code, otype_id, placement_index,
         calculate_from, algorithm, distance, has_eve, color,

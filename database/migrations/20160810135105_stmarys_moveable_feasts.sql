@@ -175,7 +175,7 @@ INSERT INTO moveable_feasts (name, code, otype_id, placement_index,
 INSERT INTO moveable_feasts (name, code, otype_id, placement_index,
         calculate_from, algorithm, distance, has_eve, color)
     VALUES ('The Fourth Sunday in Lent', 'rose-lent', 2, 5,
-        'ash-wednesday', 'sundays_after', 3, true, 'rose');
+        'ash-wednesday', 'sundays_after', 4, true, 'rose');
 
 INSERT INTO moveable_feasts (name, code, otype_id, placement_index,
         calculate_from, algorithm, distance, has_eve, color,
@@ -216,7 +216,7 @@ INSERT INTO moveable_feasts (name, code, otype_id, placement_index,
         calculate_from, algorithm, distance, has_eve, color,
         valid_end)
     VALUES ('The First Sunday after the Epiphany: The Baptism of Our Lord', 'baptism', 2, 5,
-        'epiphany', 'sundays_after', 0, true, 'white',
+        'epiphany', 'sundays_after', 1, true, 'white',
         '2008-12-31 23:59:59' AT TIME ZONE 'America/New_York');
 
 INSERT INTO moveable_feasts (name, code, otype_id, placement_index,
@@ -224,7 +224,7 @@ INSERT INTO moveable_feasts (name, code, otype_id, placement_index,
         valid_start,
         valid_end)
     VALUES ('The First Sunday after the Epiphany: The Baptism of Our Lord Jesus Christ', 'baptism', 2, 5,
-        'epiphany', 'sundays_after', 0, true, 'white',
+        'epiphany', 'sundays_after', 1, true, 'white',
         '2009-01-01 00:00:00' AT TIME ZONE 'America/New_York',
         '2010-12-31 23:59:59' AT TIME ZONE 'America/New_York');
 
@@ -232,7 +232,7 @@ INSERT INTO moveable_feasts (name, code, otype_id, placement_index,
         calculate_from, algorithm, distance, has_eve, color,
         valid_start)
     VALUES ('The First Sunday after the Epiphany: The Baptism of Our Lord Jesus Christ', 'baptism', 2, 5,
-        'epiphany', 'sundays_after', 0, true, 'gold',
+        'epiphany', 'sundays_after', 1, true, 'gold',
         '2011-01-01 00:00:00' AT TIME ZONE 'America/New_York');
 
 -- rambler down

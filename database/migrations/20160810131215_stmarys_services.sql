@@ -79,6 +79,7 @@ INSERT INTO services (name, start_time, is_default) VALUES ('Blessing of the Pal
 INSERT INTO services (name, start_time, is_default) VALUES ('The Liturgy of the Palms, Procession through Times Square & Solemn Mass', '11:00:00', false); -- 72
 INSERT INTO services (name, start_time, is_default) VALUES ('The Liturgy of the Palms, Procession through Times Square & Solemn Mass of the Passion', '11:00:00', false); -- 73
 INSERT INTO services (name, start_time, is_default) VALUES ('Blessing of the Palms, Procession through Times Square & Solemn Mass', '11:00:00', false); -- 74
+INSERT INTO services (name, start_time, is_default) VALUES ('Sung Mass', '18:00:00', true); -- 75
 
 --
 -- Define types of service schedules
@@ -151,6 +152,7 @@ INSERT INTO schedules (name, code, is_default, valid_start, valid_end) VALUES ('
 INSERT INTO schedules (name, code, is_default, valid_end) VALUES ('Palm Sunday', 'palm-sunday', true, '2011-12-31 23:59:59' AT TIME ZONE 'America/New_York'); -- 65
 INSERT INTO schedules (name, code, is_default) VALUES ('Sunday With Vigil', 'sunday-with-vigil', true); -- 66
 INSERT INTO schedules (name, code, is_default) VALUES ('Summer Sunday With Vigil', 'summer-sunday-with-vigil', true); -- 67
+INSERT INTO schedules (name, code, is_default) VALUES ('Sung Mass Vigil', 'sung-mass-vigil', true); -- 68
 
 --
 -- Map services to schedules
@@ -381,6 +383,7 @@ INSERT INTO schedule_services (schedule_id, service_id) VALUES (67, 1); -- summe
 INSERT INTO schedule_services (schedule_id, service_id) VALUES (67, 11); -- summer-sunday-with-vigil
 INSERT INTO schedule_services (schedule_id, service_id) VALUES (67, 12); -- summer-sunday-with-vigil
 INSERT INTO schedule_services (schedule_id, service_id) VALUES (67, 13); -- summer-sunday-with-vigil
+INSERT INTO schedule_services (schedule_id, service_id) VALUES (68, 75); -- sung-mass-vigil
 
 --
 -- Define service patterns for seasons, fixed feasts, and moveable feasts, as
@@ -933,6 +936,24 @@ INSERT INTO service_patterns (name, code,
         null, null, null,
         null, null, null,
         'palm-sunday', null, null
+    );
+
+INSERT INTO service_patterns (name, code,
+        schedule_code_mon, schedule_code_mon_with_vigil, schedule_code_mon_vigil,
+        schedule_code_tue, schedule_code_tue_with_vigil, schedule_code_tue_vigil,
+        schedule_code_wed, schedule_code_wed_with_vigil, schedule_code_wed_vigil,
+        schedule_code_thu, schedule_code_thu_with_vigil, schedule_code_thu_vigil,
+        schedule_code_fri, schedule_code_fri_with_vigil, schedule_code_fri_vigil,
+        schedule_code_sat, schedule_code_sat_with_vigil, schedule_code_sat_vigil,
+        schedule_code_sun, schedule_code_sun_with_vigil, schedule_code_sun_vigil
+    ) VALUES ('Sung Mass Eve-of Vigil', 'sung-mass-eve-vigil',
+        null, null, 'sung-mass-vigil',
+        null, null, 'sung-mass-vigil',
+        null, null, 'sung-mass-vigil',
+        null, null, 'sung-mass-vigil',
+        null, null, 'sung-mass-vigil',
+        null, null, 'sung-mass-vigil',
+        null, null, null
     );
 
 -- rambler down

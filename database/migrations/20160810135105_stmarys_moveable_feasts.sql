@@ -185,9 +185,9 @@ INSERT INTO moveable_feasts (name, code, otype_id, placement_index,
         '2008-12-31 23:59:59' AT TIME ZONE 'America/New_York');
 
 INSERT INTO moveable_feasts (name, code, otype_id, placement_index,
-        calculate_from, algorithm, distance, has_eve, color)
+        calculate_from, algorithm, distance, has_eve, eve_schedule_pattern, color)
     VALUES ('Thanksgiving Day', 'thanksgiving', 3, 5,
-        '11/1', 'nth_thursday', 4, true, 'white');
+        '11/1', 'nth_thursday', 4, true, 'sung-mass-eve-vigil', 'white');
 
 INSERT INTO moveable_feasts (name, code, otype_id, placement_index,
         calculate_from, algorithm, distance, has_eve, color,

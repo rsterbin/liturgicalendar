@@ -39,7 +39,7 @@ INSERT INTO services (name, start_time, is_default) VALUES ('Blessing of Candles
 INSERT INTO services (name, start_time, is_default) VALUES ('Blessing of Candles, Procession & Solemn Mass', '11:00:00', false); -- 32
 INSERT INTO services (name, start_time, is_default) VALUES ('Solemn Mass and the Blessing of the Vault', '18:00:00', false); -- 33
 INSERT INTO services (name, start_time, is_default) VALUES ('Sung Mass & Blessing of the Vault', '11:00:00', false); -- 34
-INSERT INTO services (name, start_time, is_default) VALUES ('Solemn Mass & Procession to the Crèche', '11:00:00', false); -- 35
+INSERT INTO services (name, start_time, is_default) VALUES ('Solemn Mass & Procession to the Creche', '11:00:00', false); -- 35
 INSERT INTO services (name, start_time, is_default) VALUES ('Christmas Music', '16:30:00', false); -- 36
 INSERT INTO services (name, start_time, is_default) VALUES ('Sung Mass of the Nativity', '17:00:00', false); -- 37
 INSERT INTO services (name, start_time, is_default) VALUES ('Christmas Music', '22:30:00', false); -- 38
@@ -68,7 +68,7 @@ INSERT INTO services (name, start_time, is_default) VALUES ('Celebration of the 
 INSERT INTO services (name, start_time, is_default) VALUES ('The Celebration of the Passion of the Lord', '12:30:00', false); -- 61
 INSERT INTO services (name, start_time, is_default) VALUES ('The Celebration of the Passion of the Lord', '18:00:00', false); -- 62
 INSERT INTO services (name, start_time, is_default) VALUES ('The Holy Eucharist', '18:00:00', false); -- 63
-INSERT INTO services (name, start_time, is_default) VALUES ('Evening Mass of the Lord’s Supper', '18:00:00', false); -- 64
+INSERT INTO services (name, start_time, is_default) VALUES (E'Evening Mass of the Lord\'s Supper', '18:00:00', false); -- 64
 INSERT INTO services (name, start_time, is_default) VALUES ('Solemn Mass, Procession through Times Square & Benediction', '11:00:00', false); -- 65
 INSERT INTO services (name, start_time, is_default) VALUES ('Blessing of Palms & Mass', '17:20:00', false); -- 66
 INSERT INTO services (name, start_time, is_default) VALUES ('Blessing of Palms & Mass', '17:00:00', false); -- 67

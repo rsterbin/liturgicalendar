@@ -24,8 +24,10 @@ def db_connect():
     """
     return create_engine(URL(**config['database']))
 
-logging.basicConfig()
+logging.basicConfig(level=logging.DEBUG)
 # logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
+
+logger = logging.getLogger(__name__)
 
 engine = db_connect()
 Session = sessionmaker(bind=engine)
@@ -35,28 +37,41 @@ session = Session()
 CALC_YEAR = 2012
 
 # Start up Resolution for this year
+logger.info('Starting resolution for ' + str(CALC_YEAR))
 resolution = Resolution(CALC_YEAR, session)
 
 # Set up the season framework
+logger.info('Importing seasons...')
 resolution.import_seasons()
+logger.info('done')
 
 # Add moveable feasts
+logger.info('Adding moveable feasts...')
 resolution.import_moveable_feasts()
+logger.info('done')
 
 # Add fixed feasts
+logger.info('Adding fixed feasts...')
 resolution.import_fixed_feasts()
+logger.info('done')
 
 # Add federal holidays
+logger.info('Adding federal holidays...')
 resolution.import_federal_holidays()
+logger.info('done')
 
 # Resolve
+logger.info('Resolving...')
 for cdate in sorted(resolution.full_year.iterkeys()):
     resolution.full_year[cdate].resolve()
+logger.info('done')
 
 # Add floating feasts and re-resolve
+logger.info('Adding floating feasts...')
 resolution.import_floating_feasts()
 for cdate in sorted(resolution.full_year.iterkeys()):
     resolution.full_year[cdate].resolve()
+logger.info('done')
 
 current_month = 1
 for cdate in sorted(resolution.full_year.iterkeys()):

@@ -1,14 +1,15 @@
 import copy
 import datetime
-import utils
+import logging
 
-from season import YearIterator
-from moveable_feasts import MoveableFeasts
+from config import config
+from federal_holidays import FederalHolidays
 from fixed_feasts import FixedFeasts
 from floating_feasts import FloatingFeasts
-from federal_holidays import FederalHolidays
+from moveable_feasts import MoveableFeasts
+from season import YearIterator
+import utils
 from valid_dates import valid_in_list
-from config import config
 
 class Resolution:
     """Describes a year in the resolution process"""
@@ -18,43 +19,58 @@ class Resolution:
         self.year = year
         self.session = session
         self.full_year = {}
+        self.logger = logging.getLogger(__name__)
 
     def import_seasons(self):
         """Walk though the year and lay down our defaults according to the season on that date"""
         self.season_ticker = YearIterator(self.session, self.year)
+        self.logger.debug('Fetched season iterator and began initial walk')
         while self.season_ticker.day.year == self.year:
             cdate = utils.day_to_lookup(self.season_ticker.day)
             self.full_year[cdate] = ResolutionDay(self.season_ticker.day, self)
             self.full_year[cdate].set_season(self.season_ticker.current(), self.season_ticker.sunday_count, self.season_ticker.is_last_week())
             self.season_ticker.advance_by_day()
+        self.logger.debug('Completed initial walk')
 
     def import_moveable_feasts(self):
         """Fetch moveable feasts and place them on the proper days"""
         self.moveable = MoveableFeasts(self.session, self.year)
-        for info in self.moveable.feasts_by_date():
+        mf = self.moveable.feasts_by_date()
+        self.logger.debug('Found moveable feasts on {days} days'.format(days=len(mf)))
+        for info in mf:
             cdate = utils.day_to_lookup(info['day'])
             self.full_year[cdate].add_feast(ResolutionFeast(info['feasts'], info['day']))
+        self.logger.debug('Added moveable feasts')
 
     def import_fixed_feasts(self):
         """Fetch fixed feasts and place them on the proper days"""
         self.fixed = FixedFeasts(self.session, self.year)
-        for info in self.fixed.feasts_by_date():
+        ff = self.fixed.feasts_by_date()
+        self.logger.debug('Found fixed feasts on {days} days'.format(days=len(ff)))
+        for info in ff:
             cdate = utils.day_to_lookup(info['day'])
             self.full_year[cdate].add_feast(ResolutionFeast(info['feasts'], info['day']))
+        self.logger.debug('Added fixed feasts')
 
     def import_floating_feasts(self):
         """Fetch floating feasts and place them on the proper days"""
         self.floating = FloatingFeasts(self.session, self.year)
-        for info in self.floating.get_for_year(self.year, self.full_year):
+        ff = self.floating.get_for_year(self.year, self.full_year)
+        self.logger.debug('Found floating feasts on {days} days'.format(days=len(ff)))
+        for info in ff:
             cdate = utils.day_to_lookup(info['day'])
             self.full_year[cdate].add_feast(ResolutionFeast(info['feasts'], info['day']))
+        self.logger.debug('Added floating feasts')
 
     def import_federal_holidays(self):
         """Fetch federal holidays and place them on the proper days"""
         self.federal = FederalHolidays(self.session, self.year)
+        fh = self.federal.holidays_by_date()
+        self.logger.debug('Found federal holidays on {days} days'.format(days=len(fh)))
         for info in self.federal.holidays_by_date():
             cdate = utils.day_to_lookup(info['day'])
             self.full_year[cdate].add_holiday(ResolutionHoliday(info['holidays'], info['day']))
+        self.logger.debug('Added federal holidays')
 
     def before(self, day):
         """Returns the day before the day given"""
@@ -85,6 +101,7 @@ class ResolutionDay:
         self.holidays = []
         self.base_block = None
         self.vigil_block = None
+        self.logger = year.logger
 
     def set_season(self, season, sunday_count, is_last_week):
         """Sets the season info for this day"""
@@ -105,6 +122,7 @@ class ResolutionDay:
     def resolve(self):
         """Look at today's season and any feasts, then set the main and vigil blocks accordingly"""
         if self.season is None:
+            self.logger.warn('No season data for ' + utils.day_to_lookup(self.day))
             return
 
         pattern = self.season.pattern(self.day)
@@ -123,6 +141,8 @@ class ResolutionDay:
             elif feast.precedence() <= config['transfer_precedence']:
                 tomorrow = self.year.after(self.day)
                 tomorrow.add_feast(feast)
+                self.feasts.remove(feast)
+                self.logger.debug('Transferring ' + feast.name() + ' to ' + utils.day_to_lookup(tomorrow.day))
 
         if current_feast is not None:
             self.current_feast = current_feast
@@ -157,6 +177,7 @@ class ResolutionDay:
     def _make_block_from_feast(self):
         """Use the current feast to set today's main block"""
         if self.current_feast is None:
+            self.logger.warn('Attempting to make block from missing feast on ' + utils.day_to_lookup(self.day))
             return
         pattern = self.current_feast.pattern()
         if pattern is None:
@@ -171,6 +192,7 @@ class ResolutionDay:
     def _make_block_from_season(self):
         """Use the current season to set today's main block"""
         if self.season is None:
+            self.logger.warn('Attempting to make block from missing season on ' + utils.day_to_lookup(self.day))
             return
         pattern = self.season.pattern(self.day)
         self.base_block = ResolutionBlock(
@@ -190,6 +212,7 @@ class ResolutionDay:
             vigil_name = 'Eve of ' + feast.name()
         vigil_schedule = pattern.schedule(self.day, is_vigil = True)
         if vigil_schedule is None:
+            self.logger.warn('Missing vigil schedule for ' + feast.name() + ' on ' + utils.day_to_lookup(self.day))
             return
         cp = self.season.precedence(self.day)
         for f in self.feasts:
@@ -212,6 +235,7 @@ class ResolutionDay:
         """Sets the vigil block on this day using tomorrow's season info"""
         tomorrow = self.year.after(self.day)
         if tomorrow is None:
+            self.logger.warn('Attempting to set vigil with season when tomorrow is in the next year on ' + utils.day_to_lookup(self.day))
             return
         self.has_vigil = True
         tpattern = tomorrow.season.pattern(self.day)
@@ -267,14 +291,13 @@ class ResolutionBlock:
         return len(ok) > 0
 
     def set_open_hours(self, open_time, close_time):
-        """Slice off services outside the open hours and set an appropriate note"""
+        """Slice off services outside the open hours"""
         ok = []
         for s in self.services:
             n = s.start_time.replace(tzinfo=None)
             if n > open_time and n < close_time:
                 ok.append(s)
         self.services = ok
-        note = 'The church is open today from ' + utils.ftime(open_time) + ' to ' + utils.ftime(close_time)
 
     def __repr__(self):
         """Displays the block as a string"""

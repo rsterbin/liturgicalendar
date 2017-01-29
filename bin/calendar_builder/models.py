@@ -1,15 +1,35 @@
 import datetime
 from dateutil.easter import *
+import inflect
 from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, Boolean, Time
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
-import inflect
 
 from config import config
 from algorithms import boundary_algorithms, feast_algorithms, holiday_algorithms
+import utils
 from valid_dates import valid_in_list
 
 DeclarativeBase = declarative_base()
+
+class Service(DeclarativeBase):
+    """Sqlalchemy services model"""
+    __tablename__ = 'services'
+
+    id = Column('service_id', Integer, primary_key=True)
+    name = Column(String)
+    start_time = Column(Time, nullable=True)
+    is_default = Column(Boolean)
+
+    def __repr__(self):
+        return self.name + ' ' + utils.ftime(self.start_time)
+
+class ScheduleServices(DeclarativeBase):
+    """Sqlalchemy schedules model"""
+    __tablename__ = 'schedule_services'
+
+    service_id = Column(Integer, ForeignKey('services.service_id'), primary_key=True)
+    schedule_id = Column(Integer, ForeignKey('schedules.schedule_id'), primary_key=True)
 
 class Schedule(DeclarativeBase):
     """Sqlalchemy schedules model"""
@@ -22,6 +42,13 @@ class Schedule(DeclarativeBase):
     valid_end = Column(DateTime, nullable=True)
     is_default = Column(Boolean)
     is_custom = Column(Boolean)
+
+    services = relationship('Service', secondary='schedule_services',
+        foreign_keys=[ScheduleServices.service_id, ScheduleServices.schedule_id], uselist=True)
+
+    def sort_services(self):
+        """Returns the services, sorted by start time"""
+        return sorted(self.services, key=lambda service: service.start_time)
 
     def __repr__(self):
         return self.name + ' <' + self.code + '>'

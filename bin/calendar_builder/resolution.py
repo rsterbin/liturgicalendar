@@ -133,16 +133,26 @@ class ResolutionDay:
                 yesterday._set_vigil_for_feast(self.current_feast)
 
         for holiday in self.holidays:
-            # TODO: open and close times!
-            note_lines = []
-            if not holiday.skip_name():
-                note_lines.append(holiday.name())
-            if holiday.note() is not None:
-                note_lines.append(holiday.note())
-            if self.base_block.note is not None and len(note_lines) > 0:
-                self.base_block.note = "\n".join(note_lines) + "\n" + self.base_block.note
-            elif len(note_lines) > 0:
-                self.base_block.note = "\n".join(note_lines)
+            if holiday.open_time() is not None:
+                if self.base_block.check_open_hours(holiday.open_time(), holiday.close_time()):
+                    self.base_block.set_open_hours(holiday.open_time(), holiday.close_time())
+                else:
+                    self.base_block = None
+                if self.vigil_block is not None:
+                    if self.vigil_block.check_open_hours(holiday.open_time(), holiday.close_time()):
+                        self.vigil_block.set_open_hours(holiday.open_time(), holiday.close_time())
+                    else:
+                        self.vigil_block = None
+            if self.base_block is not None:
+                note_lines = []
+                if not holiday.skip_name():
+                    note_lines.append(holiday.name())
+                if holiday.note() is not None:
+                    note_lines.append(holiday.note())
+                if self.base_block.note is not None and len(note_lines) > 0:
+                    self.base_block.note = "\n".join(note_lines) + "\n" + self.base_block.note
+                elif len(note_lines) > 0:
+                    self.base_block.note = "\n".join(note_lines)
 
     def _make_block_from_feast(self):
         """Use the current feast to set today's main block"""
@@ -242,15 +252,37 @@ class ResolutionBlock:
             self.note = None
         if 'schedule' in kwargs:
             self.schedule = kwargs['schedule']
+            self.services = self.schedule.sort_services()
         else:
             self.schedule = None
+            self.services = []
+
+    def check_open_hours(self, open_time, close_time):
+        """Check the open hours against the service times to see if this block will have any services left"""
+        ok = []
+        for s in self.services:
+            n = s.start_time.replace(tzinfo=None)
+            if n > open_time and n < close_time:
+                ok.append(s)
+        return len(ok) > 0
+
+    def set_open_hours(self, open_time, close_time):
+        """Slice off services outside the open hours and set an appropriate note"""
+        ok = []
+        for s in self.services:
+            n = s.start_time.replace(tzinfo=None)
+            if n > open_time and n < close_time:
+                ok.append(s)
+        self.services = ok
+        note = 'The church is open today from ' + utils.ftime(open_time) + ' to ' + utils.ftime(close_time)
 
     def __repr__(self):
         """Displays the block as a string"""
         rep = '[' + str(self.color) + '] ' + str(self.name)
         if self.note is not None:
             rep += "\n\t\t(" + str(self.note) + ')'
-        rep += "\n\t\t* " + str(self.schedule)
+        for service in self.services:
+            rep += "\n\t\t* " + str(service)
         return rep
 
 class ResolutionFeast:

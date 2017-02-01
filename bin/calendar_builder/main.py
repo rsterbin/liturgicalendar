@@ -33,8 +33,22 @@ engine = db_connect()
 Session = sessionmaker(bind=engine)
 session = Session()
 
+def usage():
+    """Prints the proper usage of this script"""
+    print "\n".join((
+        "   calendar_builder/main.py <year>",
+        "",
+        "Pass in the year you want to build as the first argument.",
+    ))
+    sys.exit(0)
+
 # Calculate for this year
-CALC_YEAR = 2012
+if len(sys.argv) != 2:
+    usage()
+try:
+    CALC_YEAR = int(sys.argv[1])
+except ValueError:
+    usage()
 
 # Start up Resolution for this year
 logger.info('Starting resolution for ' + str(CALC_YEAR))

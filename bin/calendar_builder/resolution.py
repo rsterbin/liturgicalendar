@@ -182,11 +182,17 @@ class ResolutionDay:
         pattern = self.current_feast.pattern()
         if pattern is None:
             pattern = self.season.pattern(self.day)
+        if pattern is None:
+            self.logger.warn('Missing pattern for ' + self.current_feast.name() + ' on ' + utils.day_to_lookup(self.day))
+        schedule = pattern.schedule(self.day, has_vigil = self.has_vigil)
+        if schedule is None:
+            self.logger.warn('Missing schedule for ' + self.current_feast.name() + ' on ' + utils.day_to_lookup(self.day))
+            return
         self.base_block = ResolutionBlock(
             color = self.current_feast.color(),
             name = self.current_feast.name(),
             note = self.current_feast.note(),
-            schedule = pattern.schedule(self.day, has_vigil = self.has_vigil)
+            schedule = schedule
         )
 
     def _make_block_from_season(self):
@@ -195,11 +201,17 @@ class ResolutionDay:
             self.logger.warn('Attempting to make block from missing season on ' + utils.day_to_lookup(self.day))
             return
         pattern = self.season.pattern(self.day)
+        if pattern is None:
+            self.logger.warn('Missing season pattern on ' + utils.day_to_lookup(self.day))
+        schedule = pattern.schedule(self.day, has_vigil = self.has_vigil)
+        if schedule is None:
+            self.logger.warn('Missing season schedule on ' + utils.day_to_lookup(self.day))
+            return
         self.base_block = ResolutionBlock(
             color = self.season.color,
             name = self.season.day_name(self.day, sunday_count = self.sunday_count, is_last = self.is_last_week),
             note = self.season.day_note(self.day),
-            schedule = pattern.schedule(self.day, has_vigil = self.has_vigil)
+            schedule = schedule
         )
 
     def _set_vigil_for_feast(self, feast):

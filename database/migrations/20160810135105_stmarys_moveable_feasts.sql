@@ -178,10 +178,10 @@ INSERT INTO moveable_feasts (name, code, otype_id, placement_index,
         'ash-wednesday', 'sundays_after', 4, true, 'rose');
 
 INSERT INTO moveable_feasts (name, code, otype_id, placement_index,
-        calculate_from, algorithm, distance, has_eve, color,
+        calculate_from, algorithm, distance, has_eve, eve_schedule_pattern, color,
         valid_end)
     VALUES ('The Sacred Heart of Jesus', 'sacred-heart', 3, 5,
-        'pentecost', 'days_after', 19, true, 'white',
+        'pentecost', 'days_after', 19, true, 'said-mass-eve-vigil', 'white',
         '2008-12-31 23:59:59' AT TIME ZONE 'America/New_York');
 
 INSERT INTO moveable_feasts (name, code, otype_id, placement_index,

@@ -80,13 +80,15 @@ INSERT INTO services (name, start_time, is_default) VALUES ('The Liturgy of the 
 INSERT INTO services (name, start_time, is_default) VALUES ('The Liturgy of the Palms, Procession through Times Square & Solemn Mass of the Passion', '11:00:00', false); -- 73
 INSERT INTO services (name, start_time, is_default) VALUES ('Blessing of the Palms, Procession through Times Square & Solemn Mass', '11:00:00', false); -- 74
 INSERT INTO services (name, start_time, is_default) VALUES ('Sung Mass', '18:00:00', true); -- 75
+INSERT INTO services (name, start_time, is_default) VALUES ('Said Mass', '18:20:00', true); -- 76
+INSERT INTO services (name, start_time, is_default) VALUES ('Mass with Healing Service', '18:20:00', true); -- 77
 
 --
 -- Define types of service schedules
 --
 
-INSERT INTO schedules (name, code, is_default) VALUES ('Weekday Basic', 'weekday', true); -- 1
-INSERT INTO schedules (name, code, is_default) VALUES ('Thursday Basic', 'thursday', true); -- 2
+INSERT INTO schedules (name, code, is_default, valid_start) VALUES ('Weekday Basic', 'weekday', true, '2009-06-14 00:00:00' AT TIME ZONE 'America/New_York'); -- 1
+INSERT INTO schedules (name, code, is_default, valid_start) VALUES ('Thursday Basic', 'thursday', true, '2009-06-14 00:00:00' AT TIME ZONE 'America/New_York'); -- 2
 INSERT INTO schedules (name, code, is_default) VALUES ('Saturday Basic', 'saturday', true); -- 3
 INSERT INTO schedules (name, code, is_default) VALUES ('Saturday Vigil Basic', 'vigil', true); -- 4
 INSERT INTO schedules (name, code, is_default) VALUES ('Sunday Basic', 'sunday', true); -- 5
@@ -98,7 +100,7 @@ INSERT INTO schedules (name, code, is_default) VALUES ('Weekday Feast', 'weekday
 INSERT INTO schedules (name, code, is_default) VALUES ('Solemn Weekday Feast', 'solemn-weekday-feast', true); -- 11
 INSERT INTO schedules (name, code, is_default) VALUES ('Candlemas', 'candlemas', false); -- 12
 INSERT INTO schedules (name, code, is_default) VALUES ('Saint Blase', 'blase', false); -- 13
-INSERT INTO schedules (name, code, is_default) VALUES ('Eve of Candlemas on Friday', 'candelmas-eve', false); -- 14
+INSERT INTO schedules (name, code, is_default) VALUES ('Eve of Candlemas on Friday', 'candlemas-eve', false); -- 14
 INSERT INTO schedules (name, code, is_default) VALUES ('"Eve of" Solemn Mass on Friday', 'solemn-friday-eve', false); -- 15
 INSERT INTO schedules (name, code, is_default) VALUES ('"Eve of" Mass on Friday', 'friday-eve', false); -- 16
 INSERT INTO schedules (name, code, is_default) VALUES ('Weekday Basic With Vigil', 'weekday-vigil', true); -- 17
@@ -123,7 +125,7 @@ INSERT INTO schedules (name, code, is_default) VALUES ('Christmas Day', 'christm
 INSERT INTO schedules (name, code, is_default, valid_start) VALUES ('Christmas Eve', 'christmas-eve', true, '2013-01-01 00:00:00' AT TIME ZONE 'America/New_York'); -- 36
 INSERT INTO schedules (name, code, is_default, valid_start, valid_end) VALUES ('Christmas Eve', 'christmas-eve', true, '2011-01-01 00:00:00' AT TIME ZONE 'America/New_York', '2012-12-31 23:59:59' AT TIME ZONE 'America/New_York'); -- 37
 INSERT INTO schedules (name, code, is_default, valid_end) VALUES ('Christmas Eve', 'christmas-eve', true, '2010-12-31 23:59:59' AT TIME ZONE 'America/New_York'); -- 38
-INSERT INTO schedules (name, code, is_default) VALUES ('Wednesday Basic', 'wednesday', true); -- 39
+INSERT INTO schedules (name, code, is_default, valid_start) VALUES ('Wednesday Basic', 'wednesday', true, '2009-06-14 00:00:00' AT TIME ZONE 'America/New_York'); -- 39
 INSERT INTO schedules (name, code, is_default) VALUES ('Wednesday Basic With Vigil', 'wednesday-vigil', true); -- 40
 INSERT INTO schedules (name, code, is_default) VALUES ('Wednesday Feast', 'wednesday-feast', true); -- 41
 INSERT INTO schedules (name, code, is_default) VALUES ('Weekday Basic Without Prayers', 'weekday-no-prayers', true); -- 42
@@ -153,6 +155,12 @@ INSERT INTO schedules (name, code, is_default, valid_end) VALUES ('Palm Sunday',
 INSERT INTO schedules (name, code, is_default) VALUES ('Sunday With Vigil', 'sunday-with-vigil', true); -- 66
 INSERT INTO schedules (name, code, is_default) VALUES ('Summer Sunday With Vigil', 'summer-sunday-with-vigil', true); -- 67
 INSERT INTO schedules (name, code, is_default) VALUES ('Sung Mass Vigil', 'sung-mass-vigil', true); -- 68
+INSERT INTO schedules (name, code, is_default) VALUES ('Said Mass Vigil', 'said-mass-vigil', true); -- 69
+INSERT INTO schedules (name, code, is_default) VALUES ('Thursday Mass Vigil', 'thursday-mass-vigil', false); -- 70
+INSERT INTO schedules (name, code, is_default) VALUES ('Mass Vigil', 'mass-vigil', false); -- 71
+INSERT INTO schedules (name, code, is_default, valid_end) VALUES ('Weekday Basic', 'weekday', true, '2009-06-13 23:59:59' AT TIME ZONE 'America/New_York'); -- 72
+INSERT INTO schedules (name, code, is_default, valid_end) VALUES ('Wednesday Basic', 'wednesday', true, '2009-06-13 23:59:59' AT TIME ZONE 'America/New_York'); -- 73
+INSERT INTO schedules (name, code, is_default, valid_end) VALUES ('Thursday Basic', 'thursday', true, '2009-06-13 23:59:59' AT TIME ZONE 'America/New_York'); -- 74
 
 --
 -- Map services to schedules
@@ -384,6 +392,27 @@ INSERT INTO schedule_services (schedule_id, service_id) VALUES (67, 11); -- summ
 INSERT INTO schedule_services (schedule_id, service_id) VALUES (67, 12); -- summer-sunday-with-vigil
 INSERT INTO schedule_services (schedule_id, service_id) VALUES (67, 13); -- summer-sunday-with-vigil
 INSERT INTO schedule_services (schedule_id, service_id) VALUES (68, 75); -- sung-mass-vigil
+INSERT INTO schedule_services (schedule_id, service_id) VALUES (69, 5); -- said-mass-vigil
+INSERT INTO schedule_services (schedule_id, service_id) VALUES (69, 76); -- said-mass-vigil
+INSERT INTO schedule_services (schedule_id, service_id) VALUES (70, 5); -- thursday-mass-vigil
+INSERT INTO schedule_services (schedule_id, service_id) VALUES (70, 77); -- thursday-mass-vigil
+INSERT INTO schedule_services (schedule_id, service_id) VALUES (71, 5); -- mass-vigil
+INSERT INTO schedule_services (schedule_id, service_id) VALUES (71, 20); -- mass-vigil
+INSERT INTO schedule_services (schedule_id, service_id) VALUES (72, 1); -- weekday (old)
+INSERT INTO schedule_services (schedule_id, service_id) VALUES (72, 2); -- weekday (old)
+INSERT INTO schedule_services (schedule_id, service_id) VALUES (72, 3); -- weekday (old)
+INSERT INTO schedule_services (schedule_id, service_id) VALUES (72, 5); -- weekday (old)
+INSERT INTO schedule_services (schedule_id, service_id) VALUES (72, 20); -- weekday (old)
+INSERT INTO schedule_services (schedule_id, service_id) VALUES (73, 1); -- wednesday (old)
+INSERT INTO schedule_services (schedule_id, service_id) VALUES (73, 2); -- wednesday (old)
+INSERT INTO schedule_services (schedule_id, service_id) VALUES (73, 18); -- wednesday (old)
+INSERT INTO schedule_services (schedule_id, service_id) VALUES (73, 5); -- wednesday (old)
+INSERT INTO schedule_services (schedule_id, service_id) VALUES (73, 20); -- wednesday (old)
+INSERT INTO schedule_services (schedule_id, service_id) VALUES (74, 1); -- thursday (old)
+INSERT INTO schedule_services (schedule_id, service_id) VALUES (74, 2); -- thursday (old)
+INSERT INTO schedule_services (schedule_id, service_id) VALUES (74, 4); -- thursday (old)
+INSERT INTO schedule_services (schedule_id, service_id) VALUES (74, 5); -- thursday (old)
+INSERT INTO schedule_services (schedule_id, service_id) VALUES (74, 77); -- thursday (old)
 
 --
 -- Define service patterns for seasons, fixed feasts, and moveable feasts, as
@@ -749,12 +778,12 @@ INSERT INTO service_patterns (name, code,
         schedule_code_sat, schedule_code_sat_with_vigil, schedule_code_sat_vigil,
         schedule_code_sun, schedule_code_sun_with_vigil, schedule_code_sun_vigil
     ) VALUES ('Without Prayers', 'without-prayers',
-        'weekday-no-prayers', null, null,
-        'weekday-no-prayers', null, null,
-        'weekday-no-prayers', null, null,
-        'thursday-no-prayers', null, null,
-        'weekday-no-prayers', null, null,
-        'saturday-no-confessions', null, null,
+        'weekday-no-prayers', 'weekday-no-prayers', null,
+        'weekday-no-prayers', 'weekday-no-prayers', null,
+        'weekday-no-prayers', 'weekday-no-prayers', null,
+        'thursday-no-prayers', 'thursday-no-prayers', null,
+        'weekday-no-prayers', 'weekday-no-prayers', null,
+        'saturday-no-confessions', 'saturday-no-confessions', null,
         null, null, null
     );
 
@@ -953,6 +982,64 @@ INSERT INTO service_patterns (name, code,
         null, null, 'sung-mass-vigil',
         null, null, 'sung-mass-vigil',
         null, null, 'sung-mass-vigil',
+        null, null, null
+    );
+
+INSERT INTO service_patterns (name, code,
+        schedule_code_mon, schedule_code_mon_with_vigil, schedule_code_mon_vigil,
+        schedule_code_tue, schedule_code_tue_with_vigil, schedule_code_tue_vigil,
+        schedule_code_wed, schedule_code_wed_with_vigil, schedule_code_wed_vigil,
+        schedule_code_thu, schedule_code_thu_with_vigil, schedule_code_thu_vigil,
+        schedule_code_fri, schedule_code_fri_with_vigil, schedule_code_fri_vigil,
+        schedule_code_sat, schedule_code_sat_with_vigil, schedule_code_sat_vigil,
+        schedule_code_sun, schedule_code_sun_with_vigil, schedule_code_sun_vigil,
+        valid_start
+    ) VALUES ('Said Mass Eve-of Vigil', 'said-mass-eve-vigil',
+        null, null, 'said-mass-vigil',
+        null, null, 'said-mass-vigil',
+        null, null, 'said-mass-vigil',
+        null, null, 'said-mass-vigil',
+        null, null, 'said-mass-vigil',
+        null, null, 'said-mass-vigil',
+        null, null, null,
+        '2008-01-01 00:00:00' AT TIME ZONE 'America/New_York'
+    );
+
+INSERT INTO service_patterns (name, code,
+        schedule_code_mon, schedule_code_mon_with_vigil, schedule_code_mon_vigil,
+        schedule_code_tue, schedule_code_tue_with_vigil, schedule_code_tue_vigil,
+        schedule_code_wed, schedule_code_wed_with_vigil, schedule_code_wed_vigil,
+        schedule_code_thu, schedule_code_thu_with_vigil, schedule_code_thu_vigil,
+        schedule_code_fri, schedule_code_fri_with_vigil, schedule_code_fri_vigil,
+        schedule_code_sat, schedule_code_sat_with_vigil, schedule_code_sat_vigil,
+        schedule_code_sun, schedule_code_sun_with_vigil, schedule_code_sun_vigil,
+        valid_end
+    ) VALUES ('Said Mass Eve-of Vigil', 'said-mass-eve-vigil',
+        null, null, 'said-mass-vigil',
+        null, null, 'said-mass-vigil',
+        null, null, 'said-mass-vigil',
+        null, null, 'thursday-mass-vigil',
+        null, null, 'said-mass-vigil',
+        null, null, 'said-mass-vigil',
+        null, null, null,
+        '2007-12-31 23:59:59' AT TIME ZONE 'America/New_York'
+    );
+
+INSERT INTO service_patterns (name, code,
+        schedule_code_mon, schedule_code_mon_with_vigil, schedule_code_mon_vigil,
+        schedule_code_tue, schedule_code_tue_with_vigil, schedule_code_tue_vigil,
+        schedule_code_wed, schedule_code_wed_with_vigil, schedule_code_wed_vigil,
+        schedule_code_thu, schedule_code_thu_with_vigil, schedule_code_thu_vigil,
+        schedule_code_fri, schedule_code_fri_with_vigil, schedule_code_fri_vigil,
+        schedule_code_sat, schedule_code_sat_with_vigil, schedule_code_sat_vigil,
+        schedule_code_sun, schedule_code_sun_with_vigil, schedule_code_sun_vigil
+    ) VALUES ('Mass Eve-of Vigil', 'mass-eve-vigil',
+        null, null, 'mass-vigil',
+        null, null, 'mass-vigil',
+        null, null, 'mass-vigil',
+        null, null, 'thursday-mass-vigil',
+        null, null, 'mass-vigil',
+        null, null, 'mass-vigil',
         null, null, null
     );
 

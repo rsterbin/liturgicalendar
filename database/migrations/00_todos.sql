@@ -5,16 +5,6 @@
 
 -- todo: distinguish notes from abstinence notes
 
--- todo: federal holidays / church open 10-2
--- New Year's Day
--- Thanksgiving Day
--- Independence Day
--- Martin Luther King Day
--- Presidents' Day
--- Memorial Day
--- Labor Day
--- Columbus Day
-
 -- todo: by-year overrides
 -- Candlemas
 -- Assumption

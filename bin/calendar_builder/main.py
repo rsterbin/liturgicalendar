@@ -94,3 +94,10 @@ for cdate in sorted(resolution.full_year.iterkeys()):
         current_month = resolution.full_year[cdate].day.month
     print resolution.full_year[cdate]
 
+# print ""
+# print "Any extras:"
+# for cdate in sorted(resolution.extras.iterkeys()):
+#     print cdate + ": "
+#     for f in resolution.extras[cdate]:
+#         print f
+

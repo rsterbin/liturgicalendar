@@ -19,6 +19,7 @@ class Resolution:
         self.year = year
         self.session = session
         self.full_year = {}
+        self.extras = {}
         self.logger = logging.getLogger(__name__)
 
     def import_seasons(self):
@@ -31,6 +32,11 @@ class Resolution:
             self.full_year[cdate].set_season(self.season_ticker.current(), self.season_ticker.sunday_count, self.season_ticker.is_last_week())
             self.season_ticker.advance_by_day()
         self.logger.debug('Completed initial walk')
+        # We also need one day of the next year, in case of vigil
+        alt_season_ticker = YearIterator(self.session, self.year + 1)
+        self.logger.debug('Fetched season iterator for day one of next year')
+        self.next_year_first = ResolutionDay(alt_season_ticker.day, self)
+        self.next_year_first.set_season(alt_season_ticker.current(), alt_season_ticker.sunday_count, alt_season_ticker.is_last_week())
 
     def import_moveable_feasts(self):
         """Fetch moveable feasts and place them on the proper days"""
@@ -39,7 +45,12 @@ class Resolution:
         self.logger.debug('Found moveable feasts on {days} days'.format(days=len(mf)))
         for info in mf:
             cdate = utils.day_to_lookup(info['day'])
-            self.full_year[cdate].add_feast(ResolutionFeast(info['feasts'], info['day']))
+            if cdate in self.full_year:
+                self.full_year[cdate].add_feast(ResolutionFeast(info['feasts'], info['day']))
+            else:
+                if cdate not in self.extras:
+                    self.extras[cdate] = []
+                self.extras[cdate].append(ResolutionFeast(info['feasts'], info['day']))
         self.logger.debug('Added moveable feasts')
 
     def import_fixed_feasts(self):
@@ -49,7 +60,12 @@ class Resolution:
         self.logger.debug('Found fixed feasts on {days} days'.format(days=len(ff)))
         for info in ff:
             cdate = utils.day_to_lookup(info['day'])
-            self.full_year[cdate].add_feast(ResolutionFeast(info['feasts'], info['day']))
+            if cdate in self.full_year:
+                self.full_year[cdate].add_feast(ResolutionFeast(info['feasts'], info['day']))
+            else:
+                if cdate not in self.extras:
+                    self.extras[cdate] = []
+                self.extras[cdate].append(ResolutionFeast(info['feasts'], info['day']))
         self.logger.debug('Added fixed feasts')
 
     def import_floating_feasts(self):
@@ -59,7 +75,12 @@ class Resolution:
         self.logger.debug('Found floating feasts on {days} days'.format(days=len(ff)))
         for info in ff:
             cdate = utils.day_to_lookup(info['day'])
-            self.full_year[cdate].add_feast(ResolutionFeast(info['feasts'], info['day']))
+            if cdate in self.full_year:
+                self.full_year[cdate].add_feast(ResolutionFeast(info['feasts'], info['day']))
+            else:
+                if cdate not in self.extras:
+                    self.extras[cdate] = []
+                self.extras[cdate].append(ResolutionFeast(info['feasts'], info['day']))
         self.logger.debug('Added floating feasts')
 
     def import_federal_holidays(self):
@@ -67,9 +88,14 @@ class Resolution:
         self.federal = FederalHolidays(self.session, self.year)
         fh = self.federal.holidays_by_date()
         self.logger.debug('Found federal holidays on {days} days'.format(days=len(fh)))
-        for info in self.federal.holidays_by_date():
+        for info in fh:
             cdate = utils.day_to_lookup(info['day'])
-            self.full_year[cdate].add_holiday(ResolutionHoliday(info['holidays'], info['day']))
+            if cdate in self.full_year:
+                self.full_year[cdate].add_holiday(ResolutionHoliday(info['holidays'], info['day']))
+            else:
+                if cdate not in self.extras:
+                    self.extras[cdate] = []
+                self.extras[cdate].append(ResolutionHoliday(info['holidays'], info['day']))
         self.logger.debug('Added federal holidays')
 
     def before(self, day):
@@ -153,7 +179,7 @@ class ResolutionDay:
                 yesterday._set_vigil_for_feast(self.current_feast)
 
         for holiday in self.holidays:
-            if holiday.open_time() is not None:
+            if holiday.open_time() is not None or holiday.close_time() is not None:
                 if self.base_block.check_open_hours(holiday.open_time(), holiday.close_time()):
                     self.base_block.set_open_hours(holiday.open_time(), holiday.close_time())
                 else:
@@ -247,8 +273,8 @@ class ResolutionDay:
         """Sets the vigil block on this day using tomorrow's season info"""
         tomorrow = self.year.after(self.day)
         if tomorrow is None:
-            self.logger.warn('Attempting to set vigil with season when tomorrow is in the next year on ' + utils.day_to_lookup(self.day))
-            return
+            self.logger.info('Setting vigil from the first day of next year')
+            tomorrow = self.year.next_year_first
         self.has_vigil = True
         tpattern = tomorrow.season.pattern(self.day)
         self.vigil_block = ResolutionBlock(
@@ -296,6 +322,10 @@ class ResolutionBlock:
     def check_open_hours(self, open_time, close_time):
         """Check the open hours against the service times to see if this block will have any services left"""
         ok = []
+        if open_time is None:
+            open_time = datetime.time(0, 0, 0)
+        if close_time is None:
+            close_time = datetime.time(23, 59, 59)
         for s in self.services:
             n = s.start_time.replace(tzinfo=None)
             if n > open_time and n < close_time:
@@ -305,6 +335,10 @@ class ResolutionBlock:
     def set_open_hours(self, open_time, close_time):
         """Slice off services outside the open hours"""
         ok = []
+        if open_time is None:
+            open_time = datetime.time(0, 0, 0)
+        if close_time is None:
+            close_time = datetime.time(23, 59, 59)
         for s in self.services:
             n = s.start_time.replace(tzinfo=None)
             if n > open_time and n < close_time:

@@ -71,6 +71,16 @@ INSERT INTO federal_holidays (name, code,
         'Federal holiday schedule: The Church opens today at 10:00 AM and closes at 2:00 PM.', true
     );
 
+INSERT INTO federal_holidays (name, code,
+        calculate_from, algorithm, distance, placement_index,
+        close_time,
+        note, skip_name
+    ) VALUES (E'New Year\'s Eve', 'new-years-eve',
+        '12/31', 'exact', 0, 8,
+        '14:00:00',
+        'The church closes today at 2:00 PM because of the New Year celebrations in Times Square.', true
+    );
+
 -- rambler down
 
 DELETE FROM federal_holidays;

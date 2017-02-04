@@ -32,6 +32,14 @@ class FederalHolidays:
         by_date = []
         for code in self.holidays:
             h = self.by_code[code][0]
-            by_date.append({ 'day': h.day(self.year), 'holidays': self.by_code[code] })
+            d = h.day(self.year)
+            by_date.append({ 'day': d, 'holidays': self.by_code[code] })
+        # New Years Day is a special case, because it could place a federal
+        # holiday in the previous year, so we want to see where next year's New
+        # Years Day is going to be placed as well as this year's.
+        if 'new-years' in self.by_code:
+            h = self.by_code['new-years'][0]
+            d = h.day(self.year + 1)
+            by_date.append({ 'day': d, 'holidays': self.by_code['new-years'] })
         return by_date
 

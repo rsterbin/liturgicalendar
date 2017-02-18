@@ -1,7 +1,7 @@
 import datetime
 from dateutil.easter import *
 import inflect
-from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, Boolean, Time
+from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, Boolean, Time, Date
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 
@@ -434,4 +434,32 @@ class FederalHoliday(DeclarativeBase):
         if calc_from is None:
             raise ValueError('"{calc_from}" is an unknown calculation starting point for federal holidays; use "MM-DD"'.format(calc_from=repr(self.calculate_from)))
         return getattr(holiday_algorithms, self.algorithm)(calc_from, self.distance)
+
+class OverrideService(DeclarativeBase):
+    """Sqlalchemy override services model"""
+    __tablename__ = 'override_services'
+
+    id = Column('override_service_id', Integer, primary_key=True)
+    override_id = Column(Integer, ForeignKey('overrides.override_id'))
+    name = Column(String)
+    start_time = Column(Time, nullable=True)
+
+    def __repr__(self):
+        return self.name + ' ' + str(self.startTime)
+
+class Override(DeclarativeBase):
+    """Sqlalchemy overrides model"""
+    __tablename__ = 'overrides'
+
+    id = Column('override_id', Integer, primary_key=True)
+    target_date = Column(Date)
+    target_block = Column(String)
+    name = Column(String, nullable=True)
+    color = Column(String, nullable=True)
+    note = Column(String, nullable=True)
+
+    services = relationship(OverrideService, primaryjoin="OverrideService.override_id==Override.id", uselist=True)
+
+    def __repr__(self):
+        return self.name + ' [' + self.color + '] ' + self.note
 

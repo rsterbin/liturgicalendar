@@ -1,5 +1,6 @@
 #!/usr/bin/python
 
+import argparse
 import datetime
 import logging
 from sqlalchemy import create_engine
@@ -16,6 +17,15 @@ except IOError:
     print "Cannot find database configuration"
     sys.exit(1)
 
+# Check arguments
+parser = argparse.ArgumentParser(description='Calculate the liturgical calendar for a given year')
+parser.add_argument('year', type=int, help='the year you want to build')
+parser.add_argument('--dry-run', '-d', action='store_true', help='print the calculated year rather than storing it')
+parser.add_argument('--rules-only', '-r', action='store_true', help='use regular rules only: do not include any one-time overrides')
+parser.add_argument('--show-extras', action='store_true', help='after calculating, print any feasts/holidays that fell outside the year (used only on dry run)')
+parser.add_argument('--verbose', '-v', action='count')
+args = parser.parse_args()
+
 # DB connection function
 def db_connect():
     """
@@ -24,8 +34,15 @@ def db_connect():
     """
     return create_engine(URL(**config['database']))
 
-logging.basicConfig(level=logging.DEBUG)
-# logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
+if args.verbose == 1:
+    logging.basicConfig(level=logging.INFO)
+elif args.verbose == 2:
+    logging.basicConfig(level=logging.DEBUG)
+elif args.verbose >= 3:
+    logging.basicConfig(level=logging.DEBUG)
+    logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
+else:
+    logging.basicConfig(level=logging.WARNING)
 
 logger = logging.getLogger(__name__)
 
@@ -33,22 +50,8 @@ engine = db_connect()
 Session = sessionmaker(bind=engine)
 session = Session()
 
-def usage():
-    """Prints the proper usage of this script"""
-    print "\n".join((
-        "   calendar_builder/main.py <year>",
-        "",
-        "Pass in the year you want to build as the first argument.",
-    ))
-    sys.exit(0)
-
 # Calculate for this year
-if len(sys.argv) != 2:
-    usage()
-try:
-    CALC_YEAR = int(sys.argv[1])
-except ValueError:
-    usage()
+CALC_YEAR = args.year
 
 # Start up Resolution for this year
 logger.info('Starting resolution for ' + str(CALC_YEAR))
@@ -87,17 +90,27 @@ for cdate in sorted(resolution.full_year.iterkeys()):
     resolution.full_year[cdate].resolve()
 logger.info('done')
 
-current_month = 1
-for cdate in sorted(resolution.full_year.iterkeys()):
-    if current_month != resolution.full_year[cdate].day.month:
-        print ""
-        current_month = resolution.full_year[cdate].day.month
-    print resolution.full_year[cdate]
+# Freeze and add overrides
+logger.info('Adding overrides...')
+static = resolution.freeze_and_add_overrides()
+logger.info('done')
 
-# print ""
-# print "Any extras:"
-# for cdate in sorted(resolution.extras.iterkeys()):
-#     print cdate + ": "
-#     for f in resolution.extras[cdate]:
-#         print f
+# If this is a dry run, print out the results
+if args.dry_run:
+    current_month = 1
+    for cdate in sorted(static.full_year.iterkeys()):
+        if current_month != static.full_year[cdate].day.month:
+            print ""
+            current_month = static.full_year[cdate].day.month
+        print static.full_year[cdate]
+    if args.show_extras:
+        print ""
+        print "Any extras:"
+        for cdate in sorted(resolution.extras.iterkeys()):
+            print cdate + ": "
+            for f in resolution.extras[cdate]:
+                print f
+    sys.exit(0)
+
+# TODO: Store to database
 

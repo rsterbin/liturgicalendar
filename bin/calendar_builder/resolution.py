@@ -6,8 +6,10 @@ from config import config
 from federal_holidays import FederalHolidays
 from fixed_feasts import FixedFeasts
 from floating_feasts import FloatingFeasts
+from overrides import Overrides
 from moveable_feasts import MoveableFeasts
 from season import YearIterator
+from static import StaticYear
 import utils
 from valid_dates import valid_in_list
 
@@ -97,6 +99,21 @@ class Resolution:
                     self.extras[cdate] = []
                 self.extras[cdate].append(ResolutionHoliday(info['holidays'], info['day']))
         self.logger.debug('Added federal holidays')
+
+    def freeze_and_add_overrides(self):
+        """Freeze everything, add overrides, and return the static year"""
+        static = StaticYear(self)
+        self.logger.debug('Froze year')
+        self.overrides = Overrides(self.session, self.year)
+        oo = self.overrides.overrides_by_date()
+        for info in oo:
+            cdate = utils.day_to_lookup(info['day'])
+            if cdate in static:
+                static[cdate].override(info['overrides'])
+            else:
+                self.logger.warn('Override outside of year: ' + cdate)
+        self.logger.debug('Added overrides')
+        return static
 
     def before(self, day):
         """Returns the day before the day given"""
@@ -349,7 +366,8 @@ class ResolutionBlock:
         """Displays the block as a string"""
         rep = '[' + str(self.color) + '] ' + str(self.name)
         if self.note is not None:
-            rep += "\n\t\t(" + str(self.note) + ')'
+            lines = self.note.split("\n")
+            rep += "\n\t\t(" + "\n\t\t ".join(lines) + ')'
         for service in self.services:
             rep += "\n\t\t* " + str(service)
         return rep
@@ -447,7 +465,8 @@ class ResolutionFeast:
         """Displays the feast as a string"""
         rep = '[' + str(self.color()) + '] ' + str(self.name())
         if self.note() is not None:
-            rep += "\n\t\t(" + str(self.note()) + ')'
+            lines = self.note().split("\n")
+            rep += "\n\t\t(" + "\n\t\t ".join(lines) + ')'
         if self.pattern():
             rep += "\n\t\t* " + str(self.pattern().schedule(self.current_day))
         return rep
@@ -521,6 +540,7 @@ class ResolutionHoliday:
         """Displays the holiday as a string"""
         rep = str(self.name()) + ' <' + str(self.code()) + '>: Church open ' + str(self.open_time()) + ' to ' + str(self.close_time())
         if self.note() is not None:
-            rep += "\n\t\t(" + str(self.note()) + ')'
+            lines = self.note().split("\n")
+            rep += "\n\t\t(" + "\n\t\t ".join(lines) + ')'
         return rep
 

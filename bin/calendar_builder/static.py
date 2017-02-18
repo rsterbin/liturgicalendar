@@ -40,6 +40,16 @@ class StaticDay:
         """Returns whether the day has a vigil"""
         return self.vigil_block is not None
 
+    def override(self, overrides):
+        """Sets overrides on this day"""
+        for ovr in overrides:
+            if ovr.target_block == 'vigil':
+                self.vigil_block.override(ovr)
+            elif ovr.target_block == 'base':
+                self.base_block.override(ovr)
+            else:
+                self.logger.warn('Trying to override on target block {block}'.format(block=ovr.target_block))
+
     def __repr__(self):
         """Displays the day as a string"""
         rep = self.day.strftime('%Y-%m-%d') + ' (' + utils.weekday(self.day) + '):'
@@ -60,6 +70,19 @@ class StaticBlock:
         self.services = []
         for res_service in res_block.services:
             self.services.append(StaticService(res_service))
+
+    def override(self, override):
+        """Sets an override on this block"""
+        if override.color is not None:
+            self.color = override.color
+        if override.name is not None:
+            self.name = override.name
+        if override.note is not None:
+            self.note = override.note
+        if len(override.services) > 0:
+            self.services = []
+            for ovr_service in override.services:
+                self.services.append(StaticService(ovr_service))
 
     def __repr__(self):
         """Displays the block as a string"""

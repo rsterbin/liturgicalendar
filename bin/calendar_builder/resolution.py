@@ -108,8 +108,8 @@ class Resolution:
         oo = self.overrides.overrides_by_date()
         for info in oo:
             cdate = utils.day_to_lookup(info['day'])
-            if cdate in static:
-                static[cdate].override(info['overrides'])
+            if cdate in static.full_year:
+                static.full_year[cdate].override(info['overrides'])
             else:
                 self.logger.warn('Override outside of year: ' + cdate)
         self.logger.debug('Added overrides')

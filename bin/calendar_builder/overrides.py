@@ -33,7 +33,7 @@ class Overrides:
         by_date = []
         for day in self.by_day:
             o = self.by_day[day][0]
-            by_date.append({ 'day': o.day(self.year), 'overrides': self.by_day[day] })
+            by_date.append({ 'day': o.target_date, 'overrides': self.by_day[day] })
         return by_date
 
 

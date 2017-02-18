@@ -1054,6 +1054,5 @@ DELETE FROM services;
 ALTER SEQUENCE services_service_id_seq RESTART;
 
 -- todo: old summer sunday schedule
--- todo: old weekday schedule (with 6:20 Mass after evening prayer)
 -- todo: Blase with old weekday schedule
 

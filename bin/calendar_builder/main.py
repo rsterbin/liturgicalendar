@@ -9,6 +9,7 @@ from sqlalchemy.engine.url import URL
 import sys
 
 from resolution import Resolution
+from overrides import Overrides
 
 # Make sure we have a config
 try:
@@ -90,10 +91,17 @@ for cdate in sorted(resolution.full_year.iterkeys()):
     resolution.full_year[cdate].resolve()
 logger.info('done')
 
-# Freeze and add overrides
-logger.info('Adding overrides...')
-static = resolution.freeze_and_add_overrides()
+# Freeze the current state
+logger.info('Freezing current state...')
+static = resolution.freeze()
 logger.info('done')
+
+# TODO: Not a dry run? Store to the database as a calculated year
+
+# Add overrides
+overrides = Overrides(session, CALC_YEAR)
+static.override(overrides.get_all())
+logger.debug('Added overrides')
 
 # If this is a dry run, print out the results
 if args.dry_run:
@@ -112,5 +120,5 @@ if args.dry_run:
                 print f
     sys.exit(0)
 
-# TODO: Store to database
+# TODO: Store to database as a cached year
 

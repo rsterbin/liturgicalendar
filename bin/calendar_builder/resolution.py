@@ -6,7 +6,6 @@ from config import config
 from federal_holidays import FederalHolidays
 from fixed_feasts import FixedFeasts
 from floating_feasts import FloatingFeasts
-from overrides import Overrides
 from moveable_feasts import MoveableFeasts
 from season import YearIterator
 from static import StaticYear
@@ -100,20 +99,35 @@ class Resolution:
                 self.extras[cdate].append(ResolutionHoliday(info['holidays'], info['day']))
         self.logger.debug('Added federal holidays')
 
-    def freeze_and_add_overrides(self):
-        """Freeze everything, add overrides, and return the static year"""
-        static = StaticYear(self)
+    def freeze(self):
+        """Freezes the current resolution and returns the static year"""
+        static_year = StaticYear(self.year, self.session)
+        overrides = []
+        for cdate in sorted(self.full_year.iterkeys()):
+            res_day = self.full_year[cdate]
+            if res_day.base_block is not None:
+                overrides.append(self._block_to_override(res_day.day, res_day.base_block, False))
+            if res_day.vigil_block is not None:
+                overrides.append(self._block_to_override(res_day.day, res_day.vigil_block, False))
+        static_year.override(overrides)
         self.logger.debug('Froze year')
-        self.overrides = Overrides(self.session, self.year)
-        oo = self.overrides.overrides_by_date()
-        for info in oo:
-            cdate = utils.day_to_lookup(info['day'])
-            if cdate in static.full_year:
-                static.full_year[cdate].override(info['overrides'])
-            else:
-                self.logger.warn('Override outside of year: ' + cdate)
-        self.logger.debug('Added overrides')
-        return static
+        return static_year
+
+    def _block_to_override(self, day, block, is_vigil):
+        """Converts a resolution block into a dictionary suitable for static overrides"""
+        override = {}
+        override['day'] = day
+        if is_vigil:
+            override['target_block'] = 'vigil'
+        else:
+            override['target_block'] = 'base'
+        override['color'] = block.color
+        override['name'] = block.name
+        override['note'] = block.note
+        override['services'] = []
+        for service in block.services:
+            override['services'].append({ 'name': service.name, 'start_time': service.start_time })
+        return override
 
     def before(self, day):
         """Returns the day before the day given"""

@@ -1,4 +1,5 @@
 import copy
+import datetime
 import logging
 
 import utils
@@ -6,49 +7,55 @@ import utils
 class StaticYear:
     """Describes a resolved year"""
 
-    def __init__(self, res_year):
+    def __init__(self, year, session):
         """Constructor"""
-        self.year = res_year.year
-        self.session = res_year.session
-        self.full_year = {}
+        self.year = year
+        self.session = session
         self.logger = logging.getLogger(__name__)
-        for cdate in sorted(res_year.full_year.iterkeys()):
-            self.full_year[cdate] = StaticDay(self, res_year.full_year[cdate])
 
-    def save(self):
-        """Saves everything to the database"""
-        pass
+        self.full_year = {}
+        c = datetime.date(year, 1, 1)
+        while c.year == year:
+            cdate = utils.day_to_lookup(c)
+            sday = StaticDay(c, self.logger)
+            self.full_year[cdate] = sday
+            c = c + datetime.timedelta(days=1)
+
+    def override(self, overrides):
+        """Sets overrides on this year"""
+        for ovr in overrides:
+            cdate = utils.day_to_lookup(ovr['day'])
+            if cdate in self.full_year:
+                self.full_year[cdate].override(ovr)
+            else:
+                self.logger.warn('Trying to override on wrong date {date}'.format(date=str(ovr['day'])))
 
 class StaticDay:
     """Describes a resolved day"""
 
-    def __init__(self, year, res_day):
+    def __init__(self, day, logger):
         """Constructor"""
-        self.day = copy.deepcopy(res_day.day)
-        self.year = year
-        if res_day.base_block is not None:
-            self.base_block = StaticBlock(res_day.base_block, False)
-        else:
-            self.base_block = None
-        if res_day.vigil_block is not None:
-            self.vigil_block = StaticBlock(res_day.vigil_block, True)
-        else:
-            self.vigil_block = None
-        self.logger = self.year.logger
+        self.day = copy.deepcopy(day)
+        self.base_block = None
+        self.vigil_block = None
+        self.logger = logger
 
     def has_vigil(self):
         """Returns whether the day has a vigil"""
         return self.vigil_block is not None
 
-    def override(self, overrides):
+    def override(self, ovr):
         """Sets overrides on this day"""
-        for ovr in overrides:
-            if ovr.target_block == 'vigil':
-                self.vigil_block.override(ovr)
-            elif ovr.target_block == 'base':
-                self.base_block.override(ovr)
-            else:
-                self.logger.warn('Trying to override on target block {block}'.format(block=ovr.target_block))
+        if ovr['target_block'] == 'vigil':
+            if self.vigil_block is None:
+                self.vigil_block = StaticBlock(self.logger)
+            self.vigil_block.override(ovr)
+        elif ovr['target_block'] == 'base':
+            if self.base_block is None:
+                self.base_block = StaticBlock(self.logger)
+            self.base_block.override(ovr)
+        else:
+            self.logger.warn('Trying to override on target block {block}'.format(block=ovr['target_block']))
 
     def __repr__(self):
         """Displays the day as a string"""
@@ -61,28 +68,26 @@ class StaticDay:
 class StaticBlock:
     """Describes a resolved block"""
 
-    def __init__(self, res_block, is_vigil):
+    def __init__(self, logger):
         """Constructor"""
-        self.color = res_block.color
-        self.name = res_block.name
-        self.note = res_block.note
-        self.is_vigil = is_vigil
+        self.color = None
+        self.name = None
+        self.note = None
         self.services = []
-        for res_service in res_block.services:
-            self.services.append(StaticService(res_service))
+        self.logger = logger
 
     def override(self, override):
         """Sets an override on this block"""
-        if override.color is not None:
-            self.color = override.color
-        if override.name is not None:
-            self.name = override.name
-        if override.note is not None:
-            self.note = override.note
-        if len(override.services) > 0:
+        if 'color' in override:
+            self.color = override['color']
+        if 'name' in override:
+            self.name = override['name']
+        if 'note' in override:
+            self.note = override['note']
+        if 'services' in override:
             self.services = []
-            for ovr_service in override.services:
-                self.services.append(StaticService(ovr_service))
+            for ovr_service in override['services']:
+                self.services.append(StaticService(ovr_service['name'], ovr_service['start_time']))
 
     def __repr__(self):
         """Displays the block as a string"""
@@ -97,10 +102,10 @@ class StaticBlock:
 class StaticService:
     """Describes a resolved service"""
 
-    def __init__(self, res_service):
+    def __init__(self, name, start_time):
         """Constructor"""
-        self.name = res_service.name
-        self.start_time = res_service.start_time
+        self.name = name
+        self.start_time = start_time
 
     def __repr__(self):
         return self.name + ' ' + utils.ftime(self.start_time)

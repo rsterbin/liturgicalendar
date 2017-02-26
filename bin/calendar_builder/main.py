@@ -9,7 +9,7 @@ from sqlalchemy.engine.url import URL
 import sys
 
 from resolution import Resolution
-from overrides import Overrides
+from fetch.overrides import Overrides
 
 # Make sure we have a config
 try:

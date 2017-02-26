@@ -3,10 +3,10 @@ import datetime
 import logging
 
 from config import config
-from federal_holidays import FederalHolidays
-from fixed_feasts import FixedFeasts
-from floating_feasts import FloatingFeasts
-from moveable_feasts import MoveableFeasts
+from fetch.federal_holidays import FederalHolidays
+from fetch.fixed_feasts import FixedFeasts
+from fetch.floating_feasts import FloatingFeasts
+from fetch.moveable_feasts import MoveableFeasts
 from season import YearIterator
 from static import StaticYear
 import utils

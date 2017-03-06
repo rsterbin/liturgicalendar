@@ -463,3 +463,31 @@ class Override(DeclarativeBase):
     def __repr__(self):
         return self.name + ' [' + self.color + '] ' + self.note
 
+class CalculatedService(DeclarativeBase):
+    """Sqlalchemy calculated services model"""
+    __tablename__ = 'calculated_services'
+
+    id = Column('calculated_service_id', Integer, primary_key=True)
+    calculated_id = Column(Integer, ForeignKey('calculated.calculated_id'))
+    name = Column(String)
+    start_time = Column(Time, nullable=True)
+
+    def __repr__(self):
+        return self.name + ' ' + str(self.startTime)
+
+class Calculated(DeclarativeBase):
+    """Sqlalchemy calculateds model"""
+    __tablename__ = 'calculated'
+
+    id = Column('calculated_id', Integer, primary_key=True)
+    target_date = Column(Date)
+    target_block = Column(String)
+    name = Column(String, nullable=True)
+    color = Column(String, nullable=True)
+    note = Column(String, nullable=True)
+
+    services = relationship(CalculatedService, primaryjoin="CalculatedService.calculated_id==Calculated.id", uselist=True)
+
+    def __repr__(self):
+        return self.name + ' [' + self.color + '] ' + self.note
+

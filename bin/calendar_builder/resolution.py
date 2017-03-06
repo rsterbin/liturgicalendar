@@ -108,7 +108,7 @@ class Resolution:
             if res_day.base_block is not None:
                 overrides.append(self._block_to_override(res_day.day, res_day.base_block, False))
             if res_day.vigil_block is not None:
-                overrides.append(self._block_to_override(res_day.day, res_day.vigil_block, False))
+                overrides.append(self._block_to_override(res_day.day, res_day.vigil_block, True))
         static_year.override(overrides)
         self.logger.debug('Froze year')
         return static_year

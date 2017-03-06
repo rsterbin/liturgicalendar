@@ -7,6 +7,7 @@ from sqlalchemy.engine.url import URL
 
 from resolution import Resolution
 from fetch.overrides import Overrides
+from storage import Storage
 
 # Make sure we have a config
 try:
@@ -15,10 +16,7 @@ except IOError:
     raise RuntimeError("Cannot find database configuration")
 
 def handle_args():
-    """
-    Gathers commmand line options and sets up logging according to the verbose param.
-    Returns the parsed args
-    """
+    """ Gathers commmand line options and sets up logging according to the verbose param.  Returns the parsed args """
     parser = argparse.ArgumentParser(description='Calculate the liturgical calendar for a given year')
     parser.add_argument('year', type=int, help='the year you want to build')
     parser.add_argument('--dry-run', '-d', action='store_true', help='print the calculated year rather than storing it')
@@ -40,16 +38,11 @@ def handle_args():
     return args
 
 def db_connect():
-    """
-    Performs database connection using database settings from settings.py.
-    Returns sqlalchemy engine instance
-    """
+    """ Performs database connection using database settings from settings.py.  Returns sqlalchemy engine instance """
     return create_engine(URL(**config['database']))
 
 def print_year(static, add_extras=False):
-    """
-    Prints out the full year, with blank lines between months
-    """
+    """ Prints out the full year, with blank lines between months """
     current_month = 1
     for cdate in sorted(static.full_year.iterkeys()):
         if current_month != static.full_year[cdate].day.month:
@@ -65,9 +58,7 @@ def print_year(static, add_extras=False):
                 print f
 
 def primary_calculation(year, logger, session):
-    """
-    Does the initial caclulation (no overrides)
-    """
+    """ Does the initial caclulation (no overrides) """
 
     # Start up Resolution for this year
     logger.info('Starting resolution for ' + str(year))
@@ -113,27 +104,34 @@ def primary_calculation(year, logger, session):
 
     return static
 
+def store_calculated(year, logger, static, session):
+    """ Stores the calculated year """
+    logger.info('Saving the cacluclated year...')
+    storage = Storage(year, session)
+    storage.save_calculated(static)
+    logger.info('done')
+
 def main():
-    """
-    Runs the whole shebang
-    """
+    """ Runs the whole shebang """
     logger = logging.getLogger(__name__)
     args = handle_args()
 
     # DB Setup
     engine = db_connect()
     Session = sessionmaker(bind=engine)
-    session = Session()
 
     # Calculate for this year
     CALC_YEAR = args.year
 
     # Primary calculation
-    static = primary_calculation(CALC_YEAR, logger, session)
+    fetching_session = Session()
+    static = primary_calculation(CALC_YEAR, logger, fetching_session)
 
     # If this is not a dry run, save to the database as a calculated year
     if not args.dry_run:
-        # TODO: store
+        calc_save_session = Session()
+        store_calculated(CALC_YEAR, logger, static, calc_save_session)
+        calc_save_session.commit()
         pass
 
     # Rules only: stop here
@@ -143,7 +141,7 @@ def main():
         return
 
     # Add overrides
-    overrides = Overrides(session, CALC_YEAR)
+    overrides = Overrides(fetching_session, CALC_YEAR)
     static.override(overrides.get_all())
     logger.debug('Added overrides')
 

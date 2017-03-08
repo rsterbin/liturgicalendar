@@ -13,15 +13,70 @@ import utils
 from valid_dates import valid_in_list
 
 class Resolution:
+    """Calculate the liturgical calendar for a full year"""
+
+    def __init__(self, session):
+        """Constructor"""
+        self.session = session
+        self.logger = logging.getLogger(__name__)
+
+    def calculate_year(self, year):
+        """Calculates the liturgical calendar and returns it as a StaticYear"""
+
+        # Start up Resolution for this year
+        self.logger.info('Starting resolution for ' + str(year))
+        resolution = ResolutionYear(year, self.session, self.logger)
+
+        # Set up the season framework
+        self.logger.info('Importing seasons...')
+        resolution.import_seasons()
+        self.logger.info('done')
+
+        # Add moveable feasts
+        self.logger.info('Adding moveable feasts...')
+        resolution.import_moveable_feasts()
+        self.logger.info('done')
+
+        # Add fixed feasts
+        self.logger.info('Adding fixed feasts...')
+        resolution.import_fixed_feasts()
+        self.logger.info('done')
+
+        # Add federal holidays
+        self.logger.info('Adding federal holidays...')
+        resolution.import_federal_holidays()
+        self.logger.info('done')
+
+        # Resolve
+        self.logger.info('Resolving...')
+        for cdate in sorted(resolution.full_year.iterkeys()):
+            resolution.full_year[cdate].resolve()
+        self.logger.info('done')
+
+        # Add floating feasts and re-resolve
+        self.logger.info('Adding floating feasts...')
+        resolution.import_floating_feasts()
+        for cdate in sorted(resolution.full_year.iterkeys()):
+            resolution.full_year[cdate].resolve()
+        self.logger.info('done')
+
+        # Freeze the current state
+        self.logger.info('Freezing current state...')
+        static = resolution.freeze()
+        self.logger.info('done')
+
+        return static
+
+class ResolutionYear:
     """Describes a year in the resolution process"""
 
-    def __init__(self, year, session):
+    def __init__(self, year, session, logger):
         """Constructor"""
         self.year = year
         self.session = session
+        self.logger = logger
         self.full_year = {}
         self.extras = {}
-        self.logger = logging.getLogger(__name__)
 
     def import_seasons(self):
         """Walk though the year and lay down our defaults according to the season on that date"""

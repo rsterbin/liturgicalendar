@@ -57,59 +57,8 @@ def print_year(static, add_extras=False):
             for f in resolution.extras[cdate]:
                 print f
 
-def primary_calculation(year, logger, session):
-    """ Does the initial caclulation (no overrides) """
-
-    # Start up Resolution for this year
-    logger.info('Starting resolution for ' + str(year))
-    resolution = Resolution(year, session)
-
-    # Set up the season framework
-    logger.info('Importing seasons...')
-    resolution.import_seasons()
-    logger.info('done')
-
-    # Add moveable feasts
-    logger.info('Adding moveable feasts...')
-    resolution.import_moveable_feasts()
-    logger.info('done')
-
-    # Add fixed feasts
-    logger.info('Adding fixed feasts...')
-    resolution.import_fixed_feasts()
-    logger.info('done')
-
-    # Add federal holidays
-    logger.info('Adding federal holidays...')
-    resolution.import_federal_holidays()
-    logger.info('done')
-
-    # Resolve
-    logger.info('Resolving...')
-    for cdate in sorted(resolution.full_year.iterkeys()):
-        resolution.full_year[cdate].resolve()
-    logger.info('done')
-
-    # Add floating feasts and re-resolve
-    logger.info('Adding floating feasts...')
-    resolution.import_floating_feasts()
-    for cdate in sorted(resolution.full_year.iterkeys()):
-        resolution.full_year[cdate].resolve()
-    logger.info('done')
-
-    # Freeze the current state
-    logger.info('Freezing current state...')
-    static = resolution.freeze()
-    logger.info('done')
-
-    return static
-
 def store_calculated(year, logger, static, session):
     """ Stores the calculated year """
-    logger.info('Saving the cacluclated year...')
-    storage = Storage(year, session)
-    storage.save_calculated(static)
-    logger.info('done')
 
 def main():
     """ Runs the whole shebang """
@@ -124,14 +73,20 @@ def main():
     CALC_YEAR = args.year
 
     # Primary calculation
+    logger.info('Calculating year...')
     fetching_session = Session()
-    static = primary_calculation(CALC_YEAR, logger, fetching_session)
+    resolution = Resolution(fetching_session)
+    static = resolution.calculate_year(CALC_YEAR)
+    logger.info('done')
 
     # If this is not a dry run, save to the database as a calculated year
     if not args.dry_run:
+        logger.info('Saving the cacluclated year...')
         calc_save_session = Session()
-        store_calculated(CALC_YEAR, logger, static, calc_save_session)
+        storage = Storage(CALC_YEAR, calc_save_session)
+        storage.save_calculated(static)
         calc_save_session.commit()
+        logger.info('done')
         pass
 
     # Rules only: stop here
@@ -150,5 +105,11 @@ def main():
         print_year(static, args.show_extras)
         return
 
-    # TODO: Store to database as a cached year
+    # Store to database as a cached year
+    logger.info('Saving the cacluclated year...')
+    cache_save_session = Session()
+    storage = Storage(CALC_YEAR, cache_save_session)
+    storage.save_cached(static)
+    cache_save_session.commit()
+    logger.info('done')
 

@@ -476,7 +476,7 @@ class CalculatedService(DeclarativeBase):
         return self.name + ' ' + str(self.startTime)
 
 class Calculated(DeclarativeBase):
-    """Sqlalchemy calculateds model"""
+    """Sqlalchemy calculated calendar model"""
     __tablename__ = 'calculated'
 
     id = Column('calculated_id', Integer, primary_key=True)
@@ -487,6 +487,34 @@ class Calculated(DeclarativeBase):
     note = Column(String, nullable=True)
 
     services = relationship(CalculatedService, primaryjoin="CalculatedService.calculated_id==Calculated.id", uselist=True)
+
+    def __repr__(self):
+        return self.name + ' [' + self.color + '] ' + self.note
+
+class CachedService(DeclarativeBase):
+    """Sqlalchemy cached services model"""
+    __tablename__ = 'cached_services'
+
+    id = Column('cached_service_id', Integer, primary_key=True)
+    cached_id = Column(Integer, ForeignKey('cached.cached_id'))
+    name = Column(String)
+    start_time = Column(Time, nullable=True)
+
+    def __repr__(self):
+        return self.name + ' ' + str(self.startTime)
+
+class Cached(DeclarativeBase):
+    """Sqlalchemy cached calendar model"""
+    __tablename__ = 'cached'
+
+    id = Column('cached_id', Integer, primary_key=True)
+    target_date = Column(Date)
+    target_block = Column(String)
+    name = Column(String, nullable=True)
+    color = Column(String, nullable=True)
+    note = Column(String, nullable=True)
+
+    services = relationship(CachedService, primaryjoin="CachedService.cached_id==Cached.id", uselist=True)
 
     def __repr__(self):
         return self.name + ' [' + self.color + '] ' + self.note

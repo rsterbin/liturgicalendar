@@ -1,0 +1,20 @@
+{
+  "name": "front",
+  "version": "1.0.0",
+  "description": "Front end for the liturgical calendar",
+  "main": "server.js",
+  "scripts": {
+    "test": "test",
+    "start": "node server.js"
+  },
+  "keywords": [
+    "liturgical",
+    "calendar"
+  ],
+  "author": "Reha Sterbin",
+  "license": "ISC",
+  "dependencies": {
+    "bluebird": "^3.5.0",
+    "express": "^4.15.2"
+  }
+}

@@ -6,3 +6,4 @@ database/config.json
 bin/config.yml
 bin/*/*.pyc
 bin/*/*/*.pyc
+front/node_modules

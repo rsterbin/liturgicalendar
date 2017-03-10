@@ -1,6 +1,7 @@
 var express = require('express')
 var Promise = require('bluebird')
 var router = express.Router()
+var winston = require('winston')
 
 function doSomeAsyncThing(query) {
     return new Promise((resolve, reject) => {
@@ -32,13 +33,14 @@ function doOkay(message) {
 
 function standardError(error) {
     return new Promise((resolve, reject) => {
+        var errlog = winston.loggers.get('error');
         if (typeof error == 'string') {
             resolve({ status: 'fail', message: error });
         } else if (typeof error == 'object' && 'message' in error) {
-            console.log(error);
+            errlog.log('error', error.message);
             resolve({ status: 'error', message: error.message });
         } else {
-            console.log(error);
+            errlog.log('error', 'Unknown error', { error: error });
             resolve({ status: 'error', message: 'Unknown error' });
         }
     });

@@ -1,0 +1,24 @@
+#!/usr/bin/python
+
+import json
+import string
+import sys
+
+for line in sys.stdin:
+    j = json.loads(line)
+    if 'timestamp' not in j:
+        continue
+    formatted = '[' + j['timestamp'] + '] ' + j['level'].upper() + ' ' + j['message']
+    j.pop('timestamp', None)
+    j.pop('level', None)
+    j.pop('message', None)
+    s = None
+    if 'stack' in j:
+        s = string.replace(j['stack'], '\\n', "\n")
+        j.pop('stack', None)
+    if len(j) > 0:
+        formatted += ' ' + json.dumps(j)
+    formatted += "\n"
+    if s is not None:
+        formatted += '  ' + s + "\n"
+    sys.stdout.write(formatted)

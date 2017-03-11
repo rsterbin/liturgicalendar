@@ -1,7 +1,9 @@
-var express = require('express')
-var Promise = require('bluebird')
-var router = express.Router()
-var winston = require('winston')
+var express = require('express');
+var Promise = require('bluebird');
+var router = express.Router();
+var winston = require('winston');
+
+var standard = require('../../lib/standard.js');
 
 function doSomeAsyncThing(query) {
     return new Promise((resolve, reject) => {
@@ -17,10 +19,14 @@ function doAnotherAsyncThing(name) {
     return new Promise((resolve, reject) => {
         if (name == 'Reha') {
             resolve('Hello, ' + name);
+        } else if (name == 'Jenny') {
+            reject(new standard.BasicError('The name Jenny is a special kind of wrong', 456, 'doAnotherAsyncThing'));
         } else if (name == 'Eliza') {
             reject({ hello: 'my name is Eliza', code: 'werd' });
+        } else if (name == 'Carter') {
+            reject(new standard.BasicFailure('Names other than Reha are not allowed!', 123, true, 'doAnotherAsyncThing'));
         } else {
-            reject('Names other than Reha are not allowed!');
+            reject(new standard.BasicFailure('Names other than Reha are not allowed!', 123));
         }
     });
 }
@@ -31,30 +37,12 @@ function doOkay(message) {
     });
 }
 
-function standardError(error) {
-    return new Promise((resolve, reject) => {
-        var errlog = winston.loggers.get('error');
-        if (typeof error == 'string') {
-            resolve({ status: 'fail', message: error });
-        } else if (typeof error == 'object' && 'message' in error) {
-            errlog.log('error', error.message);
-            resolve({ status: 'error', message: error.message });
-        } else {
-            errlog.log('error', 'Unknown error', { error: error });
-            resolve({ status: 'error', message: 'Unknown error' });
-        }
-    });
-}
-
 router.get('/:query', (req, res, next) => {
     doSomeAsyncThing(req.params['query'])
         .then(name => doAnotherAsyncThing(name))
-        .then(message => doOkay(message),
-            error => standardError(error))
-        .then(json => {
-            res.json(json);
-            next();
-        });
+        .then(message => doOkay(message))
+        .then(json => { res.json(json); })
+        .catch(next);
 });
 
 module.exports = router;

@@ -30,6 +30,13 @@ winston.loggers.add('error', {
     ]
 });
 
+// Query log
+winston.loggers.add('query', {
+    transports: [
+        new (require('winston-daily-rotate-file'))({ filename: logDirectory + '/query.log' })
+    ]
+});
+
 // Failure log
 winston.loggers.add('failure', {
     transports: [

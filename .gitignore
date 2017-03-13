@@ -6,5 +6,6 @@ database/config.json
 bin/config.yml
 bin/*/*.pyc
 bin/*/*/*.pyc
+front/.env
 front/node_modules
 front/log

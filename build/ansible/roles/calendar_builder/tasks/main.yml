@@ -1,5 +1,6 @@
 ---
-# Installs the modules necessary to run the schedule builder and sets up its cron job
+# Installs the modules necessary to run the schedule builder
+# TODO: set up the daemon
 
 - name: update the cache for apt-get
   apt: update_cache=yes

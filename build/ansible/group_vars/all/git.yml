@@ -15,6 +15,13 @@ codebase_basedir: /opt/stmvirgin
 codebase_dest: "{{ codebase_basedir }}/liturgicalendar"
 codebase_branch: master
 codebase_migrations: "{{ codebase_dest }}/database/migrations"
+codebase_api: "{{ codebase_dest }}/front"
+
+api_service: calendar-api
+api_port: 3000
+api_logdir: "{{ codebase_api }}/log"
+api_console_log: "{{ api_logdir }}/console.log"
+api_node_env: production
 
 environment_mode: prod
 ...

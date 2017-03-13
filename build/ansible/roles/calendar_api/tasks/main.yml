@@ -1,0 +1,23 @@
+---
+# Sets up the node API for the calendar
+
+- name: install packages according to package.json
+  npm: path={{ codebase_api }}
+
+- name: make sure the log directory exists and has the right permissions
+  file: path={{ api_logdir }} owner={{ deploy_user }} mode=g+swX state=directory
+  
+- name: write out the dot env file
+  template: src=../templates/dot-env.j2 dest={{ codebase_api }}/.env
+
+- name: configure the public service with upstart
+  template: src=../templates/api_service.conf.j2 dest=/etc/init/{{ api_service }}.conf
+  become: true
+  notify:
+    - restart api
+
+- name: enable the api service and enable at boot
+  service: name={{ api_service }} enabled=yes state=started
+  become: true
+
+...

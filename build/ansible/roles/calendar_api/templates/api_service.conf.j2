@@ -1,0 +1,16 @@
+description "Saint Mary's Liturgical Calendar API"
+author      "Reha Sterbin"
+
+start on runlevel [2345]
+stop on runlevel [06]
+
+# do not expect the daemon to fork, hence no 'expect' stanza
+
+# attempt to respawn the service up to 10 times in a 5-second time window
+respawn
+respawn limit 10 5
+
+script
+    cd {{ codebase_api }}
+    exec sudo -u {{ deploy_user }} npm run-script start >> {{ api_console_log }} 2>&1
+end script

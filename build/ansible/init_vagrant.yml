@@ -39,4 +39,5 @@
   roles:
     - common
     - { role: geerlingguy.nodejs, become: true, nodejs_version: '4.x' }
+    - calendar_api
 ...

@@ -1,0 +1,7 @@
+---
+# Handlers for the calendar api
+
+- name: restart api
+  service: name={{ api_service }} state=restarted
+  become: true
+

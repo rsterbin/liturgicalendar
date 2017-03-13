@@ -3,13 +3,11 @@ var Promise = require('bluebird');
 var router = express.Router();
 var winston = require('winston');
 var moment = require('moment');
-var pgp = require('pg-promise')();
 
 var standard = require('../../lib/standard.js');
-var config = require('../config');
+var db = require('../db');
 
 function checkForCached() {
-    var db = pgp(config.database);
     var sql = ['SELECT c.cached_id, c.target_date, c.target_block, c.name, ',
         '   c.color, c.note, s.name AS service_name, ',
         '   s.start_time AS service_start_time ',

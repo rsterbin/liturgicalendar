@@ -1,13 +1,9 @@
 var express = require('express');
 var Promise = require('bluebird');
-var router = express.Router();
 var winston = require('winston');
 var moment = require('moment');
 
-var standard = require('../../lib/standard.js');
-var db = require('../db');
-
-function checkForCached() {
+function checkForCached(db) {
     var sql = ['SELECT c.cached_id, c.target_date, c.target_block, c.name, ',
         '   c.color, c.note, s.name AS service_name, ',
         '   s.start_time AS service_start_time ',
@@ -58,11 +54,18 @@ function doOkay(message) {
     });
 }
 
-router.get('/', (req, res, next) => {
-    checkForCached()
-        .then(message => doOkay(message))
-        .then(json => { res.json(json); })
-        .catch(next);
-});
+function setupRoutes(registry) {
 
-module.exports = router;
+    var router = express.Router();
+
+    router.get('/', (req, res, next) => {
+        checkForCached(registry.getDatabaseConnection())
+            .then(message => doOkay(message))
+            .then(json => { res.json(json); })
+            .catch(next);
+    });
+
+    return router;
+}
+
+module.exports = setupRoutes;

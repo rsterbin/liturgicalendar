@@ -15,5 +15,7 @@ module.exports = {
         database: process.env.DB_NAME,
         user: process.env.DB_USER,
         password: process.env.DB_USER_PASSWORD
-    }
+    },
+    logDirectory: process.env.LOG_DIRECTORY,
+    apiPort: process.env.API_PORT
 };

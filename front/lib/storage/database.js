@@ -2,7 +2,14 @@
  * Database storage of the calendar
  */
 
+var winston = require('winston');
+
 var Calendar = require('../Calendar.js');
+
+var logDbError = function (error) {
+    var logger = winston.loggers.get('error');
+    logger.log('error', 'Database Error #' + error.code + ': ' + error.message, { full: error });
+};
 
 var DatabaseStorage = function (db) {
     this.db = db;
@@ -24,8 +31,8 @@ Object.assign(DatabaseStorage.prototype, {
             .then(rows => {
                 return Calendar.buildFromRows(rows, 'cached_id');
             }, error => {
-                console.log(error);
-                throw new Error('Could not get the calendar by date range');
+                logDbError(error);
+                return new Error('Could not get the calendar by date range');
             });
     }
 

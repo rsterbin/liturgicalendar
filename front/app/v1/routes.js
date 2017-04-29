@@ -30,7 +30,7 @@ function checkRange(start, end) {
     });
 }
 
-function checkForCached(db, start, end) {
+function findForRange(start, end, db) {
     var storage = new DatabaseStorage(db);
     return storage.getForDateRange(start, end);
 }
@@ -53,8 +53,7 @@ function setupRoutes(registry) {
 
     router.get('/', (req, res, next) => {
         checkRange(req.query.start, req.query.end)
-            .then(range => checkForCached(registry.getDatabase(), range.startYmd(), range.endYmd()),
-                error => error)
+            .then(range => findForRange(range.startYmd(), range.endYmd(), registry.getDatabase()), error => error)
             .then(message => doOkay(message))
             .then(json => { res.json(json); })
             .catch(next);

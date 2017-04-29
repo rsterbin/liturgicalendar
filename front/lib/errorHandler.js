@@ -1,3 +1,5 @@
+var winston = require('winston');
+
 var standard = require('./standard.js');
 
 /**

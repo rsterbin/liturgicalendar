@@ -29,7 +29,9 @@ Object.assign(DatabaseStorage.prototype, {
         var binds = [startDate, endDate];
         return this.db.getConnection().any(qf, binds)
             .then(rows => {
-                return Calendar.buildFromRows(rows, 'cached_id');
+                var calendar = new Calendar();
+                calendar.loadFromRows(rows, 'cached_id');
+                return calendar;
             }, error => {
                 logDbError(error);
                 return new Error('Could not get the calendar by date range');

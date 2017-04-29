@@ -46,13 +46,14 @@ Object.assign(DateRange.prototype, {
     },
 
     /**
-     * Returns the range duration
+     * Returns the number of days in this range, inclusive
      *
-     * @return Duration the duration
+     * @return integer the number of days
      */
-    duration: function() {
-        return this.end - this.start;
+    days: function() {
+        return this.end.diff(this.start, 'days') + 1;
     }
+
 });
 
 module.exports = DateRange;

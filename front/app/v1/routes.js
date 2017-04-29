@@ -23,16 +23,22 @@ function checkRange(start, end) {
         if (!range.isValid()) {
             return reject(new InputError('Date range ' + range + ' is invalid: Start is before end', 122));
         }
-        if (range.duration() > moment.duration(1, 'year')) {
+        if (range.days() > 365) {
             return reject(new InputError('Date range ' + range + ' is invalid: Range is more than a year long', 141));
         }
         return resolve(range);
     });
 }
 
-function findForRange(start, end, db) {
+function findForRange(range, db) {
     var storage = new DatabaseStorage(db);
-    return storage.getForDateRange(start, end);
+    return storage.getForDateRange(range.startYmd(), range.endYmd())
+        .then(calendar => {
+            if (calendar.days() < range.days()) {
+                return new Error('Not as many days returned (' + calendar.days() + ') as we need (' + range.days() + ')');
+            }
+            return calendar.getSchedule();
+        });
 }
 
 function doOkay(message) {
@@ -53,7 +59,7 @@ function setupRoutes(registry) {
 
     router.get('/', (req, res, next) => {
         checkRange(req.query.start, req.query.end)
-            .then(range => findForRange(range.startYmd(), range.endYmd(), registry.getDatabase()), error => error)
+            .then(range => findForRange(range, registry.getDatabase()), error => error)
             .then(message => doOkay(message))
             .then(json => { res.json(json); })
             .catch(next);

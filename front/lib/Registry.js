@@ -1,39 +1,69 @@
 /**
- * Registry for the app: anything that needs to be shared to every route
+ * Registry for the app: anything that needs to be shared to every route, and
+ * things that can have only one copy for the whole app
  */
 
-var fs = require('fs');
+if (!global.Registry) {
+    var fs = require('fs');
+    var path = require('path');
 
-var StartupError = require('../lib/errors/StartupError.js');
+    var StartupError = require('./errors/StartupError.js');
+    var StateError = require('./errors/StateError.js');
 
-var Registry = function (config) {
-    this.config = config;
-};
+    global.Registry = {
 
-Object.assign(Registry.prototype, {
+        /**
+         * Start up the registry
+         *
+         * @param  object config the config
+         * @throws StartupError if the registry couldn't be initialized
+         */
+        startup: function (config) {
+            this.config = config;
 
-    startup: function () {
-        this.pgp = require('pg-promise')();
-        this.getDatabaseConnection();
+            // ensure the log directory exists
+            fs.existsSync(this.config.logDirectory) || fs.mkdirSync(this.config.logDirectory);
 
-        fs.existsSync(this.config.logDirectory) || fs.mkdirSync(this.config.logDirectory);
+            this.initialized = true;
+        },
 
-    },
+        /**
+         * Have we initialized?
+         *
+         * @return boolean whether the registry has been initialized
+         */
+        initialized: function () {
+            return this.initialized === true;
+        },
 
-    getDatabaseConnection: function () {
-        if (typeof this.db === 'undefined') {
-            this.db = this.newDatabaseConnection();
-        }
-        return this.db;
-    },
+        /**
+         * Requires that the registry be initialized
+         *
+         * @throws StartupError if it isn't
+         */
+        requireInitialized: function () {
+            if (!this.initialized) {
+                throw new StartupError('Registry is not initialized');
+            }
+        },
 
-    newDatabaseConnection: function () {
-        if (typeof this.pgp === 'undefined') {
-            throw new StartupError('PG-Promise initializer function is missing');
-        }
-        return this.pgp(this.config.database);
-    }
+        /**
+         * Gets the primary database connection
+         *
+         * @return pgp.DatabaseConnection the db connection
+         * @throws StartupError if the registry isn't initialized
+         * @throws StateError   if the PG-Promise initializer is missing
+         */
+        getDatabase: function () {
+            this.requireInitialized();
+            if (typeof this.db === 'undefined') {
+                this.db = require('./Database.js');
+                this.db.startup(this.config.database);
+            }
+            return this.db;
+        },
 
-});
+    };
+}
 
-module.exports = Registry;
+module.exports = global.Registry;

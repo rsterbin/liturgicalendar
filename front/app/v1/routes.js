@@ -1,6 +1,5 @@
 var express = require('express');
 var Promise = require('bluebird');
-var winston = require('winston');
 var moment = require('moment');
 
 function checkForCached(db) {
@@ -12,9 +11,7 @@ function checkForCached(db) {
         'WHERE c.target_date BETWEEN $1 AND $2 ',
         'ORDER BY c.target_date, c.target_block, s.start_time'].join("\n");
     var binds = ['2012-01-01', '2012-01-31'];
-    var logger = winston.loggers.get('query');
-    logger.log('info', 'Running query', { sql: sql, binds: binds });
-    return db.any(sql, binds)
+    return db.getConnection().any(sql, binds)
         .then(rows => {
             var schedule = {};
             var cdate = null;
@@ -45,6 +42,9 @@ function checkForCached(db) {
                 });
             }
             return schedule;
+        }, error => {
+            console.log(error);
+            return new Error('Yeah that didnt work');
         })
 }
 
@@ -59,7 +59,7 @@ function setupRoutes(registry) {
     var router = express.Router();
 
     router.get('/', (req, res, next) => {
-        checkForCached(registry.getDatabaseConnection())
+        checkForCached(registry.getDatabase())
             .then(message => doOkay(message))
             .then(json => { res.json(json); })
             .catch(next);

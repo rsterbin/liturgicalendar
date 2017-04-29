@@ -66,12 +66,10 @@ Object.assign(CalendarApp.prototype, {
     },
 
     getRegistry: function () {
-        if (typeof this.registry == 'undefined') {
-            var registry = new Registry(this.config);
-            registry.startup();
-            this.registry = registry;
+        if (!Registry.initialized()) {
+            Registry.startup(this.config);
         }
-        return this.registry;
+        return Registry;
     },
 
     applyEarlyMiddleware: function (app) {
@@ -92,21 +90,21 @@ Object.assign(CalendarApp.prototype, {
         // Error log
         winston.loggers.add('error', {
             transports: [
-                new (require('winston-daily-rotate-file'))({ filename: this.config.logDirectory + '/error.log' })
+                new (require('winston-daily-rotate-file'))({ filename: this.config.logDirectory + '/error.log', level: 'warn' })
             ]
         });
 
         // Query log
         winston.loggers.add('query', {
             transports: [
-                new (require('winston-daily-rotate-file'))({ filename: this.config.logDirectory + '/query.log' })
+                new (require('winston-daily-rotate-file'))({ filename: this.config.logDirectory + '/query.log', level: 'warn' })
             ]
         });
 
         // Failure log
         winston.loggers.add('failure', {
             transports: [
-                new (require('winston-daily-rotate-file'))({ filename: this.config.logDirectory + '/failure.log' })
+                new (require('winston-daily-rotate-file'))({ filename: this.config.logDirectory + '/failure.log', level: 'info' })
             ]
         });
 

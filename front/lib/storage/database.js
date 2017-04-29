@@ -25,7 +25,7 @@ Object.assign(DatabaseStorage.prototype, {
                 return Calendar.buildFromRows(rows, 'cached_id');
             }, error => {
                 console.log(error);
-                return new Error('Yeah that didnt work');
+                throw new Error('Could not get the calendar by date range');
             });
     }
 

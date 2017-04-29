@@ -1,7 +1,7 @@
 --
 -- Select the calendar for a date range out of the cached table
 --
-SELECT c.cached_id, c.target_date, c.target_block, c.name, 
+SELECT c.cached_id, c.target_date, c.target_block, c.name,
    c.color, c.note, s.name AS service_name, 
    s.start_time AS service_start_time 
 FROM cached c 

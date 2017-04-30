@@ -113,4 +113,3 @@ if (!global.Database) {
 }
 
 module.exports = global.Database;
-

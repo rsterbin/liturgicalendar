@@ -36,15 +36,26 @@ Object.assign(CalendarApp.prototype, {
         if (typeof config !== 'object') {
             throw new StartupError('Configuration is invalid');
         }
+
         if (typeof config.database === 'undefined') {
             throw new StartupError('Must specify database configuration');
         }
         ['host', 'port', 'database', 'user', 'password'].forEach(function (key) {
             if (typeof config.database[key] !== 'string') {
-                console.log(key);
                 throw new StartupError('Must specify database ' + key);
             }
         });
+
+        if (typeof config.messageQueue === 'undefined') {
+            throw new StartupError('Must specify message queue configuration');
+        }
+        ['accessKeyId', 'secretAccessKey', 'region', 'calcRequestUrl'].forEach(function (key) {
+            if (typeof config.messageQueue[key] !== 'string') {
+                var keyname = key.replace(/([A-Z])/g, ' $1').toLowerCase();
+                throw new StartupError('Must specify message queue ' + keyname);
+            }
+        });
+
         if (typeof config.apiPort !== 'string') {
             throw new StartupError('Must specify port to listen on');
         }

@@ -50,7 +50,7 @@ if (!global.Registry) {
         /**
          * Gets the primary database connection
          *
-         * @return pgp.DatabaseConnection the db connection
+         * @return Database the db connection
          * @throws StartupError if the registry isn't initialized
          * @throws StateError   if the PG-Promise initializer is missing
          */
@@ -62,6 +62,21 @@ if (!global.Registry) {
             }
             return this.db;
         },
+
+        /**
+         * Gets the message queue handler
+         *
+         * @return MessageQueue the message queue handler
+         * @throws StartupError if the registry isn't initialized
+         */
+        getMessageQueue: function () {
+            this.requireInitialized();
+            if (typeof this.mq === 'undefined') {
+                this.mq = require('./MessageQueue.js');
+                this.mq.startup(this.config.messageQueue);
+            }
+            return this.mq;
+        }
 
     };
 }

@@ -16,6 +16,12 @@ module.exports = {
         user: process.env.DB_USER,
         password: process.env.DB_USER_PASSWORD
     },
+    messageQueue: {
+        accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+        region: process.env.AWS_REGION,
+        calcRequestUrl: process.env.AWS_SQS_CALC_REQUEST_URL
+    },
     logDirectory: process.env.LOG_DIRECTORY,
     apiPort: process.env.API_PORT
 };

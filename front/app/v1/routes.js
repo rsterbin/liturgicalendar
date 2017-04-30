@@ -5,6 +5,7 @@ var moment = require('moment');
 var DatabaseStorage = require('../../lib/storage/database.js');
 var DateRange = require('../../lib/DateRange.js');
 var InputError = require('../../lib/errors/InputError.js');
+var TemporaryError = require('../../lib/errors/TemporaryError.js');
 
 function checkRange(start, end) {
     return new Promise((resolve, reject) => {
@@ -30,20 +31,24 @@ function checkRange(start, end) {
     });
 }
 
-function findForRange(range, db) {
+function findForRange(range, db, mq) {
     var storage = new DatabaseStorage(db);
     return storage.getForDateRange(range.startYmd(), range.endYmd())
         .then(calendar => {
             if (calendar.days() < range.days()) {
-                return new Error('Not as many days returned (' + calendar.days() + ') as we need (' + range.days() + ')');
+                return mq.writeCalcRequest({ start: range.startYmd(), end: range.endYmd() })
+                    .then(data => { return new TemporaryError('Calculating calendar for date range ' + range, 600); },
+                        error => error);
             }
             return calendar.getSchedule();
-        });
+        }, error => error);
 }
 
 function doOkay(message) {
     return new Promise((resolve, reject) => {
-        if (message instanceof InputError) {
+        if (message instanceof TemporaryError) {
+            resolve({ status: 'wait', message: message.message, code: message.code });
+        } else if (message instanceof InputError) {
             resolve({ status: 'failure', message: message.message, code: message.code });
         } else if (message instanceof Error) {
             resolve({ status: 'error', message: message.message });
@@ -59,7 +64,8 @@ function setupRoutes(registry) {
 
     router.get('/', (req, res, next) => {
         checkRange(req.query.start, req.query.end)
-            .then(range => findForRange(range, registry.getDatabase()), error => error)
+            .then(range => findForRange(range, registry.getDatabase(), registry.getMessageQueue()),
+                error => error)
             .then(message => doOkay(message))
             .then(json => { res.json(json); })
             .catch(next);

@@ -4,9 +4,9 @@ from dateutil.easter import *
 from sqlalchemy import text
 from sqlalchemy.orm import eagerload,joinedload
 
-from models import FloatingFeast, ServicePattern
-import utils
-from valid_dates import valid_in_list
+from ..models import FloatingFeast, ServicePattern
+from .. import utils
+from ..valid_dates import valid_in_list
 
 class FloatingFeasts:
     """Class for placing floating feasts in a year"""

@@ -3,7 +3,7 @@ import datetime
 from sqlalchemy import text
 from sqlalchemy.orm import joinedload
 
-from models import Season
+from .models import Season
 
 class YearIterator:
     """Class for stepping through seasons in a year"""

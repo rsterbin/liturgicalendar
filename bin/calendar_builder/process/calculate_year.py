@@ -5,13 +5,13 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.engine.url import URL
 
-from resolution import Resolution
-from fetch.overrides import Overrides
-from storage import Storage
+from ..resolution import Resolution
+from ..fetch.overrides import Overrides
+from ..storage import Storage
 
 # Make sure we have a config
 try:
-    from config import config
+    from ..config import config
 except IOError:
     raise RuntimeError("Cannot find database configuration")
 

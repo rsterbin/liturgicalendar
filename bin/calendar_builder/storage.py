@@ -1,7 +1,7 @@
 import logging
 from sqlalchemy import text
 
-from models import Calculated, CalculatedService, Cached, CachedService
+from .models import Calculated, CalculatedService, Cached, CachedService
 
 class Storage:
     """Handles storing a static year to the appropriate table"""

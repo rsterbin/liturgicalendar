@@ -3,7 +3,7 @@ from sqlalchemy import text
 from sqlalchemy.orm import eagerload,joinedload
 import sys
 
-from models import Override
+from ..models import Override
 
 class Overrides:
     """Class for placing overrides in a year"""

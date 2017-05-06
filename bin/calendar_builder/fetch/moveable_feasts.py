@@ -2,7 +2,7 @@ import datetime
 from sqlalchemy import text
 from sqlalchemy.orm import eagerload,joinedload
 
-from models import MoveableFeast, ServicePattern
+from ..models import MoveableFeast, ServicePattern
 
 class MoveableFeasts:
     """Class for placing moveable feasts in a year"""

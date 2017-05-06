@@ -5,10 +5,10 @@ from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, Boolean, T
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 
-from config import config
-from algorithms import boundary_algorithms, feast_algorithms, holiday_algorithms
-import utils
-from valid_dates import valid_in_list
+from .config import config
+from .algorithms import boundary_algorithms, feast_algorithms, holiday_algorithms
+from . import utils
+from .valid_dates import valid_in_list
 
 DeclarativeBase = declarative_base()
 

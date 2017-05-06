@@ -2,7 +2,7 @@ import copy
 import datetime
 import logging
 
-import utils
+from . import utils
 
 class StaticYear:
     """Describes a resolved year"""

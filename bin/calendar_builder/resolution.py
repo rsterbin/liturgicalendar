@@ -2,15 +2,15 @@ import copy
 import datetime
 import logging
 
-from config import config
-from fetch.federal_holidays import FederalHolidays
-from fetch.fixed_feasts import FixedFeasts
-from fetch.floating_feasts import FloatingFeasts
-from fetch.moveable_feasts import MoveableFeasts
-from season import YearIterator
-from static import StaticYear
-import utils
-from valid_dates import valid_in_list
+from .config import config
+from .fetch.federal_holidays import FederalHolidays
+from .fetch.fixed_feasts import FixedFeasts
+from .fetch.floating_feasts import FloatingFeasts
+from .fetch.moveable_feasts import MoveableFeasts
+from .season import YearIterator
+from .static import StaticYear
+from . import utils
+from .valid_dates import valid_in_list
 
 class Resolution:
     """Calculate the liturgical calendar for a full year"""

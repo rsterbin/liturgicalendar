@@ -3,7 +3,7 @@ from sqlalchemy import text
 from sqlalchemy.orm import eagerload,joinedload
 import sys
 
-from models import FixedFeast, ServicePattern
+from ..models import FixedFeast, ServicePattern
 
 class FixedFeasts:
     """Class for placing fixed feasts in a year"""

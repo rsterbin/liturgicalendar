@@ -2,7 +2,7 @@ import datetime
 from sqlalchemy import text
 from sqlalchemy.orm import eagerload,joinedload
 
-from models import FederalHoliday, ServicePattern
+from ..models import FederalHoliday, ServicePattern
 
 class FederalHolidays:
     """Class for placing federal holidays in a year"""

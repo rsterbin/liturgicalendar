@@ -1,0 +1,5 @@
+#!/usr/bin/python
+
+from calendar_builder.process import calculate_year
+
+calculate_year.main()

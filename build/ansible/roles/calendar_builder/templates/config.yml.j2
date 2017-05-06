@@ -20,10 +20,6 @@ sunday_precedence: 35
 transfer_precedence: 42
 
 # AWS config
-aws:
-    access_key_id: "{{ aws_access_key_id }}"
-    secret_access_key: "{{ aws_secret_access_key }}"
-    region: "{{ aws_region }}"
-    sqs:
-        calc_request_url: "{{ aws_sqs_calc_request_url }}"
+message_queue:
+    calc_request_url: "{{ aws_sqs_calc_request_url }}"
 ...

@@ -8,4 +8,6 @@ aws_secret_access_key: "{{ aws_secret_access_key_prod }}"
 aws_region: "us-east-1"
 aws_sqs_calc_request_url: "https://sqs.us-east-1.amazonaws.com/755487392177/stmarys-liturgicalendar-calc-request-prod"
 
+builder_user: ubuntu
+builder_user_aws_dir: /home/{{ builder_user }}/.aws
 ...

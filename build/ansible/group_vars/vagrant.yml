@@ -1,21 +1,25 @@
 ---
 # Overrides for vagrant only
 deploy_user: vagrant
+builder_user: vagrant
 environment_mode: dev
 api_node_env: development
 
-github_deploy_private_key: "{{ github_vagrant_deploy_private_key }}"
-github_deploy_public_key: "{{ github_vagrant_deploy_public_key }}"
 # github_vagrant_deploy_private_key: # see secrets.yml
 # github_vagrant_deploy_public_key: # see secrets.yml
+github_deploy_private_key: "{{ github_vagrant_deploy_private_key }}"
+github_deploy_public_key: "{{ github_vagrant_deploy_public_key }}"
 
+# db_owner_password_dev: # see secrets.yml
+# db_admin_password_dev: # see secrets.yml
+# db_user_password_dev: # see secrets.yml
 db_owner_password: "{{ db_owner_password_dev }}"
 db_admin_password: "{{ db_admin_password_dev }}"
 db_user_password: "{{ db_user_password_dev }}"
 
-aws_access_key_id: "{{ aws_access_key_id_dev }}"
-aws_secret_access_key: "{{ aws_secret_access_key_dev }}"
 # aws_access_key_id_dev: # see secrets.yml
 # aws_secret_access_key_dev: # see secrets.yml
+aws_access_key_id: "{{ aws_access_key_id_dev }}"
+aws_secret_access_key: "{{ aws_secret_access_key_dev }}"
 aws_sqs_calc_request_url: "https://sqs.us-east-1.amazonaws.com/755487392177/stmarys-liturgicalendar-calc-request-dev"
 ...

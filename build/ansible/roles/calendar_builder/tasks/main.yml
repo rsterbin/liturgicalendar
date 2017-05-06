@@ -1,6 +1,6 @@
 ---
 # Installs the modules necessary to run the schedule builder
-# TODO: set up the daemon
+# TODO: set up the queue reader as a service
 
 - name: update the cache for apt-get
   apt: update_cache=yes
@@ -27,6 +27,31 @@
 - name: install inflect
   pip: name="git+https://github.com/pwdyson/inflect.py#egg=inflect"
   become: true
+
+- name: uninstall boto
+  pip: name=boto state=absent
+  become: true
+
+- name: install boto3
+  pip: name=boto3
+  become: true
+
+- name: create builder_user .aws dir
+  file:
+    path: "{{ builder_user_aws_dir }}"
+    owner: "{{ builder_user }}"
+    mode: 0700
+    state: directory
+
+- name: drop the creditials file for boto
+  template:
+    dest: "{{ builder_user_aws_dir }}/credentials"
+    src: ../templates/aws_credentials.j2
+
+- name: drop the config file for boto
+  template:
+    dest: "{{ builder_user_aws_dir }}/config"
+    src: ../templates/aws_config.j2
 
 - name: drop the config file
   template:

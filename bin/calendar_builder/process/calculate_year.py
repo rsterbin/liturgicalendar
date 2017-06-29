@@ -44,11 +44,11 @@ def db_connect():
 def print_year(static, add_extras=False):
     """ Prints out the full year, with blank lines between months """
     current_month = 1
-    for cdate in sorted(static.full_year.iterkeys()):
-        if current_month != static.full_year[cdate].day.month:
+    for cdate in sorted(static.all_days.iterkeys()):
+        if current_month != static.all_days[cdate].day.month:
             print ""
-            current_month = static.full_year[cdate].day.month
-        print static.full_year[cdate]
+            current_month = static.all_days[cdate].day.month
+        print static.all_days[cdate]
     if add_extras:
         print ""
         print "Any extras:"

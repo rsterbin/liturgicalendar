@@ -1,0 +1,5 @@
+#!/usr/bin/python
+
+from calendar_builder.process import read_calc_request_queue
+
+read_calc_request_queue.main()

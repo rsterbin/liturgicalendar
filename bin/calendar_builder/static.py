@@ -4,31 +4,43 @@ import logging
 
 from . import utils
 
-class StaticYear:
+class StaticRange:
+    """Describes a resolved date range"""
+
+    def __init__(self, start, end, session):
+        """Constructor"""
+        self.start = start
+        self.end = end
+        self.session = session
+        self.logger = logging.getLogger(__name__)
+
+        self.all_days = {}
+        c = datetime.date(year, 1, 1)
+        c = copy.deepcopy(self.start)
+        while c <= self.end:
+            cdate = utils.day_to_lookup(c)
+            sday = StaticDay(c, self.logger)
+            self.all_days[cdate] = sday
+            c = c + datetime.timedelta(days=1)
+
+    def override(self, overrides):
+        """Sets overrides on this range"""
+        for ovr in overrides:
+            cdate = utils.day_to_lookup(ovr['day'])
+            if cdate in self.all_days:
+                self.all_days[cdate].override(ovr)
+            else:
+                self.logger.warn('Trying to override on wrong date {date}'.format(date=str(ovr['day'])))
+
+class StaticYear(StaticRange):
     """Describes a resolved year"""
 
     def __init__(self, year, session):
         """Constructor"""
         self.year = year
-        self.session = session
-        self.logger = logging.getLogger(__name__)
-
-        self.full_year = {}
-        c = datetime.date(year, 1, 1)
-        while c.year == year:
-            cdate = utils.day_to_lookup(c)
-            sday = StaticDay(c, self.logger)
-            self.full_year[cdate] = sday
-            c = c + datetime.timedelta(days=1)
-
-    def override(self, overrides):
-        """Sets overrides on this year"""
-        for ovr in overrides:
-            cdate = utils.day_to_lookup(ovr['day'])
-            if cdate in self.full_year:
-                self.full_year[cdate].override(ovr)
-            else:
-                self.logger.warn('Trying to override on wrong date {date}'.format(date=str(ovr['day'])))
+        start = datetime.date(year, 1, 1)
+        end = datetime.date(year, 12, 31)
+        super(StaticYear, self).__init__(start, end, session)
 
 class StaticDay:
     """Describes a resolved day"""

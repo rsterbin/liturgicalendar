@@ -31,7 +31,7 @@ function checkRange(start, end) {
     });
 }
 
-function findForRange(range, db, mq) {
+function findForRange(range, mc, db, mq) {
     var storage = new DatabaseStorage(db);
     return storage.getForDateRange(range.startYmd(), range.endYmd())
         .then(calendar => {
@@ -64,7 +64,7 @@ function setupRoutes(registry) {
 
     router.get('/', (req, res, next) => {
         checkRange(req.query.start, req.query.end)
-            .then(range => findForRange(range, registry.getDatabase(), registry.getMessageQueue()),
+            .then(range => findForRange(range, registry.getMemcached(), registry.getDatabase(), registry.getMessageQueue()),
                 error => error)
             .then(message => doOkay(message))
             .then(json => { res.json(json); })

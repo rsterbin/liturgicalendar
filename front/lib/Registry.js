@@ -48,6 +48,19 @@ if (!global.Registry) {
         },
 
         /**
+         * Gets the primary memcached connection
+         *
+         * @return Memcached the memcached connection
+         */
+        getMemcached: function () {
+            this.requireInitialized();
+            if (typeof this.mc === 'undefined') {
+                this.mc = require('./Memcached.js');
+            }
+            return this.mc;
+        },
+
+        /**
          * Gets the primary database connection
          *
          * @return Database the db connection

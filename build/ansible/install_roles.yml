@@ -2,4 +2,5 @@
 # Basic node install
 - src: geerlingguy.nodejs
 - src: ANXS.postgresql
+- src: geerlingguy.memcached
 ...

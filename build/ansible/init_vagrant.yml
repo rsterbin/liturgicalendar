@@ -32,13 +32,13 @@
 - hosts: tag_type_back
   roles:
     - common
-    - { role: geerlingguy.nodejs, become: true, nodejs_version: '4.x' }
+    - { role: geerlingguy.nodejs, become: true, nodejs_version: '7.x' }
     - calendar_builder
 
 - hosts: tag_type_front
   roles:
     - common
-    - { role: geerlingguy.nodejs, become: true, nodejs_version: '4.x' }
+    - { role: geerlingguy.nodejs, become: true, nodejs_version: '7.x' }
     - { role: geerlingguy.memcached, become: true }
     - calendar_api
 ...

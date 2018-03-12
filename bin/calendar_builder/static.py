@@ -15,7 +15,6 @@ class StaticRange:
         self.logger = logging.getLogger(__name__)
 
         self.all_days = {}
-        c = datetime.date(year, 1, 1)
         c = copy.deepcopy(self.start)
         while c <= self.end:
             cdate = utils.day_to_lookup(c)
@@ -38,9 +37,19 @@ class StaticYear(StaticRange):
     def __init__(self, year, session):
         """Constructor"""
         self.year = year
-        start = datetime.date(year, 1, 1)
-        end = datetime.date(year, 12, 31)
-        super(StaticYear, self).__init__(start, end, session)
+        self.start = datetime.date(year, 1, 1)
+        self.end = datetime.date(year, 12, 31)
+        self.session = session
+        self.logger = logging.getLogger(__name__)
+
+        self.all_days = {}
+        c = datetime.date(year, 1, 1)
+        c = copy.deepcopy(self.start)
+        while c <= self.end:
+            cdate = utils.day_to_lookup(c)
+            sday = StaticDay(c, self.logger)
+            self.all_days[cdate] = sday
+            c = c + datetime.timedelta(days=1)
 
 class StaticDay:
     """Describes a resolved day"""

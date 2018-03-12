@@ -11,8 +11,9 @@ from sqlalchemy.engine.url import URL
 import sys
 import time
 
-from ..resolution import Resolution
+from ..fetch.calculated import Calculated
 from ..fetch.overrides import Overrides
+from ..resolution import Resolution
 from ..storage import Storage
 
 # Make sure we have a config
@@ -107,50 +108,63 @@ def handle_request(message):
 
     check_session = Session()
     calc = Calculated(check_session)
+
+    # Static calendar already calculated? Skip the calculation step
     if calc.check_window(message['start'], message['end']):
         logger.info('Date range has been calculated')
-        return True
 
-    logger.info('Start year: ' + str(message['start'].year))
-    logger.info('End year: ' + str(message['end'].year))
-
-    plural = message['start'].year != message['end'].year
-    if plural:
-        logger.info('Checking years...')
+    # No? Calculate each year that we need
     else:
-        logger.info('Checking year...')
-    curr = message['start'].year
-    found = {}
-    while curr <= message['end'].year:
-        found[curr] = calc.check_year(curr)
-        ++curr
-    logger.info('done')
+        logger.info('Start year: ' + str(message['start'].year))
+        logger.info('End year: ' + str(message['end'].year))
 
-    for y in found:
-        if found[y]:
-            logger.info('Year ' + str(y) + ' base schedule already calculated')
-            next
-
-        # If we need to calculate this year, do so
-        logger.info('Calculating ' + str(y) + '...')
-        fetching_session = Session()
-        resolution = Resolution(fetching_session)
-        static = resolution.calculate_year(y)
+        plural = message['start'].year != message['end'].year
+        if plural:
+            logger.info('Checking years...')
+        else:
+            logger.info('Checking year...')
+        curr = message['start'].year
+        found = {}
+        while curr <= message['end'].year:
+            found[curr] = calc.check_year(curr)
+            curr += 1
         logger.info('done')
 
-        # Save what we did
-        logger.info('Saving the cacluclated year...')
-        calc_save_session = Session()
-        storage = Storage(CALC_YEAR, calc_save_session)
-        storage.save_calculated(static)
-        calc_save_session.commit()
-        logger.info('done')
+        for y in found:
+            if not found[y]:
+                # If we need to calculate this year, do so
+                logger.info('Year ' + str(y) + ': calculating base schedule...')
+                fetching_session = Session()
+                resolution = Resolution(fetching_session)
+                static = resolution.calculate_year(y)
+                logger.info('done')
+
+                # Save what we did
+                logger.info('Saving the cacluclated year...')
+                calc_save_session = Session()
+                storage = Storage(y, calc_save_session)
+                storage.save_calculated(static)
+                calc_save_session.commit()
+                logger.info('done')
 
     # Load up the requested window
     static = calc.load_static_range(message['start'], message['end'])
+    logger.debug('Loaded the static range')
 
-    # TODO: add overrides
-    # TODO: save to the cache
+    # Add overrides
+    fetching_session = Session()
+    overrides = Overrides(fetching_session)
+    static.override(overrides.get_range(message['start'], message['end']))
+    logger.debug('Added overrides')
+
+    # Save to the cache
+    logger.info('Saving the completed year...')
+    cache_save_session = Session()
+    storage = Storage(message['start'].year, cache_save_session)
+    storage.save_cached(static)
+    cache_save_session.commit()
+    logger.info('done')
+
 
 def main():
     """Checks the queue for new messages and caclulates as needed"""

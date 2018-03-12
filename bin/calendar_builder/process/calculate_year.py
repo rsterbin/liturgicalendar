@@ -96,8 +96,8 @@ def main():
         return
 
     # Add overrides
-    overrides = Overrides(fetching_session, CALC_YEAR)
-    static.override(overrides.get_all())
+    overrides = Overrides(fetching_session)
+    static.override(overrides.get_year(CALC_YEAR))
     logger.debug('Added overrides')
 
     # If this is a dry run, print and stop
@@ -106,7 +106,7 @@ def main():
         return
 
     # Store to database as a cached year
-    logger.info('Saving the cacluclated year...')
+    logger.info('Saving the calcuclated year...')
     cache_save_session = Session()
     storage = Storage(CALC_YEAR, cache_save_session)
     storage.save_cached(static)

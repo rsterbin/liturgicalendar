@@ -18,8 +18,8 @@ class Storage:
             filter(text("extract(year from target_date) = :year")).\
             params(year=self.year).\
             delete(synchronize_session=False)
-        for cdate in static.full_year:
-            static_day = static.full_year[cdate]
+        for cdate in static.all_days:
+            static_day = static.all_days[cdate]
             if static_day.base_block is not None:
                 self.session.add(self.new_calc_target(static_day, static_day.base_block, 'base'))
             if static_day.vigil_block is not None:
@@ -48,8 +48,8 @@ class Storage:
             filter(text("extract(year from target_date) = :year")).\
             params(year=self.year).\
             delete(synchronize_session=False)
-        for cdate in static.full_year:
-            static_day = static.full_year[cdate]
+        for cdate in static.all_days:
+            static_day = static.all_days[cdate]
             if static_day.base_block is not None:
                 self.session.add(self.new_cache_target(static_day, static_day.base_block, 'base'))
             if static_day.vigil_block is not None:

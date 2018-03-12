@@ -23,5 +23,9 @@ api_logdir: "{{ codebase_api }}/log"
 api_console_log: "{{ api_logdir }}/console.log"
 api_node_env: production
 
+queue_reader_service: calendar-queue-reader
+queue_reader_logdir: "{{ codebase_dest }}/bin/log"
+queue_reader_log: "{{ queue_reader_logdir }}/console.log"
+
 environment_mode: prod
 ...

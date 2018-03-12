@@ -1,6 +1,5 @@
 ---
 # Installs the modules necessary to run the schedule builder
-# TODO: set up the queue reader as a service
 
 - name: update the cache for apt-get
   apt: update_cache=yes
@@ -57,5 +56,18 @@
   template:
     dest: "{{ codebase_dest }}/bin/config.yml"
     src: ../templates/config.yml.j2
+
+- name: make sure the log directory exists and has the right permissions
+  file: path={{ queue_reader_logdir }} owner={{ deploy_user }} mode=g+swX state=directory
+  
+- name: configure the queue reader service with upstart
+  template: src=../templates/queue_reader_service.conf.j2 dest=/etc/init/{{ queue_reader_service }}.conf
+  become: true
+  notify:
+    - restart queue reader
+
+- name: enable the queue reader service and enable at boot
+  service: name={{ queue_reader_service }} enabled=yes state=started
+  become: true
 
 ...

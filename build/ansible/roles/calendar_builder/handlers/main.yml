@@ -1,0 +1,7 @@
+---
+# Handlers for the calendar builder
+
+- name: restart queue reader
+  service: name={{ queue_reader_service }} state=restarted
+  become: true
+

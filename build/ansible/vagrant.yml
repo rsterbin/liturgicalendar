@@ -1,9 +1,9 @@
 ---
-# Initializes the vagrant environment
-- import_playbook: database.yml
+# Provisions the vagrant environment
+- import_playbook: play_database.yml
     play_db_owner_password='{{ db_owner_password_dev }}'
     play_db_admin_password= '{{ db_admin_password_dev }}'
     play_db_user_password='{{ db_user_password_dev }}'
-- import_playbook: backend.yml
-- import_playbook: frontend.yml
+- import_playbook: play_backend.yml
+- import_playbook: play_frontend.yml
 ...

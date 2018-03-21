@@ -1,0 +1,9 @@
+---
+# Initializes the backend host(s)
+#
+- hosts: tag_type_back
+  roles:
+    - common
+    - { role: geerlingguy.nodejs, become: true, nodejs_version: '7.x' }
+    - calendar_builder
+...

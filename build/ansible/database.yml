@@ -1,0 +1,37 @@
+---
+# Initializes the database host
+#
+# Playbook-level variables required:
+#  * play_db_owner_password
+#  * play_db_admin_password
+#  * play_db_user_password
+#
+- hosts: tag_type_db
+  roles:
+    - common
+    - { role: ANXS.postgresql, become: true,
+        postgresql_users: [
+            { name: '{{ db_owner_name }}', pass: '{{ play_db_owner_password }}', encrypted: 'no' },
+            { name: '{{ db_admin_name }}', pass: '{{ play_db_admin_password }}', encrypted: 'no' },
+            { name: '{{ db_user_name }}', pass: '{{ play_db_user_password }}', encrypted: 'no' }
+        ],
+        postgresql_databases: [
+            { name: '{{ db_name }}', owner: '{{ db_owner_name }}' }
+        ],
+        postgresql_user_privileges: [
+            { name: '{{ db_owner_name }}', db: '{{ db_name }}', priv: 'ALL', role_attr_flags: 'CREATEDB' },
+        ],
+        postgresql_pg_hba_custom: [
+            { comment: 'CLI access for owner', type: 'local', database: '{{ db_name }}', user: '{{ db_owner_name }}', address: '', method: 'trust' },
+            { comment: 'CLI access for admin', type: 'local', database: '{{ db_name }}', user: '{{ db_admin_name }}', address: '', method: 'trust' },
+            { comment: 'CLI access for user', type: 'local', database: '{{ db_name }}', user: '{{ db_user_name }}', address: '', method: 'trust' },
+            { comment: 'Remote access for owner from db server', type: 'host', database: 'all', user: '{{ db_owner_name }}', address: '{{ db_owner_cidr }}', method: 'md5' },
+            { comment: 'Remote access for admin from backend server', type: 'host', database: 'all', user: '{{ db_admin_name }}', address: '{{ db_admin_cidr }}', method: 'md5' },
+            { comment: 'Remote access for user from frontend server', type: 'host', database: 'all', user: '{{ db_user_name }}', address: '{{ db_user_cidr }}', method: 'md5' }
+        ],
+        postgresql_listen_addresses: '*'
+      }
+    - dbprivs
+    - rambler
+    - run_migrations
+...

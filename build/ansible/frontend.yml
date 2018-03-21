@@ -1,0 +1,9 @@
+---
+# Initializes the frontend host(s)
+- hosts: tag_type_front
+  roles:
+    - common
+    - { role: geerlingguy.nodejs, become: true, nodejs_version: '7.x' }
+    - { role: geerlingguy.memcached, become: true }
+    - calendar_api
+...

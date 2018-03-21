@@ -38,27 +38,27 @@ Vagrant.configure("2") do |config|
         db.vm.network "private_network", ip: db_ipaddr
     end
 
-    # write out the hosts file on vagrant up
+    # write out the hosts.ini file on vagrant up
     config.trigger.after :up do
-        info "Writing the ansible hosts file"
-        `rm -f ./hosts`
-        `echo "" >> ./hosts`
-        `echo "[tag_type_front]" >> ./hosts`
-        `echo "#{front_ipaddr} ansible_private_key_file=./.vagrant/machines/front/virtualbox/private_key" >> ./hosts`
-        `echo "" >> ./hosts`
-        `echo "[tag_type_back]" >> ./hosts`
-        `echo "#{back_ipaddr} ansible_private_key_file=./.vagrant/machines/back/virtualbox/private_key" >> ./hosts`
-        `echo "" >> ./hosts`
-        `echo "[tag_type_db]" >> ./hosts`
-        `echo "#{db_ipaddr} ansible_private_key_file=./.vagrant/machines/db/virtualbox/private_key" >> ./hosts`
-        `echo "" >> ./hosts`
-        `echo "[tag_environment_dev:children]" >> ./hosts`
-        `echo "tag_type_front" >> ./hosts`
-        `echo "tag_type_back" >> ./hosts`
-        `echo "tag_type_db" >> ./hosts`
-        `echo "" >> ./hosts`
-        `echo "[vagrant:children]" >> ./hosts`
-        `echo "tag_environment_dev" >> ./hosts`
+        info "Writing the ansible hosts.ini file"
+        `rm -f ./hosts.ini`
+        `echo "" >> ./hosts.ini`
+        `echo "[tag_type_front]" >> ./hosts.ini`
+        `echo "#{front_ipaddr} ansible_private_key_file=./.vagrant/machines/front/virtualbox/private_key" >> ./hosts.ini`
+        `echo "" >> ./hosts.ini`
+        `echo "[tag_type_back]" >> ./hosts.ini`
+        `echo "#{back_ipaddr} ansible_private_key_file=./.vagrant/machines/back/virtualbox/private_key" >> ./hosts.ini`
+        `echo "" >> ./hosts.ini`
+        `echo "[tag_type_db]" >> ./hosts.ini`
+        `echo "#{db_ipaddr} ansible_private_key_file=./.vagrant/machines/db/virtualbox/private_key" >> ./hosts.ini`
+        `echo "" >> ./hosts.ini`
+        `echo "[tag_environment_dev:children]" >> ./hosts.ini`
+        `echo "tag_type_front" >> ./hosts.ini`
+        `echo "tag_type_back" >> ./hosts.ini`
+        `echo "tag_type_db" >> ./hosts.ini`
+        `echo "" >> ./hosts.ini`
+        `echo "[vagrant:children]" >> ./hosts.ini`
+        `echo "tag_environment_dev" >> ./hosts.ini`
     end
 
 end

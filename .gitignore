@@ -1,5 +1,5 @@
 build/dev-vagrant/.vagrant
-build/dev-vagrant/hosts
+build/dev-vagrant/hosts.ini
 .*.swp
 build/ansible/*.retry
 database/config.json

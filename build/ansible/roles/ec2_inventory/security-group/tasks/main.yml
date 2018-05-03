@@ -1,0 +1,36 @@
+---
+# Creates an EC2 security group for all our instances
+
+- name: fetch build variables
+  include_vars: "{{ item }}"
+  with_items:
+    - ../../vars/secrets.yml
+    - ../../vars/shared.yml
+
+- name: set up the security group
+  ec2_group:
+    description: security group for instances
+    name: "{{ ec2_security_group }}"
+    region: "{{ ec2_region }}"
+    vpc_id: "{{ ec2_vpc_id }}"
+    rules:
+      # Allow all from within the security group
+      - proto: all
+        group_name: "{{ ec2_security_group }}"
+      # SSH from anywhere
+      - proto: tcp
+        from_port: 22
+        to_port: 22
+        cidr_ip: "0.0.0.0/0"
+      # Web from anywhere
+      - proto: tcp
+        from_port: 80
+        to_port: 80
+        cidr_ip: "0.0.0.0/0"
+      # Node from anywhere
+      - proto: tcp
+        from_port: 3000
+        to_port: 3000
+        cidr_ip: "0.0.0.0/0"
+
+...

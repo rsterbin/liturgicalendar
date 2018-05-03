@@ -1,0 +1,10 @@
+---
+# Sets up your workstation with the appropriate keys
+
+- hosts: localhost
+  connection: local
+  roles:
+    - ec2_inventory/local
+
+...
+

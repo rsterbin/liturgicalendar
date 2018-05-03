@@ -1,0 +1,18 @@
+---
+# Creates an EC2 key for accessing all our instances
+
+- name: fetch build variables
+  include_vars: "{{ item }}"
+  with_items:
+    - ../../vars/secrets.yml
+    - ../../vars/shared.yml
+
+- name: create the key pair on AWS
+  ec2_key:
+    name: "{{ ec2_provision_key }}"
+    region: "{{ ec2_region }}"
+    key_material: "{{ item }}"
+  with_items:
+    - "{{ github_prod_deploy_public_key }}"
+
+...

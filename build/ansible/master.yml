@@ -1,0 +1,27 @@
+---
+# Sets up the master EC2 instance
+#
+# It is intended to be run from your workstation so that the remainder of the
+# EC2 work can be run from the master instance.
+#
+
+- hosts: localhost
+  connection: local
+  environment:
+    AWS_ACCESS_KEY_ID: "{{ ec2_aws_key }}"
+    AWS_SECRET_ACCESS_KEY: "{{ ec2_aws_secret }}"
+  roles:
+    - ec2_inventory/security-group
+    - ec2_inventory/key
+    - ec2_inventory/master
+
+- hosts: tag_Ansible_Master
+  name: configure master
+  user: "{{ deploy_user }}"
+  gather_facts: true
+  become: yes
+  roles:
+    - ansible_master
+    - common
+
+...

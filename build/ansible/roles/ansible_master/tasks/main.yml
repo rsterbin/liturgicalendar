@@ -1,0 +1,35 @@
+---
+# These tasks set up an EC2 instance to be the ansible master
+
+- name: add the ansible ppa
+  apt_repository: repo='ppa:ansible/ansible'
+
+- name: install packages
+  apt: name={{ item }} state=latest
+  with_items:
+    - ansible
+    - python-pip
+    - git
+
+- name: install boto
+  pip: name=boto state=latest
+
+- name: write the ansible config
+  template: src=../templates/ansible.cfg.j2 dest=/etc/ansible/ansible.cfg
+
+- name: write the boto config
+  template: src=../templates/boto.cfg.j2 dest=/home/{{ deploy_user }}/.boto
+
+- name: write the environment profile
+  copy: content="export ANSIBLE_HOSTS=\"/etc/ansible/ec2.py\"" dest=/etc/profile.d/ec2-ansible.sh
+
+- name: write the EC2 dynamic inventory config
+  copy: src=../files/ec2.ini dest=/etc/ansible/ec2.ini
+
+- name: write the EC2 dynamic inventory script
+  copy: src=../files/ec2.py dest=/etc/ansible/ec2.py mode=0755
+
+- name: write the bash profile
+  template: src=../templates/bash_profile.j2 dest=/home/{{ deploy_user }}/.bash_profile
+
+...

@@ -1,0 +1,21 @@
+---
+# Creates an EC2 key for accessing all our instances
+
+- name: fetch build variables
+  include_vars: "{{ item }}"
+  with_items:
+    - ../../../group_vars/all/secrets.yml
+
+- name: make sure we have a local copy of the public key
+  copy:
+    content: "{{ github_prod_deploy_public_key }}"
+    dest: "{{ lookup('env', 'HOME') }}/.ssh/ec2_deploy_id_rsa.pub"
+    mode: 0644
+
+- name: make sure we have a local copy of the private key
+  copy:
+    content: "{{ github_prod_deploy_private_key }}"
+    dest: "{{ lookup('env', 'HOME') }}/.ssh/ec2_deploy_id_rsa"
+    mode: 0600
+
+...

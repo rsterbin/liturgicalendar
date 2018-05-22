@@ -1,0 +1,29 @@
+---
+# Sets up a set of production EC2 instances
+#
+# Run this from the master EC2 instance
+#
+
+- hosts: localhost
+  name: fire up instances for the database, front end, and back end
+  connection: local
+  environment:
+    AWS_ACCESS_KEY_ID: "{{ ec2_aws_key }}"
+    AWS_SECRET_ACCESS_KEY: "{{ ec2_aws_secret }}"
+  roles:
+    - ec2_inventory/security-group
+    - ec2_inventory/key
+    - ec2_inventory/database
+    - ec2_inventory/frontend
+    - ec2_inventory/backend
+
+- import_playbook: play_database.yml
+    play_db_owner_password='{{ db_owner_password_prod }}'
+    play_db_admin_password= '{{ db_admin_password_prod }}'
+    play_db_user_password='{{ db_user_password_prod }}'
+
+- import_playbook: play_backend.yml
+
+- import_playbook: play_frontend.yml
+
+...

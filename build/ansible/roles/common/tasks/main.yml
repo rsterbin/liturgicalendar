@@ -54,6 +54,4 @@
   when: environment_mode=="dev"
   become: false
 
-# -m git -a 'repo=git@github.com:rsterbin/liturgicalendar.git dest=/opt/stmvirgin/liturgicalendar key_file=/home/vagrant/.ssh/id_rsa-deploy accept_hostkey=yes'
-
 ...

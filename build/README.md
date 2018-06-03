@@ -27,3 +27,11 @@ ANSIBLE_HOST_KEY_CHECKING=false ansible-playbook build/ansible/master.yml --ask-
 
 This will spin up a new master instance and run the `ansible_master` role on it. Because we're using localhost rather than a dynamic inventory, it can only find the ansible master when it's first created.
 
+## Setting up production
+
+Use the production playbook on master (go look at the EC2 console to find out where master is) like so:
+
+```
+ansible-playbook build/ansible/production.yml --ask-vault-pass --private-key=~/.ssh/id_rsa-deploy
+```
+

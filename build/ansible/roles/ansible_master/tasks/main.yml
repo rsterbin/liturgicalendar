@@ -14,6 +14,9 @@
 - name: install boto
   pip: name=boto state=latest
 
+- name: install boto3
+  pip: name=boto3 state=latest
+
 - name: write the ansible config
   template: src=../templates/ansible.cfg.j2 dest=/etc/ansible/ansible.cfg
 

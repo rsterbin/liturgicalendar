@@ -24,4 +24,12 @@
     - ansible_master
     - common
 
+- hosts: tag_Ansible_Master
+  name: install the galaxy roles
+  user: "{{ deploy_user }}"
+  gather_facts: true
+  become: no
+  tasks:
+    - command: ansible-galaxy install -r {{ codebase_dest }}/build/ansible/install_roles.yml
+
 ...

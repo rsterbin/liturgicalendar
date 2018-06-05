@@ -10,7 +10,6 @@
     - ansible
     - python-pip
     - git
-    - acl
   become: true
 
 - name: install boto

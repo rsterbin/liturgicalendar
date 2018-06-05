@@ -9,6 +9,10 @@
   apt: name=git=1:1.9.*
   become: true
 
+- name: install acl
+  apt: name=acl state=latest
+  become: true
+
 - name: create deploy_user .ssh dir
   file:
     path: "{{ deploy_user_ssh_dir }}"

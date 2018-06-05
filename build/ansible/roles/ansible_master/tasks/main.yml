@@ -10,27 +10,35 @@
     - ansible
     - python-pip
     - git
+    - acl
+  become: true
 
 - name: install boto
   pip: name=boto state=latest
+  become: true
 
 - name: install boto3
   pip: name=boto3 state=latest
+  become: true
 
 - name: write the ansible config
   template: src=../templates/ansible.cfg.j2 dest=/etc/ansible/ansible.cfg
+  become: true
 
 - name: write the boto config
   template: src=../templates/boto.cfg.j2 dest=/home/{{ deploy_user }}/.boto
 
 - name: write the environment profile
-  copy: content="export ANSIBLE_HOSTS=\"/etc/ansible/ec2.py\"" dest=/etc/profile.d/ec2-ansible.sh
+  copy: content="export ANSIBLE_INVENTORY=\"/etc/ansible/ec2.py\"" dest=/etc/profile.d/ec2-ansible.sh
+  become: true
 
 - name: write the EC2 dynamic inventory config
   copy: src=../files/ec2.ini dest=/etc/ansible/ec2.ini
+  become: true
 
 - name: write the EC2 dynamic inventory script
   copy: src=../files/ec2.py dest=/etc/ansible/ec2.py mode=0755
+  become: true
 
 - name: write the bash profile
   template: src=../templates/bash_profile.j2 dest=/home/{{ deploy_user }}/.bash_profile

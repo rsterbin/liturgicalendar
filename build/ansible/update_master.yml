@@ -1,0 +1,16 @@
+---
+# Updates the master from itself
+#
+# Once you have a master EC2 instance, you can use this playbook to keep it up to date
+#
+
+- hosts: localhost
+  connection: local
+  environment:
+    AWS_ACCESS_KEY_ID: "{{ ec2_aws_key }}"
+    AWS_SECRET_ACCESS_KEY: "{{ ec2_aws_secret }}"
+  roles:
+    - ansible_master
+    - common
+
+...

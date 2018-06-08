@@ -11,7 +11,7 @@ db_owner_password: "{{ db_owner_password_prod }}"
 db_admin_password: "{{ db_admin_password_prod }}"
 db_user_password: "{{ db_user_password_prod }}"
 
-db_host_candidates: "{{ groups.get('tag_environment_' + environment_mode, []) | intersect(groups.get('tag_type_db', [])) }}"
+db_host_candidates: "{{ groups.get('tag_type_db', []) }}"
 db_host: "{{ db_host_candidates[0] if ((db_host_candidates | length) > 0) else 'NODB' }}"
 db_port: 5432
 

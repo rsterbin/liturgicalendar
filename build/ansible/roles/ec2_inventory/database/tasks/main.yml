@@ -11,7 +11,7 @@
   ec2:
     region: "{{ ec2_region }}"
     image: "{{ ec2_base_image }}"
-    instance_type: t2.medium
+    instance_type: t2.micro
     key_name: "{{ ec2_provision_key }}"
     vpc_subnet_id: "{{ ec2_subnet_id }}"
     group: "{{ ec2_security_group }}"

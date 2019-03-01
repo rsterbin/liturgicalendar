@@ -19,6 +19,12 @@ First, you'll need the keys placed in your ssh directory.  You can of course cop
 ANSIBLE_HOST_KEY_CHECKING=false ansible-playbook build/ansible/local.yml --ask-vault-pass
 ```
 
+Make sure you have Boto; e.g. for mac osx:
+
+```
+sudo pip install boto
+```
+
 Once you've done that, you can bootstrap the master instance:
 
 ```
